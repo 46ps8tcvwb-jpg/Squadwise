@@ -646,7 +646,6 @@ function initSupabase(){
       } else if(event==='SIGNED_OUT'){
         SUPA_USER=null;
         S={...S,players:[],subStatus:'trial',trialStart:Date.now(),customerId:'',email:''};
-        seed();
         render();
         om('authm');
       }
@@ -661,7 +660,8 @@ function save(){
 }
 function load(){
   try{const d=localStorage.getItem(SK);if(d){const p=JSON.parse(d);S={...S,...p};}}catch(e){}
-  if(!S.players.length)seed();
+  // Don't seed demo data — real users get a clean slate
+  // seed() only called for local-only mode (no account)
   S.players.forEach(p=>p.matches.forEach(m=>{if(!m.id)m.id=Date.now()+Math.random();}));
   // Load user API key from separate localStorage key
   try{S.userApiKey=localStorage.getItem('squadwise_apikey')||'';}catch(e){S.userApiKey='';}
@@ -1895,11 +1895,11 @@ async function forgotPassword(){
   const email=document.getElementById('auth-email').value.trim();
   if(!email){document.getElementById('auth-err').textContent='Enter your email first';document.getElementById('auth-err').style.display='block';return;}
   showAuthLoading('Sending reset email...');
-  await SUPA_CLIENT.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+'/app.html'});
+  await SUPA_CLIENT.auth.resetPasswordForEmail(email,{redirectTo:'https://squadwise.vercel.app/app.html'});
   document.getElementById('auth-loading').style.display='none';
   document.getElementById('auth-login').style.display='block';
   document.getElementById('auth-err').style.color='var(--green)';
-  document.getElementById('auth-err').textContent='✓ Password reset email sent!';
+  document.getElementById('auth-err').textContent='✓ Password reset email sent! Check your inbox.';
   document.getElementById('auth-err').style.display='block';
 }
 async function signOut(){
@@ -1908,6 +1908,7 @@ async function signOut(){
   localStorage.removeItem(SK);
   localStorage.removeItem('squadwise_apikey');
   S={players:[],season:'2024–25',teamName:'My Team',selectedId:null,view:'team',editPid:null,plan:'free',apiKey:'',cp1:null,cp2:null,trialStart:Date.now(),subStatus:'trial',customerId:'',email:'',userApiKey:''};
+  // Don't seed demo data on sign out
   const tb=document.getElementById('trial-banner');
   if(tb)tb.remove();
   render();
