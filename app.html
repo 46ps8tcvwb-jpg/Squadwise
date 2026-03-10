@@ -1786,11 +1786,19 @@ async function signIn(){
   const pass=document.getElementById('auth-pass').value;
   const errEl=document.getElementById('auth-err');
   if(!email||!pass){errEl.textContent='Please enter email and password';errEl.style.display='block';return;}
+  if(!SUPA_CLIENT){errEl.textContent='Connection error — please refresh and try again';errEl.style.display='block';return;}
   showAuthLoading('Signing in...');
   try{
-    const{error}=await SUPA_CLIENT.auth.signInWithPassword({email,password:pass});
+    const{data,error}=await SUPA_CLIENT.auth.signInWithPassword({email,password:pass});
     if(error){throw error;}
-    // onAuthStateChange handles the rest
+    if(data?.user){
+      SUPA_USER=data.user;
+      await loadCloudData();
+      cm('authm');
+      render();
+      checkPaywall();
+      showTrialBanner();
+    }
   }catch(e){
     document.getElementById('auth-login').style.display='block';
     document.getElementById('auth-loading').style.display='none';
@@ -1805,18 +1813,29 @@ async function signUp(){
   if(!email||!pass){errEl.textContent='Please enter email and password';errEl.style.display='block';return;}
   if(pass.length<6){errEl.textContent='Password must be at least 6 characters';errEl.style.display='block';return;}
   showAuthLoading('Creating your account...');
+  if(!SUPA_CLIENT){errEl.textContent='Connection error — please refresh';errEl.style.display='block';return;}
   try{
-    const{error}=await SUPA_CLIENT.auth.signUp({
+    const{data,error}=await SUPA_CLIENT.auth.signUp({
       email,password:pass,
       options:{data:{team_name:team||'My Team'}}
     });
     if(error){throw error;}
     if(team)S.teamName=team;
-    // Show confirmation — switch to login tab
-    switchAuthTab('login');
-    document.getElementById('auth-err').style.color='var(--green)';
-    document.getElementById('auth-err').textContent='✓ Account created! Check your email to confirm, then sign in.';
-    document.getElementById('auth-err').style.display='block';
+    // If email confirmation disabled, user is immediately signed in
+    if(data?.session){
+      SUPA_USER=data.user;
+      await loadCloudData();
+      cm('authm');
+      render();
+      checkPaywall();
+      showTrialBanner();
+    } else {
+      // Email confirmation required
+      switchAuthTab('login');
+      document.getElementById('auth-err').style.color='var(--green)';
+      document.getElementById('auth-err').textContent='✓ Account created! Check your email to confirm, then sign in.';
+      document.getElementById('auth-err').style.display='block';
+    }
   }catch(e){
     document.getElementById('auth-signup').style.display='block';
     document.getElementById('auth-loading').style.display='none';
