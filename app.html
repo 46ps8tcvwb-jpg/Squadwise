@@ -2153,7 +2153,9 @@ function delM(pid,mid){
 function showConfirm(title, desc, onOk, icon){
   document.getElementById('cfm-title').textContent=title||'Are you sure?';
   document.getElementById('cfm-desc').textContent=desc||'';
-  document.getElementById('cfm-icon').innerHTML=icon||ico('warn',20);
+  // icon can be an icon name string like 'trash' or null
+  const iconName=icon||'warn';
+  document.getElementById('cfm-icon').innerHTML=ico(iconName,28);
   const btn=document.getElementById('cfm-ok');
   btn.textContent=title&&title.toLowerCase().includes('delete')?'Delete':'Confirm';
   btn.onclick=function(){cm('cfmov');if(onOk)onOk();};
@@ -2873,13 +2875,13 @@ async function forgotPassword(){
   document.getElementById('auth-err').style.display='block';
 }
 async function signOut(){
-  showConfirm('Sign Out','You will be signed out of your account.',async function(){
+  showConfirm('Sign Out?','You will be signed out of your account.',async function(){
     try { await SUPA_CLIENT.auth.signOut(); } catch(e){ console.warn('signOut error',e); }
     localStorage.removeItem(SK);
     localStorage.removeItem('squadwise_apikey');
     localStorage.removeItem('sw_onboarded');
     window.location.reload();
-  },''+ico('sign_out',20));
+  });
 }
 function openAuth(){om('authm');switchAuthTab('login');}
 
