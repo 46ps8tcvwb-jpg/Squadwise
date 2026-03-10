@@ -444,6 +444,21 @@ a.drill-watch-btn:hover{background:rgba(255,0,0,.22);border-color:rgba(255,0,0,.
 @keyframes savePulse{0%{box-shadow:0 0 0 0 rgba(0,230,118,.4)}70%{box-shadow:0 0 0 10px rgba(0,230,118,0)}100%{box-shadow:0 0 0 0 rgba(0,230,118,0)}}
 .save-pulse{animation:savePulse .6s ease-out}
 /* ── ONBOARDING ── */
+.onboard-modal{max-width:480px!important;padding:0!important;overflow:hidden!important}
+.onboard-header{background:linear-gradient(135deg,rgba(0,230,118,.12),rgba(41,182,246,.08));padding:2rem 2rem 1.5rem;border-bottom:1px solid var(--border2);text-align:center}
+.onboard-steps-row{display:flex;gap:.4rem;justify-content:center;margin-bottom:1.2rem}
+.onboard-dot{width:8px;height:8px;border-radius:50%;background:var(--border2);transition:all .3s}
+.onboard-dot.active{background:var(--green);width:24px;border-radius:4px}
+.onboard-dot.done{background:rgba(0,230,118,.4)}
+.onboard-step-icon{width:64px;height:64px;border-radius:16px;background:rgba(0,230,118,.1);border:1px solid rgba(0,230,118,.25);display:flex;align-items:center;justify-content:center;margin:0 auto .8rem;color:var(--green)}
+.onboard-step-title{font-family:'Barlow Condensed',sans-serif;font-size:1.5rem;font-weight:800;margin-bottom:.3rem}
+.onboard-step-desc{font-size:.85rem;color:var(--text2);line-height:1.65;max-width:340px;margin:0 auto}
+.onboard-body{padding:1.5rem 2rem 2rem}
+.onboard-tip{background:rgba(41,182,246,.06);border:1px solid rgba(41,182,246,.15);border-radius:10px;padding:.8rem 1rem;font-size:.78rem;color:var(--text2);line-height:1.6;margin-bottom:1.2rem}
+.onboard-tip strong{color:var(--blue)}
+.onboard-actions{display:flex;gap:.7rem}
+.onboard-skip{background:none;border:none;color:var(--muted);font-size:.78rem;cursor:pointer;padding:.5rem;margin-top:.3rem;text-align:center;width:100%}
+.onboard-skip:hover{color:var(--text2)}
 .onboard-step{background:var(--card2);border:1px solid var(--border2);border-radius:14px;padding:1.5rem;margin-bottom:1rem;display:flex;align-items:flex-start;gap:1rem}
 .onboard-icon{font-size:1.8rem;flex-shrink:0}
 .onboard-done{opacity:.4;text-decoration:line-through}
@@ -1318,7 +1333,7 @@ function saveQL(){
 // ── SESSION PLANNER VIEW ──
 function rSession(c){
   if(!isSubscribed()){
-    c.innerHTML=proGate("Training Session Planner","Generate full AI training session plans tailored to your squad's needs.");
+    c.innerHTML=proGate("Training Session Planner","Generate full AI training session plans tailored to your squad needs.");
     return;
   }
   document.getElementById('tbt').textContent='Training Planner';
@@ -1645,7 +1660,7 @@ async function genXIReport(){
 // ── PRE-MATCH BRIEF VIEW ──
 function rPrematch(c){
   if(!isSubscribed()){
-    c.innerHTML=proGate("Pre-Match Brief","Get an AI-written tactical brief before each game based on your squad's current form.");
+    c.innerHTML=proGate("Pre-Match Brief","Get an AI-written tactical brief before each game based on your squad current form.");
     return;
   }
   document.getElementById('tbt').textContent='Pre-Match Brief';
@@ -2050,11 +2065,11 @@ function renderGChart(p){
 const om=id=>{document.getElementById(id).classList.add('open');if(id==='subm')setTimeout(updatePlanButtons,10);};
 const cm=id=>document.getElementById(id).classList.remove('open');
 document.querySelectorAll('.ov').forEach(el=>el.addEventListener('click',e=>{
-  if(e.target===el && el.id!=='authm') cm(el.id); // auth modal can't be dismissed by clicking outside
+  if(e.target===el && el.id!=='authm') cm(el.id); // auth modal cannot be dismissed by clicking outside
 }));
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape') document.querySelectorAll('.ov.open').forEach(el=>{
-    if(el.id!=='authm') cm(el.id); // auth modal can't be dismissed by Escape
+    if(el.id!=='authm') cm(el.id); // auth modal cannot be dismissed by Escape
   });
 });
 
@@ -2198,6 +2213,78 @@ async function callClaude(prompt, maxTokens=1800){
   }
   const data = await res.json();
   return data.content?.find(b=>b.type==='text')?.text || 'No response received.';
+}
+
+// ── ONBOARDING WALKTHROUGH ──
+const ONBOARD_STEPS=[
+  {
+    icon:'player',
+    title:'Welcome to Squadwise',
+    desc:'Your AI-powered soccer coaching assistant. Get set up in 2 minutes.',
+    tip:'<strong>First:</strong> Add your players to build your squad roster. You will need at least one player before you can log matches.',
+    btn:'Add First Player',
+    action:function(){finishOnboard();openAddP();}
+  },
+  {
+    icon:'log',
+    title:'Log match stats',
+    desc:'After every game, record goals, assists, passes, tackles, distance and a rating.',
+    tip:'<strong>Tip:</strong> Use Quick Log on mobile — it is designed for pitch-side entry with big +/- buttons.',
+    btn:'Got it',
+    action:null
+  },
+  {
+    icon:'ai',
+    title:'Run your AI report',
+    desc:'After logging a match, hit the AI button for a full coaching breakdown — strengths, weaknesses, drill recommendations.',
+    tip:'<strong>You will need:</strong> A free Anthropic API key (takes 2 min at console.anthropic.com). New accounts get free credits.',
+    btn:'Got it',
+    action:null
+  },
+  {
+    icon:'xi',
+    title:'Best XI & planning',
+    desc:'Squadwise automatically ranks your players by form and flags fatigue risks. Use it for team selection and pre-match prep.',
+    tip:'<strong>Pro tip:</strong> The Training Planner generates a full AI session plan tailored to your squad weaknesses.',
+    btn:'Lets go!',
+    action:function(){finishOnboard();}
+  }
+];
+let onboardStep=0;
+function startOnboard(){
+  if(localStorage.getItem('sw_onboarded'))return;
+  onboardStep=0;
+  renderOnboardStep();
+  om('onboard-modal');
+}
+function renderOnboardStep(){
+  const s=ONBOARD_STEPS[onboardStep];
+  const dots=document.getElementById('onboard-dots');
+  dots.innerHTML=ONBOARD_STEPS.map((_,i)=>'<div class="onboard-dot'+(i===onboardStep?' active':i<onboardStep?' done':'')+'" onclick="onboardTo('+i+')"></div>').join('');
+  const iconEl=document.getElementById('onboard-icon');
+  iconEl.innerHTML=ico(s.icon,32);
+  document.getElementById('onboard-title').textContent=s.title;
+  document.getElementById('onboard-desc').textContent=s.desc;
+  document.getElementById('onboard-tip').innerHTML=s.tip;
+  const nextBtn=document.getElementById('onboard-next');
+  const backBtn=document.getElementById('onboard-back');
+  const isLast=onboardStep===ONBOARD_STEPS.length-1;
+  nextBtn.textContent=s.btn||( isLast?'Get Started':'Next →');
+  nextBtn.onclick=function(){
+    if(s.action){s.action();}
+    else if(isLast){finishOnboard();}
+    else{onboardNav(1);}
+  };
+  backBtn.style.display=onboardStep>0?'':'none';
+}
+function onboardNav(dir){
+  onboardStep=Math.max(0,Math.min(ONBOARD_STEPS.length-1,onboardStep+dir));
+  renderOnboardStep();
+}
+function onboardTo(i){onboardStep=i;renderOnboardStep();}
+function finishOnboard(){
+  localStorage.setItem('sw_onboarded','1');
+  cm('onboard-modal');
 }
 
 // ── SWIPE GESTURES (mobile back navigation) ──
