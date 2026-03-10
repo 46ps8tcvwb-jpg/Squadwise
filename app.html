@@ -383,6 +383,41 @@ a.drill-watch-btn:hover{background:rgba(255,0,0,.22);border-color:rgba(255,0,0,.
 .injury-flag-icon{font-size:1.1rem;flex-shrink:0}
 .injury-flag-text{font-size:.8rem;color:var(--text2);line-height:1.5}
 .injury-flag-text strong{color:var(--text)}
+/* ── QUICK LOG ── */
+.ql-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem;margin-bottom:1rem}
+.ql-stat{background:var(--card3);border:1px solid var(--border2);border-radius:12px;padding:1rem;text-align:center}
+.ql-label{font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text2);margin-bottom:.5rem}
+.ql-controls{display:flex;align-items:center;justify-content:center;gap:.6rem}
+.ql-btn{width:36px;height:36px;border-radius:50%;border:1px solid var(--border2);background:var(--card2);color:var(--text);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.ql-btn:hover{border-color:var(--green);color:var(--green)}
+.ql-val{font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:800;min-width:2rem;color:var(--text)}
+.ql-slider-wrap{display:flex;align-items:center;gap:.7rem}
+.ql-slider{flex:1;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;background:var(--border2);outline:none;cursor:pointer}
+.ql-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;background:var(--green);cursor:pointer}
+.ql-slider-val{font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:700;color:var(--green);min-width:2.5rem;text-align:right}
+/* ── PLAYER CARD (shareable) ── */
+.card-preview{background:linear-gradient(135deg,#0a1628 0%,#0d1f35 100%);border:1px solid rgba(0,230,118,.25);border-radius:16px;padding:1.5rem;max-width:400px;font-family:'Inter',sans-serif}
+.card-header{display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem;padding-bottom:1rem;border-bottom:1px solid rgba(255,255,255,.07)}
+.card-num{font-family:'Barlow Condensed',sans-serif;font-size:3rem;font-weight:800;line-height:1;color:var(--green)}
+.card-info-name{font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:800;line-height:1.1}
+.card-info-sub{font-size:.72rem;color:var(--text2);margin-top:.2rem}
+.card-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-bottom:1rem}
+.card-stat{text-align:center;background:rgba(255,255,255,.04);border-radius:8px;padding:.5rem}
+.card-stat-val{font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:800;color:var(--text);line-height:1}
+.card-stat-lbl{font-size:.6rem;color:var(--text2);text-transform:uppercase;letter-spacing:.08em}
+.card-rating{text-align:center;margin-top:.8rem;padding-top:.8rem;border-top:1px solid rgba(255,255,255,.07)}
+.card-rating-val{font-family:'Barlow Condensed',sans-serif;font-size:2.5rem;font-weight:800;color:var(--green);line-height:1}
+.card-rating-lbl{font-size:.65rem;color:var(--text2);letter-spacing:.08em;text-transform:uppercase}
+/* ── PREMATCH BRIEF ── */
+.prematch-card{background:linear-gradient(135deg,rgba(0,230,118,.05),rgba(41,182,246,.03));border:1px solid rgba(0,230,118,.2);border-radius:14px;padding:1.4rem;margin-bottom:1rem}
+/* ── SEASON GOALS ── */
+.goal-card{background:var(--card2);border:1px solid var(--border2);border-radius:12px;padding:1rem;margin-bottom:.7rem}
+.goal-progress{height:6px;border-radius:3px;background:var(--border2);margin:.5rem 0;overflow:hidden}
+.goal-bar{height:100%;border-radius:3px;background:var(--green);transition:width .5s}
+/* ── ONBOARDING ── */
+.onboard-step{background:var(--card2);border:1px solid var(--border2);border-radius:14px;padding:1.5rem;margin-bottom:1rem;display:flex;align-items:flex-start;gap:1rem}
+.onboard-icon{font-size:1.8rem;flex-shrink:0}
+.onboard-done{opacity:.4;text-decoration:line-through}
 </style>
 </head>
 <body>
@@ -401,6 +436,7 @@ a.drill-watch-btn:hover{background:rgba(255,0,0,.22);border-color:rgba(255,0,0,.
       <div class="nav-i" id="nav-log" onclick="go('log')"><span class="ni">📝</span>Log Match</div>
       <div class="nav-i" id="nav-session" onclick="go('session')"><span class="ni">📋</span>Training Planner</div>
       <div class="nav-i" id="nav-xi" onclick="go('xi')"><span class="ni">🏆</span>Best XI</div>
+      <div class="nav-i" id="nav-prematch" onclick="go('prematch')"><span class="ni">⚡</span>Pre-Match Brief</div>
       <div class="nav-i" id="nav-settings" onclick="go('settings')"><span class="ni">⚙️</span>Settings</div>
     </div>
     <div class="sb-sec">Squad (<span id="sbc">0</span>)</div>
@@ -448,6 +484,10 @@ a.drill-watch-btn:hover{background:rgba(255,0,0,.22);border-color:rgba(255,0,0,.
       <div class="fg"><label class="fl">Nationality</label><input class="fi" id="pm-na" placeholder="e.g. Brazilian" maxlength="30"/></div>
     </div>
     <div class="fr o"><div class="fg"><label class="fl">Coach Notes</label><input class="fi" id="pm-no" placeholder="Notes about this player..." maxlength="200"/></div></div>
+    <div class="fr t">
+      <div class="fg"><label class="fl">Season Goal — Goals</label><input class="fi" type="number" id="pm-tg" placeholder="e.g. 10" min="0" max="100"/></div>
+      <div class="fg"><label class="fl">Season Goal — Assists</label><input class="fi" type="number" id="pm-ta" placeholder="e.g. 8" min="0" max="100"/></div>
+    </div>
     <div class="mact">
       <button class="bcan" onclick="cm('pmov')">Cancel</button>
       <button class="bdng" id="pm-del" onclick="delP()" style="display:none">🗑 Remove</button>
@@ -821,6 +861,7 @@ function render(){
   if(S.view==='log')return rLog(c);
   if(S.view==='session')return rSession(c);
   if(S.view==='xi')return rXI(c);
+  if(S.view==='prematch')return rPrematch(c);
   if(S.view==='settings')return rSettings(c);
 }
 
@@ -891,8 +932,10 @@ function rTeam(c){
   const topS=[...S.players].sort((a,b)=>ts(b,'goals')-ts(a,'goals'))[0];
   const topA=[...S.players].sort((a,b)=>ts(b,'assists')-ts(a,'assists'))[0];
   const topR=[...S.players].filter(p=>p.matches.length).sort((a,b)=>parseFloat(ar(b))-parseFloat(ar(a)))[0];
+  const onboardHTML=showOnboarding();
   c.innerHTML=`<div class="page">
     <div id="team-banner"></div>
+    ${onboardHTML}
     <div class="sgrid">
       <div class="scard"><div class="slbl">Squad Size</div><div class="sval" style="color:var(--blue)">${S.players.length}</div><div class="ssub">${all.length} performances logged</div><div class="sbdg bb">Active</div></div>
       <div class="scard"><div class="slbl">Total Goals</div><div class="sval" style="color:var(--green)">${tg}</div><div class="ssub">${ta} assists · ${tg+ta} G+A</div><div class="sbdg bg">⚽</div></div>
@@ -960,6 +1003,7 @@ function rPlayer(c){
           <button class="tbtn" onclick="openEditP(${p.id})">✏️ Edit</button>
           <button class="tbtn" onclick="openLogM(${p.id})">＋ Log Match</button>
           <button class="tbtn" onclick="go('compare')">⚖️ Compare</button>
+          <button class="tbtn" onclick="showReportCard(${p.id})">🪪 Report Card</button>
         </div>
       </div>
       <div class="hr">
@@ -988,6 +1032,8 @@ function rPlayer(c){
         ${m.length>=2?`<div style="margin-top:1.2rem"><div class="ctitle" style="margin-bottom:.6rem">📈 <span class="hl">Rating Trend</span></div>${renderSpk(m.slice(0,8).reverse())}</div>`:''}
       </div>
     </div>
+
+    ${renderSeasonGoals(p)}
 
     ${m.length>=3?`<div class="card cp" style="margin-bottom:1.2rem"><div class="ctitle">📦 <span class="hl">Goals Per Match</span></div>${renderGChart(p)}</div>`:''}
 
@@ -1083,11 +1129,86 @@ function rCmpResult(id1,id2){
     </div>`;
 }
 
-// ── LOG PAGE ──
+// ── LOG PAGE — QUICK LOG (mobile-first) ──
 function rLog(c){
   document.getElementById('tbt').textContent='Log Match';document.getElementById('tbb').textContent=S.season;document.getElementById('aiBtn').style.display='none';
-  c.innerHTML=`<div class="page"><div class="card cp" style="max-width:520px"><div class="ctitle">📝 <span class="hl">Log Match Performance</span></div><p style="font-size:.83rem;color:var(--muted);margin-bottom:1.2rem">Record performance stats for any player.</p><button class="bpri" onclick="openLogM()">Open Match Logger</button></div></div>`;
-  openLogM();
+  if(!S.players.length){
+    c.innerHTML='<div class="empty2"><div style="font-size:3rem">📝</div><div style="font-size:1.1rem;font-weight:600;margin:.5rem 0">No players yet</div><p style="color:var(--muted);font-size:.85rem">Add players first to log matches</p><button class="bpri" style="margin-top:1rem" onclick="openAddP()">＋ Add Player</button></div>';
+    return;
+  }
+  const pid=S.selectedId||S.players[0].id;
+  const p=S.players.find(x=>x.id===pid)||S.players[0];
+  document.getElementById('tbt').textContent='Quick Log';
+  c.innerHTML=`<div class="page" style="max-width:520px;margin:0 auto">
+    <div class="ptitle">📝 <span class="hl">Quick Log</span></div>
+    <p style="font-size:.82rem;color:var(--text2);margin-bottom:1.2rem">Fast pitch-side stat entry. Tap + / − to adjust.</p>
+    <div class="fg" style="margin-bottom:1rem">
+      <label class="fl">Player</label>
+      <select class="fs" id="ql-player" onchange="qlSwitch(this.value)">
+        ${S.players.map(pl=>'<option value="'+pl.id+'"'+(pl.id===p.id?' selected':'')+'>'+pl.name+' (#'+pl.number+')</option>').join('')}
+      </select>
+    </div>
+    <div class="fg" style="margin-bottom:1rem">
+      <label class="fl">Opponent</label>
+      <input class="fi" id="ql-opp" placeholder="e.g. FC United" maxlength="40"/>
+    </div>
+    <div class="fr t" style="margin-bottom:1rem">
+      <div class="fg"><label class="fl">Date</label><input class="fi" type="date" id="ql-date" value="${new Date().toISOString().split('T')[0]}"/></div>
+      <div class="fg"><label class="fl">Result</label><select class="fs" id="ql-result"><option>W</option><option>D</option><option>L</option></select></div>
+    </div>
+    <div class="ql-grid">
+      <div class="ql-stat"><div class="ql-label">⚽ Goals</div><div class="ql-controls"><button class="ql-btn" onclick="qlAdj('ql-goals',-1)">−</button><div class="ql-val" id="ql-goals">0</div><button class="ql-btn" onclick="qlAdj('ql-goals',1)">+</button></div></div>
+      <div class="ql-stat"><div class="ql-label">🎯 Assists</div><div class="ql-controls"><button class="ql-btn" onclick="qlAdj('ql-assists',-1)">−</button><div class="ql-val" id="ql-assists">0</div><button class="ql-btn" onclick="qlAdj('ql-assists',1)">+</button></div></div>
+      <div class="ql-stat"><div class="ql-label">🥅 Shots</div><div class="ql-controls"><button class="ql-btn" onclick="qlAdj('ql-shots',-1)">−</button><div class="ql-val" id="ql-shots">0</div><button class="ql-btn" onclick="qlAdj('ql-shots',1)">+</button></div></div>
+      <div class="ql-stat"><div class="ql-label">💪 Tackles</div><div class="ql-controls"><button class="ql-btn" onclick="qlAdj('ql-tackles',-1)">−</button><div class="ql-val" id="ql-tackles">0</div><button class="ql-btn" onclick="qlAdj('ql-tackles',1)">+</button></div></div>
+    </div>
+    <div class="card cp" style="margin-bottom:1rem">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
+        <label class="fl" style="margin:0">⭐ Rating</label>
+        <div class="ql-slider-val" id="ql-rating-val">7.0</div>
+      </div>
+      <div class="ql-slider-wrap">
+        <span style="font-size:.7rem;color:var(--text2)">0</span>
+        <input type="range" class="ql-slider" id="ql-rating" min="0" max="10" step="0.5" value="7" oninput="document.getElementById('ql-rating-val').textContent=parseFloat(this.value).toFixed(1)"/>
+        <span style="font-size:.7rem;color:var(--text2)">10</span>
+      </div>
+    </div>
+    <div class="card cp" style="margin-bottom:1rem">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
+        <label class="fl" style="margin:0">🎯 Pass Acc %</label>
+        <div class="ql-slider-val" id="ql-pass-val">75%</div>
+      </div>
+      <div class="ql-slider-wrap">
+        <span style="font-size:.7rem;color:var(--text2)">0</span>
+        <input type="range" class="ql-slider" id="ql-pass" min="0" max="100" step="1" value="75" oninput="document.getElementById('ql-pass-val').textContent=this.value+'%'"/>
+        <span style="font-size:.7rem;color:var(--text2)">100</span>
+      </div>
+    </div>
+    <div class="fg" style="margin-bottom:1.2rem"><label class="fl">Notes (optional)</label><input class="fi" id="ql-notes" placeholder="Quick note..." maxlength="150"/></div>
+    <button class="bpri" style="width:100%;padding:1rem;font-size:1rem;letter-spacing:.02em" onclick="saveQL()">✅ Save Match</button>
+    <div style="text-align:center;margin-top:.8rem"><button class="tbtn" onclick="openLogM()">Advanced entry →</button></div>
+  </div>`;
+}
+function qlSwitch(pid){S.selectedId=parseInt(pid);}
+function qlAdj(id,delta){const el=document.getElementById(id);const v=Math.max(0,parseInt(el.textContent||0)+delta);el.textContent=v;}
+function saveQL(){
+  const pid=parseInt(document.getElementById('ql-player').value);
+  const p=S.players.find(x=>x.id===pid);if(!p)return;
+  const opp=document.getElementById('ql-opp').value.trim();
+  if(!opp){toast('Enter opponent name','e');return;}
+  const e={id:Date.now(),date:document.getElementById('ql-date').value,opp,
+    result:document.getElementById('ql-result').value,
+    goals:parseInt(document.getElementById('ql-goals').textContent)||0,
+    assists:parseInt(document.getElementById('ql-assists').textContent)||0,
+    shots:parseInt(document.getElementById('ql-shots').textContent)||0,
+    passes:75,passAcc:parseInt(document.getElementById('ql-pass').value)||75,
+    tackles:parseInt(document.getElementById('ql-tackles').textContent)||0,
+    distance:9.0,minutes:90,
+    rating:parseFloat(document.getElementById('ql-rating').value)||7,
+    notes:document.getElementById('ql-notes').value.trim()};
+  p.matches.unshift(e);S.selectedId=pid;save();
+  toast('Match vs '+opp+' logged! ✅','s');
+  go('player',pid);
 }
 
 // ── SETTINGS ──
@@ -1103,7 +1224,11 @@ function rSession(c){
   c.innerHTML=`
   <div class="page">
     <div class="ptitle">📋 <span class="hl">AI Training Planner</span></div>
-    <p style="font-size:.84rem;color:var(--text2);margin-bottom:1.5rem;line-height:1.6">Tell the AI what you want to work on and it'll generate a complete training session plan for your squad.</p>
+    <div style="display:flex;gap:.5rem;margin-bottom:1.2rem">
+      <button class="tbtn" id="sp-tab-gen" onclick="spTab('gen')" style="background:var(--green);color:#060e1c;font-weight:700">Generate Plan</button>
+      <button class="tbtn" id="sp-tab-hist" onclick="spTab('hist')">📚 History</button>
+    </div>
+    <div id="sp-gen-panel"><p style="font-size:.84rem;color:var(--text2);margin-bottom:1.5rem;line-height:1.6">Tell the AI what you want to work on and it'll generate a complete training session plan for your squad.</p>
     <div class="session-form">
       <div class="session-field">
         <div class="fg"><label class="fl">Focus Area</label>
@@ -1152,9 +1277,34 @@ function rSession(c){
     <div id="sp-result" style="display:none" class="session-result">
       <div id="sp-content"></div>
     </div>
+    </div><!-- end sp-gen-panel -->
+    <div id="sp-hist-panel" style="display:none">
+      <div id="sp-hist-content"></div>
+    </div>
   </div>`;
 }
 
+function spTab(tab){
+  document.getElementById('sp-gen-panel').style.display=tab==='gen'?'':'none';
+  document.getElementById('sp-hist-panel').style.display=tab==='hist'?'':'none';
+  document.getElementById('sp-tab-gen').style.cssText=tab==='gen'?'background:var(--green);color:#060e1c;font-weight:700':'';
+  document.getElementById('sp-tab-hist').style.cssText=tab==='hist'?'background:var(--green);color:#060e1c;font-weight:700':'';
+  if(tab==='hist')renderSessionHistory();
+}
+function renderSessionHistory(){
+  const sessions=getSessions();
+  const el=document.getElementById('sp-hist-content');
+  if(!sessions.length){
+    el.innerHTML='<div style="text-align:center;padding:2rem;color:var(--text2);font-size:.85rem">No saved sessions yet. Generate a plan and save it!</div>';
+    return;
+  }
+  el.innerHTML=sessions.map(function(s){
+    return '<div style="background:var(--card2);border:1px solid var(--border2);border-radius:10px;padding:1rem;margin-bottom:.7rem;display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap">'
+      +'<div><div style="font-weight:600;font-size:.88rem">'+s.title+'</div><div style="font-size:.72rem;color:var(--text2);margin-top:.15rem">'+s.date+'</div></div>'
+      +'<button class="bdng" style="font-size:.7rem;padding:.25rem .5rem" onclick="delSession('+s.id+')">Delete</button>'
+      +'</div>';
+  }).join('');
+}
 async function genSession(){
   if(!isSubscribed()){om('pwm');return;}
   const btn=document.getElementById('sp-btn');
@@ -1245,6 +1395,12 @@ Return ONLY valid JSON in this exact format:
 
     content.innerHTML=html2;
     btn.disabled=false;btn.textContent='📋 Generate New Plan';
+    // Add save button to result
+    const saveRow=document.createElement('div');
+    saveRow.style.cssText='text-align:right;margin-top:.8rem';
+    saveRow.innerHTML='<button class="tbtn" onclick="saveSession(null,\''+focus+' Session\')">💾 Save to History</button>';
+    document.getElementById('sp-result').appendChild(saveRow);
+    localStorage.setItem('squadwise_first_session','1');
   }catch(e){
     toast('Error: '+e.message,'e');
     btn.disabled=false;btn.textContent='📋 Generate Session Plan';
@@ -1362,6 +1518,247 @@ async function genXIReport(){
   }catch(e){
     res.innerHTML=`<div style="color:var(--red);font-size:.82rem;padding:1rem">${e.message}</div>`;
   }
+}
+
+
+// ── PRE-MATCH BRIEF VIEW ──
+function rPrematch(c){
+  if(!isSubscribed()){
+    c.innerHTML=proGate("Pre-Match Brief","Get an AI-written tactical brief before each game based on your squad's current form.");
+    return;
+  }
+  document.getElementById('tbt').textContent='Pre-Match Brief';
+  document.getElementById('aiBtn').style.display='none';
+  if(!S.players.length){
+    c.innerHTML='<div class="empty2"><div style="font-size:3rem">⚡</div><div style="font-size:1.1rem;font-weight:600;margin:.5rem 0">No players yet</div><p style="color:var(--muted);font-size:.85rem">Add players and log some matches first</p></div>';
+    return;
+  }
+  c.innerHTML=`<div class="page">
+    <div class="ptitle">⚡ <span class="hl">Pre-Match Brief</span></div>
+    <p style="font-size:.84rem;color:var(--text2);margin-bottom:1.5rem">AI writes a tactical brief for your next game based on current squad form.</p>
+    <div class="session-form">
+      <div class="session-field">
+        <div class="fg"><label class="fl">Opponent Name</label><input class="fi" id="pm-opp" placeholder="e.g. FC United" maxlength="50"/></div>
+        <div class="fg"><label class="fl">Match Type</label>
+          <select class="fs" id="pm-type">
+            <option>League Match</option><option>Cup Game</option><option>Friendly</option><option>Playoff</option><option>Derby</option>
+          </select>
+        </div>
+        <div class="fg"><label class="fl">Priority</label>
+          <select class="fs" id="pm-priority">
+            <option>Must Win</option><option>Important</option><option>Build Confidence</option><option>Test New System</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg" style="margin-bottom:1.2rem"><label class="fl">Any intel on opponent? (optional)</label>
+        <input class="fi" id="pm-intel" placeholder="e.g. strong physical team, play high press, weak in transition..." maxlength="200"/>
+      </div>
+      <button class="bpri" onclick="genPrematch()" id="pm-btn">⚡ Generate Brief</button>
+    </div>
+    <div id="pm-result" style="display:none" class="session-result"></div>
+  </div>`;
+}
+
+async function genPrematch(){
+  if(!isSubscribed()){om('pwm');return;}
+  const opp=document.getElementById('pm-opp').value.trim();
+  if(!opp){toast('Enter opponent name','e');return;}
+  const btn=document.getElementById('pm-btn');
+  btn.disabled=true;btn.textContent='⏳ Generating...';
+
+  const topPlayers=S.players.map(p=>{
+    const m=(p.matches||[]).slice(-4);
+    if(!m.length)return null;
+    const avgR=m.reduce((s,x)=>s+(parseFloat(x.rating)||0),0)/m.length;
+    const goals=m.reduce((s,x)=>s+(x.goals||0),0);
+    const assists=m.reduce((s,x)=>s+(x.assists||0),0);
+    const riskFlag=(p.matches||[]).length>=3&&((parseFloat(p.matches[0].rating)||0)<(parseFloat(p.matches[2].rating)||0)-1.5);
+    return{name:p.name,pos:p.pos,avgR:avgR.toFixed(1),goals,assists,riskFlag};
+  }).filter(Boolean).sort((a,b)=>b.avgR-a.avgR);
+
+  const squadSummary=topPlayers.slice(0,12).map(function(p){
+    return p.name+' ('+p.pos+') R:'+p.avgR+(p.riskFlag?' ⚠️ FATIGUE':'');
+  }).join(', ');
+
+  const matchType=document.getElementById('pm-type').value;
+  const priority=document.getElementById('pm-priority').value;
+  const intel=document.getElementById('pm-intel').value.trim();
+
+  const promptLines=[
+    'You are an elite soccer coach writing a pre-match brief for your coaching staff.',
+    '',
+    'Team: '+S.teamName,
+    'Opponent: '+opp,
+    'Match Type: '+matchType,
+    'Priority: '+priority,
+    (intel?'Opponent Intel: '+intel:''),
+    '',
+    'Squad Form (recent avg rating):',
+    squadSummary,
+    '',
+    'Write a concise pre-match brief (250-300 words) covering:',
+    '1. Key Threats & Opportunities (based on our current form)',
+    '2. Recommended Starting Approach / Formation',
+    '3. Players to Watch (our best form players to build around)',
+    '4. Rotation Advice (who might need rest based on fatigue flags)',
+    '5. Motivational Team Talk Opener (2-3 sentences)',
+    '',
+    'Keep it punchy and actionable. Write for a real coach.'
+  ];
+  const prompt=promptLines.filter(function(l){return l!==undefined;}).join('\n');
+
+  try{
+    const text=await callClaude(prompt,900);
+    const res=document.getElementById('pm-result');
+    res.style.display='block';
+    res.innerHTML='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem">'
+      +'<div><div style="font-family:Barlow Condensed,sans-serif;font-size:1.3rem;font-weight:800">'+S.teamName+' vs '+opp+'</div>'
+      +'<div style="font-size:.72rem;color:var(--text2);margin-top:.2rem">'+matchType+' · '+priority+'</div></div>'
+      +'<div style="background:rgba(0,230,118,.1);border:1px solid rgba(0,230,118,.25);color:var(--green);font-size:.65rem;padding:.3rem .7rem;border-radius:6px;font-weight:700">⚡ AI BRIEF</div>'
+      +'</div>'
+      +'<div style="font-size:.83rem;color:var(--text2);line-height:1.8;white-space:pre-line">'+text+'</div>';
+    btn.disabled=false;btn.textContent='⚡ Generate New Brief';
+  }catch(e){
+    toast('Error: '+e.message,'e');
+    btn.disabled=false;btn.textContent='⚡ Generate Brief';
+  }
+}
+
+// ── PLAYER REPORT CARD ──
+function showReportCard(pid){
+  const p=S.players.find(x=>x.id===pid);if(!p)return;
+  const m=p.matches||[];
+  const totalGoals=m.reduce((s,x)=>s+(x.goals||0),0);
+  const totalAssists=m.reduce((s,x)=>s+(x.assists||0),0);
+  const avgRating=m.length?( m.reduce((s,x)=>s+(parseFloat(x.rating)||0),0)/m.length).toFixed(1):'—';
+  const avgPass=m.length?Math.round(m.reduce((s,x)=>s+(x.passAcc||0),0)/m.length):'—';
+  const wins=m.filter(x=>x.result==='W').length;
+  const tgPct=p.targetGoals?Math.min(100,Math.round((totalGoals/p.targetGoals)*100)):null;
+  const taPct=p.targetAssists?Math.min(100,Math.round((totalAssists/p.targetAssists)*100)):null;
+
+  // Create modal overlay
+  const ov=document.createElement('div');
+  ov.className='ov';ov.id='rcov';ov.style.zIndex='300';
+  ov.innerHTML=`<div class="modal" style="max-width:440px;padding:0;overflow:hidden;background:transparent;border:none;box-shadow:none">
+    <div class="card-preview">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.2rem">
+        <div style="font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--green);font-weight:700">${S.teamName} · ${S.season}</div>
+        <button onclick="document.getElementById('rcov').remove()" style="background:none;border:none;color:var(--text2);cursor:pointer;font-size:1.1rem">✕</button>
+      </div>
+      <div class="card-header">
+        <div class="card-num" style="color:${p.color||'var(--green)'}">${'#'+p.number}</div>
+        <div><div class="card-info-name">${p.name}</div><div class="card-info-sub">${p.pos}${p.nationality?' · '+p.nationality:''}</div></div>
+      </div>
+      <div class="card-stats-grid">
+        <div class="card-stat"><div class="card-stat-val">${totalGoals}</div><div class="card-stat-lbl">Goals</div></div>
+        <div class="card-stat"><div class="card-stat-val">${totalAssists}</div><div class="card-stat-lbl">Assists</div></div>
+        <div class="card-stat"><div class="card-stat-val">${m.length}</div><div class="card-stat-lbl">Matches</div></div>
+        <div class="card-stat"><div class="card-stat-val">${avgPass}${m.length?'%':''}</div><div class="card-stat-lbl">Pass Acc</div></div>
+        <div class="card-stat"><div class="card-stat-val">${wins}</div><div class="card-stat-lbl">Wins</div></div>
+        <div class="card-stat"><div class="card-stat-val">${p.age||'—'}</div><div class="card-stat-lbl">Age</div></div>
+      </div>
+      ${tgPct!==null||taPct!==null?`<div style="margin-bottom:.8rem">
+        <div style="font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text2);margin-bottom:.5rem">Season Goals</div>
+        ${tgPct!==null?`<div style="font-size:.72rem;color:var(--text2);margin-bottom:.25rem">Goals: ${totalGoals} / ${p.targetGoals}</div><div class="goal-progress"><div class="goal-bar" style="width:${tgPct}%"></div></div>`:''}
+        ${taPct!==null?`<div style="font-size:.72rem;color:var(--text2);margin-bottom:.25rem;margin-top:.4rem">Assists: ${totalAssists} / ${p.targetAssists}</div><div class="goal-progress"><div class="goal-bar" style="width:${taPct}%;background:var(--blue)"></div></div>`:''}
+      </div>`:''}
+      <div class="card-rating"><div class="card-rating-val">${avgRating}</div><div class="card-rating-lbl">Avg Rating</div></div>
+      ${p.notes?`<div style="margin-top:.8rem;font-size:.72rem;color:var(--text2);font-style:italic;text-align:center;padding-top:.6rem;border-top:1px solid rgba(255,255,255,.06)">"${p.notes}"</div>`:''}
+      <div style="margin-top:1rem;text-align:center">
+        <button class="tbtn" style="font-size:.72rem" onclick="printCard()">🖨️ Print / Save PDF</button>
+      </div>
+    </div>
+  </div>`;
+  document.body.appendChild(ov);
+  setTimeout(()=>ov.addEventListener('click',function(e){if(e.target===ov)ov.remove();}),100);
+}
+
+function printCard(){
+  const card=document.querySelector('.card-preview');
+  if(!card)return;
+  const w=window.open('','_blank');
+  w.document.write('<html><head><title>Player Card</title><style>*{margin:0;padding:0;box-sizing:border-box}body{background:#080f1e;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:Inter,sans-serif;color:#f0f4ff}@media print{body{background:#080f1e}}</style></head><body>');
+  w.document.write(card.outerHTML);
+  w.document.write('</body></html>');
+  w.document.close();
+  setTimeout(()=>w.print(),500);
+}
+
+// ── SESSION HISTORY (save/load plans) ──
+// Stored in localStorage under key 'squadwise_sessions'
+function getSessions(){try{return JSON.parse(localStorage.getItem('squadwise_sessions')||'[]');}catch(e){return[];}}
+function saveSession(plan,title){
+  const sessions=getSessions();
+  sessions.unshift({id:Date.now(),title:title||'Session Plan',plan,date:new Date().toLocaleDateString()});
+  if(sessions.length>20)sessions.pop();
+  localStorage.setItem('squadwise_sessions',JSON.stringify(sessions));
+  toast('Session saved to history ✅','s');
+}
+function delSession(id){
+  const sessions=getSessions().filter(s=>s.id!==id);
+  localStorage.setItem('squadwise_sessions',JSON.stringify(sessions));
+  toast('Session deleted','i');
+  go('session');
+}
+
+// ── ONBOARDING CHECK ──
+function getOnboardingStatus(){
+  const done={
+    addPlayer: S.players.length>0,
+    logMatch: S.players.some(p=>(p.matches||[]).length>0),
+    aiReport: !!localStorage.getItem('squadwise_first_ai'),
+    setGoals: S.players.some(p=>p.targetGoals||p.targetAssists),
+    session: !!localStorage.getItem('squadwise_first_session')
+  };
+  return done;
+}
+function showOnboarding(){
+  const status=getOnboardingStatus();
+  const steps=[
+    {key:'addPlayer',icon:'👤',title:'Add your first player',desc:'Start building your squad roster',action:"openAddP()",btn:'Add Player'},
+    {key:'logMatch',icon:'📝',title:'Log your first match',desc:'Record stats after a game',action:"go('log')",btn:'Log Match'},
+    {key:'setGoals',icon:'🎯',title:'Set season goals',desc:'Add goals/assists targets for players',action:"openEditP(S.players[0]?.id)",btn:'Set Goals'},
+    {key:'aiReport',icon:'🤖',title:'Run your first AI report',desc:'Get an AI coaching analysis',action:"runAI()",btn:'Try AI'},
+    {key:'session',icon:'📋',title:'Generate a training plan',desc:'Use the AI Training Planner',action:"go('session')",btn:'Plan Session'}
+  ];
+  const allDone=steps.every(s=>status[s.key]);
+  if(allDone)return'';
+  const doneCount=steps.filter(s=>status[s.key]).length;
+  let h='<div class="card cp" style="margin-bottom:1.2rem"><div class="ctitle">🚀 <span class="hl">Getting Started</span> <span style="font-size:.72rem;color:var(--text2);font-weight:400;font-family:Inter,sans-serif">'+doneCount+'/'+steps.length+' complete</span></div>';
+  h+='<div style="height:4px;border-radius:2px;background:var(--border2);margin-bottom:1.2rem;overflow:hidden"><div style="height:100%;background:var(--green);border-radius:2px;width:'+(doneCount/steps.length*100)+'%"></div></div>';
+  steps.forEach(s=>{
+    const done=status[s.key];
+    h+='<div class="onboard-step '+(done?'onboard-done':'')+'"><div class="onboard-icon">'+(done?'✅':s.icon)+'</div>'
+      +'<div style="flex:1"><div style="font-weight:600;font-size:.85rem;margin-bottom:.1rem">'+s.title+'</div>'
+      +'<div style="font-size:.75rem;color:var(--muted)">'+s.desc+'</div></div>'
+      +(!done?'<button class="tbtn" style="font-size:.72rem;white-space:nowrap;flex-shrink:0" onclick="'+s.action+'">'+s.btn+'</button>':'')
+      +'</div>';
+  });
+  h+='</div>';
+  return h;
+}
+
+// ── SEASON GOALS DISPLAY in player profile ──
+function renderSeasonGoals(p){
+  if(!p.targetGoals&&!p.targetAssists)return'';
+  const m=p.matches||[];
+  const totalGoals=m.reduce((s,x)=>s+(x.goals||0),0);
+  const totalAssists=m.reduce((s,x)=>s+(x.assists||0),0);
+  let h='<div class="card cp" style="margin-bottom:1rem"><div class="ctitle">🎯 <span class="hl">Season Goals</span></div>';
+  if(p.targetGoals){
+    const pct=Math.min(100,Math.round((totalGoals/p.targetGoals)*100));
+    const color=pct>=100?'var(--green)':pct>=50?'var(--yellow)':'var(--text2)';
+    h+='<div style="margin-bottom:.8rem"><div style="display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:.3rem"><span>Goals</span><span style="color:'+color+'">'+totalGoals+' / '+p.targetGoals+' ('+pct+'%)</span></div>'
+      +'<div class="goal-progress"><div class="goal-bar" style="width:'+pct+'%;background:'+color+'"></div></div></div>';
+  }
+  if(p.targetAssists){
+    const pct=Math.min(100,Math.round((totalAssists/p.targetAssists)*100));
+    const color=pct>=100?'var(--green)':pct>=50?'var(--yellow)':'var(--text2)';
+    h+='<div><div style="display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:.3rem"><span>Assists</span><span style="color:'+color+'">'+totalAssists+' / '+p.targetAssists+' ('+pct+'%)</span></div>'
+      +'<div class="goal-progress"><div class="goal-bar" style="width:'+pct+'%;background:'+color+'"></div></div></div>';
+  }
+  h+='</div>';
+  return h;
 }
 
 function rSettings(c){
@@ -1525,7 +1922,9 @@ function openEditP(id){
   S.editPid=id;document.getElementById('pmt').textContent=`✏️ Edit ${p.name}`;
   document.getElementById('pm-n').value=p.name;document.getElementById('pm-nb').value=p.number;
   document.getElementById('pm-a').value=p.age;document.getElementById('pm-na').value=p.nation||'';
-  document.getElementById('pm-no').value=p.notes||'';document.getElementById('pm-p').value=p.pos;
+  document.getElementById('pm-no').value=p.notes||'';
+  document.getElementById('pm-tg').value=p.targetGoals||'';
+  document.getElementById('pm-ta').value=p.targetAssists||'';document.getElementById('pm-p').value=p.pos;
   document.getElementById('pm-f').value=p.foot;document.getElementById('pm-del').style.display='flex';om('pmov');
 }
 function saveP(){
@@ -2243,4 +2642,3 @@ setTimeout(async()=>{
 </script>
 </body>
 </html>
- 
