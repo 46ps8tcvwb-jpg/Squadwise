@@ -2871,18 +2871,13 @@ async function forgotPassword(){
   document.getElementById('auth-err').style.display='block';
 }
 async function signOut(){
-  try { await SUPA_CLIENT.auth.signOut(); } catch(e){ console.warn('signOut error',e); }
-  SUPA_USER=null;
-  localStorage.removeItem(SK);
-  localStorage.removeItem('squadwise_apikey');
-  S={players:[],season:'2024–25',teamName:'My Team',selectedId:null,view:'team',editPid:null,plan:'free',apiKey:'',cp1:null,cp2:null,trialStart:Date.now(),subStatus:'trial',customerId:'',email:'',userApiKey:''};
-  // Don't seed demo data on sign out
-  const tb=document.getElementById('trial-banner');
-  if(tb)tb.remove();
-  render();
-  om('authm');
-  switchAuthTab('login');
-  toast('Signed out','i');
+  showConfirm('Sign Out','You will be signed out of your account.',async function(){
+    try { await SUPA_CLIENT.auth.signOut(); } catch(e){ console.warn('signOut error',e); }
+    localStorage.removeItem(SK);
+    localStorage.removeItem('squadwise_apikey');
+    localStorage.removeItem('sw_onboarded');
+    window.location.reload();
+  },''+ico('sign_out',20));
 }
 function openAuth(){om('authm');switchAuthTab('login');}
 
