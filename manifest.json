@@ -1,0 +1,21 @@
+{
+  "name": "Squadwise — AI Soccer Analytics",
+  "short_name": "Squadwise",
+  "description": "AI-powered soccer analytics platform for coaches. Track stats, get AI reports, watch drill videos.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#080f1e",
+  "theme_color": "#080f1e",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' fill='%23080f1e' rx='24'/><text y='140' x='20' font-size='130'>⚽</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["sports", "productivity"],
+  "screenshots": [],
+  "lang": "en"
+}

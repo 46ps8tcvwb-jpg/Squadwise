@@ -1,0 +1,1877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<!-- ═══ PRIMARY SEO ═══ -->
+<title>Squadwise — AI Soccer Analytics Platform for Coaches</title>
+<meta name="description" content="Squadwise is a free AI-powered soccer analytics platform for coaches. Track player stats, get Claude AI coaching reports, and watch recommended drill videos — all in one app."/>
+<meta name="keywords" content="soccer analytics, football analytics, soccer coaching app, player stats tracker, AI soccer coach, drill videos, football coaching platform"/>
+<meta name="robots" content="index, follow"/>
+<meta name="google-site-verification" content="M_xGGMvNNo6XSBQcZa0QhT5g8vdLLRf8BstpR23faRM" />
+<meta name="author" content="Squadwise"/>
+<link rel="canonical" href="https://squadwise.app/"/>
+
+<!-- ═══ OPEN GRAPH (Facebook, WhatsApp, Discord) ═══ -->
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://squadwise.app/"/>
+<meta property="og:title" content="Squadwise — AI Soccer Analytics for Coaches"/>
+<meta property="og:description" content="Track player metrics, get AI coaching reports powered by Claude, and watch drill videos tailored to each player's weaknesses."/>
+<meta property="og:image" content="https://squadwise.app/og-image.png"/>
+<meta property="og:site_name" content="Squadwise"/>
+
+<!-- ═══ TWITTER CARD ═══ -->
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Squadwise — AI Soccer Analytics for Coaches"/>
+<meta name="twitter:description" content="Free AI-powered soccer player tracker with drill videos. Built for coaches."/>
+<meta name="twitter:image" content="https://squadwise.app/og-image.png"/>
+
+<!-- ═══ PWA / INSTALLABLE APP ═══ -->
+<link rel="manifest" href="/manifest.json"/>
+<meta name="theme-color" content="#080f1e"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Squadwise"/>
+<link rel="apple-touch-icon" href="/icon-192.png"/>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚽</text></svg>"/>
+
+<!-- ═══ STRUCTURED DATA (Google Rich Results) ═══ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Squadwise",
+  "description": "AI-powered soccer analytics platform for coaches. Track player stats, get AI reports, watch drill videos.",
+  "url": "https://squadwise.app",
+  "applicationCategory": "SportsApplication",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "featureList": ["Player stats tracking","AI coaching analysis","Drill video recommendations","Team reports","Player comparison","CSV export"],
+  "screenshot": "https://squadwise.app/og-image.png",
+  "author": { "@type": "Organization", "name": "Squadwise" }
+}
+</script>
+
+<script src="https://js.stripe.com/v3/"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --pitch:#080f1e;--pitch2:#0b1525;--card:#111d30;--card2:#152033;--card3:#1a2840;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+  --green:#00e676;--green2:#00c853;--yellow:#ffd600;--red:#ff4444;--blue:#29b6f6;--orange:#ff9800;
+  --text:#e8edf5;--text2:rgba(232,237,245,0.7);--muted:rgba(232,237,245,0.38);
+  --sw:256px;--th:60px;--r:10px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Barlow',sans-serif;background:var(--pitch);color:var(--text);min-height:100vh;overflow-x:hidden}
+button,input,select,textarea{font-family:'Barlow',sans-serif}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:4px}
+
+.app{display:grid;grid-template-columns:var(--sw) 1fr;grid-template-rows:var(--th) 1fr;min-height:100vh}
+.sidebar{grid-row:1/-1;background:var(--pitch2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;width:var(--sw);height:100vh;overflow-y:auto;overflow-x:hidden;z-index:200;transition:transform .3s}
+.topbar{grid-column:2;background:var(--pitch2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;position:sticky;top:0;z-index:100;height:var(--th)}
+.content-area{grid-column:2;overflow-y:auto;overflow-x:hidden}
+
+/* sidebar */
+.sb-logo{padding:1.2rem 1.4rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.7rem;flex-shrink:0}
+.sb-logo-t{font-family:'Barlow Condensed',sans-serif;font-size:1.45rem;font-weight:800;letter-spacing:.04em;color:var(--green);line-height:1}
+.sb-logo-s{font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-top:1px}
+.sb-sec{padding:1rem 1.2rem .4rem;font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);flex-shrink:0}
+.nav-i{display:flex;align-items:center;gap:.7rem;padding:.75rem 1.2rem;cursor:pointer;transition:all .18s;border-left:2px solid transparent;font-size:.86rem;color:var(--muted);user-select:none;-webkit-tap-highlight-color:transparent}
+.nav-i:hover{background:rgba(0,230,118,.05);color:var(--text2);border-left-color:rgba(0,230,118,.3)}
+.nav-i.active{background:rgba(0,230,118,.1);border-left-color:var(--green);color:var(--green);font-weight:500}
+.ni{font-size:.95rem;width:1.1rem;text-align:center;flex-shrink:0}
+.sb-players{flex:1;overflow-y:auto;padding:.3rem .8rem .5rem}
+.pchip{display:flex;align-items:center;gap:.6rem;padding:.52rem .6rem;border-radius:7px;cursor:pointer;transition:all .18s;margin-bottom:.2rem;border:1px solid transparent}
+.pchip:hover{background:rgba(255,255,255,.04);border-color:var(--border)}
+.pchip.active{background:rgba(0,230,118,.1);border-color:rgba(0,230,118,.2)}
+.pav{width:1.9rem;height:1.9rem;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:.78rem;font-weight:700;flex-shrink:0}
+.pnm{font-size:.8rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
+.pps{font-size:.65rem;color:var(--muted);margin-top:1px}
+.prt{font-family:'Barlow Condensed',sans-serif;font-size:.82rem;font-weight:700;flex-shrink:0}
+.sb-add{display:flex;align-items:center;justify-content:center;gap:.5rem;padding:.6rem .8rem;border:1px dashed rgba(0,230,118,.3);border-radius:7px;cursor:pointer;color:var(--green);font-size:.8rem;transition:all .2s;width:100%;background:none;margin:.5rem 0}
+.sb-add:hover{background:rgba(0,230,118,.07);border-color:var(--green)}
+.sb-plan{margin:.5rem .8rem;padding:.6rem .8rem;border-radius:8px;background:rgba(255,214,0,.08);border:1px solid rgba(255,214,0,.2);cursor:pointer;transition:all .2s}
+.sb-plan:hover{background:rgba(255,214,0,.14)}
+.sb-plan.pro{background:rgba(0,230,118,.08);border-color:rgba(0,230,118,.2)}
+.sb-plan.pro:hover{background:rgba(0,230,118,.14)}
+.sb-pn{font-size:.72rem;font-weight:700;letter-spacing:.06em}
+.sb-ps{font-size:.62rem;color:var(--muted);margin-top:1px}
+.sb-foot{padding:.8rem 1.2rem;border-top:1px solid var(--border);flex-shrink:0;font-size:.62rem;color:var(--muted);line-height:1.5}
+
+/* topbar */
+.tb-l{display:flex;align-items:center;gap:.8rem}
+.hamburger{display:none;background:none;border:none;color:var(--text);font-size:1.3rem;cursor:pointer;padding:.3rem;line-height:1}
+.tb-title{font-family:'Barlow Condensed',sans-serif;font-size:1.25rem;font-weight:700;letter-spacing:.03em}
+.tb-r{display:flex;align-items:center;gap:.6rem}
+.tb-badge{background:rgba(0,230,118,.12);color:var(--green);padding:.25rem .7rem;border-radius:20px;font-size:.68rem;letter-spacing:.07em;font-weight:600;border:1px solid rgba(0,230,118,.2);white-space:nowrap}
+.tbtn{display:flex;align-items:center;gap:.4rem;padding:.42rem .9rem;border-radius:7px;font-size:.78rem;font-weight:600;letter-spacing:.04em;cursor:pointer;transition:all .2s;border:1px solid var(--border2);background:var(--card);color:var(--text2);white-space:nowrap}
+.tbtn:hover{background:var(--card2);color:var(--text)}
+.tbtn.pri{background:linear-gradient(135deg,#00e676,#00b0ff);color:#060e1c;border-color:transparent;font-weight:700}
+.tbtn.pri:hover{filter:brightness(1.1);transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,230,118,.3)}
+.tbtn:disabled{opacity:.45;cursor:not-allowed;transform:none!important;filter:none!important;box-shadow:none!important}
+
+/* page */
+.page{padding:1.6rem;max-width:1280px;animation:fi .22s ease}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r)}
+.cp{padding:1.4rem}
+.ctitle{font-family:'Barlow Condensed',sans-serif;font-size:.82rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:.5rem;margin-bottom:1.1rem}
+.ctitle .hl{color:var(--text)}
+
+/* player hero */
+.phero{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:1.6rem 2rem;margin-bottom:1.2rem;display:grid;grid-template-columns:auto 1fr auto;gap:1.5rem;align-items:center;position:relative;overflow:hidden}
+.phero::after{content:'';position:absolute;top:-60px;right:-60px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(0,230,118,.06) 0%,transparent 65%);pointer-events:none}
+.hav{width:4.5rem;height:4.5rem;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:1.7rem;font-weight:800;border:2px solid rgba(255,255,255,.1);flex-shrink:0;z-index:1}
+.hn{font-family:'Barlow Condensed',sans-serif;font-size:1.9rem;font-weight:800;letter-spacing:.02em;line-height:1;z-index:1}
+.hmeta{display:flex;flex-wrap:wrap;gap:1rem;margin-top:.5rem}
+.mtag{font-size:.72rem;color:var(--muted);display:flex;align-items:center;gap:.3rem}
+.hr{display:flex;flex-direction:column;align-items:center;gap:.3rem;z-index:1}
+.oring{position:relative;width:74px;height:74px}
+.oring svg{transform:rotate(-90deg)}
+.onum{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-size:1.5rem;font-weight:800;line-height:1}
+.osub{font-size:.6rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+.hact{display:flex;gap:.5rem;margin-top:.7rem;flex-wrap:wrap}
+.hact .tbtn{font-size:.72rem;padding:.35rem .8rem}
+
+/* stat grid */
+.sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.2rem}
+.scard{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:1.1rem 1.3rem;position:relative;overflow:hidden;transition:border-color .2s,transform .2s}
+.scard:hover{border-color:rgba(255,255,255,.12);transform:translateY(-2px)}
+.slbl{font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem}
+.sval{font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:700;line-height:1;margin-bottom:.2rem}
+.ssub{font-size:.72rem;color:var(--muted)}
+.sbdg{position:absolute;top:.9rem;right:.9rem;font-size:.65rem;padding:.18rem .5rem;border-radius:4px;font-weight:600}
+.bg{background:rgba(0,230,118,.14);color:var(--green)}
+.by{background:rgba(255,214,0,.14);color:var(--yellow)}
+.br{background:rgba(255,68,68,.14);color:var(--red)}
+.bb{background:rgba(41,182,246,.14);color:var(--blue)}
+
+/* layouts */
+.two-c{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-bottom:1.2rem}
+.three-c{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.2rem}
+
+/* radar/bars */
+.rw{display:flex;justify-content:center;padding:.5rem 0}
+.mbr{display:flex;align-items:center;gap:.8rem;margin-bottom:.85rem}
+.mbl{font-size:.78rem;width:100px;flex-shrink:0;color:var(--text2)}
+.mbt{flex:1;height:5px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden}
+.mbf{height:100%;border-radius:3px;transition:width .9s cubic-bezier(.4,0,.2,1)}
+.mbv{font-family:'Barlow Condensed',sans-serif;font-size:.85rem;font-weight:600;width:2.2rem;text-align:right}
+
+/* match table */
+.mt{width:100%;border-collapse:collapse}
+.mt th{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:.6rem .9rem;text-align:left;border-bottom:1px solid var(--border);font-weight:600}
+.mt td{padding:.72rem .9rem;border-bottom:1px solid rgba(255,255,255,.04);font-size:.82rem;vertical-align:middle}
+.mt tr:last-child td{border-bottom:none}
+.mt tbody tr:hover{background:rgba(255,255,255,.02)}
+.rp{font-family:'Barlow Condensed',sans-serif;font-size:.78rem;font-weight:700;padding:.15rem .5rem;border-radius:4px;display:inline-block}
+.rw2{background:rgba(0,230,118,.14);color:var(--green)}
+.rd2{background:rgba(255,214,0,.14);color:var(--yellow)}
+.rl{background:rgba(255,68,68,.14);color:var(--red)}
+.tdn{font-family:'Barlow Condensed',sans-serif;font-size:.95rem;font-weight:600;text-align:center}
+.tdm{color:var(--muted);font-size:.75rem}
+.tdd{background:none;border:none;color:var(--muted);cursor:pointer;padding:.2rem .4rem;border-radius:4px;transition:all .2s;font-size:.85rem}
+.tdd:hover{background:rgba(255,68,68,.15);color:var(--red)}
+
+/* ai panel */
+.aip{background:linear-gradient(135deg,rgba(0,230,118,.05),rgba(0,176,255,.03));border:1px solid rgba(0,230,118,.18);border-radius:var(--r);padding:1.5rem;margin-bottom:1.2rem}
+.aih{display:flex;align-items:center;gap:.8rem;margin-bottom:1rem}
+.aic{width:1.9rem;height:1.9rem;background:linear-gradient(135deg,#00e676,#00b0ff);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
+.ait{font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:700;letter-spacing:.04em}
+.ais{font-size:.7rem;color:var(--muted);margin-top:1px}
+.aib{font-size:.85rem;line-height:1.8;color:var(--text2);white-space:pre-wrap;word-break:break-word}
+.aib.ld{color:var(--muted);font-style:italic;animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
+.aie{display:flex;flex-direction:column;align-items:center;gap:.7rem;padding:1.5rem 0;text-align:center;color:var(--muted);font-size:.83rem}
+
+/* team cards */
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;margin-bottom:1.2rem}
+.tcard{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:1.2rem;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.tcard:hover{border-color:rgba(255,255,255,.14);transform:translateY(-2px);background:var(--card2)}
+.tc-top{display:flex;align-items:center;gap:.8rem;margin-bottom:1rem}
+.tc-n{font-family:'Barlow Condensed',sans-serif;font-size:1.05rem;font-weight:700;line-height:1.1}
+.tc-p{font-size:.68rem;color:var(--muted);margin-top:2px}
+.tc-s{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem}
+.tci{text-align:center}
+.tcv{font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:700;line-height:1}
+.tcl{font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:2px}
+
+/* compare */
+.cmpt{width:100%;border-collapse:collapse;font-size:.83rem}
+.cmpt th{font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding:.6rem 1rem;text-align:left;border-bottom:1px solid var(--border)}
+.cmpt td{padding:.7rem 1rem;border-bottom:1px solid rgba(255,255,255,.04)}
+.cmpt tr:last-child td{border-bottom:none}
+.cmpt tbody tr:hover{background:rgba(255,255,255,.02)}
+.cb{color:var(--green);font-weight:700}
+.cw{color:var(--red)}
+
+/* forms */
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+.fr.t{grid-template-columns:1fr 1fr 1fr}
+.fr.o{grid-template-columns:1fr}
+.fg{display:flex;flex-direction:column;gap:.35rem}
+.fl{font-size:.65rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.fi,.fs{background:rgba(255,255,255,.05);border:1px solid var(--border2);border-radius:6px;padding:.6rem .85rem;color:var(--text);font-size:.86rem;outline:none;transition:border-color .2s,background .2s;width:100%;-webkit-appearance:none}
+.fi:focus,.fs:focus{border-color:rgba(0,230,118,.45);background:rgba(255,255,255,.07)}
+.fi::placeholder{color:var(--muted)}
+.fs option{background:#0e1c30;color:var(--text)}
+
+/* modal */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;padding:1rem}
+.ov.open{opacity:1;pointer-events:all}
+.modal{background:var(--card2);border:1px solid var(--border2);border-radius:14px;padding:1.8rem;width:520px;max-width:100%;max-height:90vh;overflow-y:auto;transform:translateY(16px) scale(.98);transition:transform .25s;box-shadow:0 24px 60px rgba(0,0,0,.5)}
+.ov.open .modal{transform:translateY(0) scale(1)}
+.mtitle{font-family:'Barlow Condensed',sans-serif;font-size:1.35rem;font-weight:800;letter-spacing:.03em;margin-bottom:1.4rem;display:flex;align-items:center;gap:.5rem}
+.mact{display:flex;gap:.7rem;justify-content:flex-end;margin-top:1.4rem;padding-top:1rem;border-top:1px solid var(--border)}
+.bcan{background:rgba(255,255,255,.07);color:var(--text2);border:1px solid var(--border);padding:.55rem 1.1rem;border-radius:6px;cursor:pointer;font-size:.83rem;transition:all .2s}
+.bcan:hover{background:rgba(255,255,255,.11)}
+.bpri{background:var(--green);color:#060e1c;border:none;padding:.55rem 1.3rem;border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-size:.95rem;font-weight:800;letter-spacing:.05em;cursor:pointer;transition:all .2s}
+.bpri:hover{background:var(--green2);transform:translateY(-1px)}
+.bdng{background:rgba(255,68,68,.12);color:var(--red);border:1px solid rgba(255,68,68,.2);padding:.55rem 1.1rem;border-radius:6px;cursor:pointer;font-size:.83rem;transition:all .2s}
+.bdng:hover{background:rgba(255,68,68,.22)}
+
+/* toast */
+.tc2{position:fixed;top:1rem;right:1rem;z-index:9999;display:flex;flex-direction:column;gap:.5rem;pointer-events:none}
+.toast2{background:var(--card3);border:1px solid var(--border2);border-radius:8px;padding:.7rem 1rem;font-size:.82rem;display:flex;align-items:center;gap:.6rem;animation:tin .3s ease,tout .3s ease 2.7s forwards;box-shadow:0 8px 24px rgba(0,0,0,.4);min-width:220px;max-width:320px}
+.toast2.s{border-left:3px solid var(--green)}
+.toast2.e{border-left:3px solid var(--red)}
+.toast2.i{border-left:3px solid var(--blue)}
+@keyframes tin{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes tout{from{opacity:1}to{opacity:0;transform:translateX(20px)}}
+
+/* empty */
+.empty2{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:55vh;text-align:center;gap:.8rem}
+.ei{font-size:3.5rem;opacity:.2;margin-bottom:.3rem}
+.et{font-family:'Barlow Condensed',sans-serif;font-size:1.6rem;font-weight:700;color:var(--text2)}
+.es{font-size:.86rem;color:var(--muted);max-width:300px;line-height:1.65}
+
+/* sparkline */
+.spk{display:flex;align-items:flex-end;gap:3px;height:40px}
+.spkb{flex:1;border-radius:2px 2px 0 0;min-height:4px}
+
+/* pricing */
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-bottom:1.5rem}
+.pcard{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:1.6rem;position:relative;transition:all .2s}
+.pcard.feat{background:linear-gradient(135deg,rgba(0,230,118,.08),rgba(0,176,255,.05));border-color:rgba(0,230,118,.3)}
+.pcard:hover{transform:translateY(-3px);border-color:var(--border2)}
+.pbadge{position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#00e676,#00b0ff);color:#060e1c;font-size:.65rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .8rem;border-radius:0 0 6px 6px}
+.pplan{font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem}
+.pamt{font-family:'Barlow Condensed',sans-serif;font-size:2.8rem;font-weight:800;line-height:1;color:var(--text)}
+.pamt sup{font-size:1.2rem;vertical-align:super}
+.pper{font-size:.75rem;color:var(--muted);margin-bottom:1.2rem}
+.pfeat{list-style:none;margin-bottom:1.5rem}
+.pfeat li{display:flex;align-items:center;gap:.6rem;font-size:.83rem;color:var(--text2);padding:.3rem 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.pfeat li:last-child{border-bottom:none}
+.pfeat li::before{content:'✓';color:var(--green);font-size:.7rem;flex-shrink:0}
+.pfeat li.no::before{content:'✕';color:var(--muted)}
+.pfeat li.no{color:var(--muted)}
+.pbtn{display:block;width:100%;padding:.7rem;border-radius:7px;font-family:'Barlow Condensed',sans-serif;font-size:.95rem;font-weight:800;letter-spacing:.06em;cursor:pointer;transition:all .2s;text-align:center;border:1px solid var(--border2);background:var(--card3);color:var(--text)}
+.pbtn:hover{background:var(--card2);border-color:var(--green);color:var(--green)}
+.pbtn.fb{background:linear-gradient(135deg,#00e676,#00b0ff);color:#060e1c;border:none}
+.pbtn.fb:hover{filter:brightness(1.1);transform:translateY(-1px)}
+
+/* api banner */
+.abanner{background:linear-gradient(135deg,rgba(255,152,0,.08),rgba(255,214,0,.04));border:1px solid rgba(255,152,0,.25);border-radius:var(--r);padding:1.2rem 1.5rem;margin-bottom:1.2rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.abanner.ok{background:linear-gradient(135deg,rgba(0,230,118,.06),rgba(0,176,255,.03));border-color:rgba(0,230,118,.2)}
+.abanner.warn{background:linear-gradient(135deg,rgba(255,214,0,.07),rgba(255,152,0,.04));border-color:rgba(255,214,0,.25)}
+.abt{font-size:.85rem;font-weight:600;margin-bottom:.2rem}
+.abs2{font-size:.72rem;color:var(--muted)}
+
+/* mobile overlay */
+.sbov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:199}
+
+@media(max-width:780px){
+  .app{grid-template-columns:1fr;grid-template-rows:var(--th) 1fr}
+  .sidebar{transform:translateX(calc(-1 * var(--sw)));box-shadow:4px 0 24px rgba(0,0,0,.4)}
+  .sidebar.open{transform:translateX(0)}
+  .sbov.open{display:block}
+  .topbar,.content-area{grid-column:1}
+  .hamburger{display:block}
+  .sgrid{grid-template-columns:repeat(2,1fr)}
+  .two-c,.three-c,.pgrid{grid-template-columns:1fr}
+  .phero{grid-template-columns:auto 1fr;gap:.8rem}
+  .hr{grid-column:1/-1;flex-direction:row;align-items:center;gap:.8rem}
+  .fr,.fr.t{grid-template-columns:1fr}
+  .page{padding:.9rem}
+  .mt{font-size:.76rem}
+  .tgrid{grid-template-columns:1fr 1fr}
+  .tb-r .tbtn:not(.pri){display:none}
+  .modal{padding:1.4rem;margin:1rem;max-height:90vh;overflow-y:auto}
+  .ov{align-items:flex-end;padding-bottom:0}
+  .modal{border-radius:16px 16px 0 0;margin:0;width:100%;max-width:100%}
+  .pgrid{gap:.7rem}
+  .pcard{padding:1.2rem}
+  .mact{flex-direction:column-reverse;gap:.5rem}
+  .mact button{width:100%}
+  .hav{width:3rem!important;height:3rem!important;font-size:1.1rem!important}
+  .hn{font-size:1.2rem}
+  .hmeta{gap:.3rem}
+  .scard{padding:1rem}
+  .sval{font-size:1.6rem}
+  .abanner{padding:.9rem 1rem;gap:.7rem}
+  .abanner .tbtn{flex-shrink:0;font-size:.7rem;padding:.3rem .6rem}
+  #trial-banner{bottom:.5rem;right:.5rem;left:.5rem;right:.5rem;font-size:.72rem}
+}
+@media(max-width:480px){
+  .sgrid{grid-template-columns:1fr 1fr}
+  .tgrid{grid-template-columns:1fr}
+  .page{padding:.75rem}
+  .topbar{padding:0 .75rem}
+  .tb-title{font-size:.95rem}
+  .tb-sub{font-size:.65rem}
+  .hmeta{flex-wrap:wrap}
+  .mtag{font-size:.62rem;padding:.15rem .4rem}
+  .hact{flex-wrap:wrap;gap:.4rem}
+  .phero{grid-template-columns:1fr;text-align:center}
+  .hav{margin:0 auto}
+  .drill-grid{grid-template-columns:1fr}
+  .stat-row{flex-direction:column;gap:.4rem}
+  .empty2{padding:2rem 1rem}
+}
+/* ── DRILL CARDS ── */
+.drill-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;margin-top:.5rem}
+.drill-card{background:var(--card2);border:1px solid var(--border2);border-radius:10px;overflow:hidden;transition:transform .2s,border-color .2s;display:flex;flex-direction:column}
+.drill-card:hover{transform:translateY(-3px);border-color:rgba(0,230,118,.35);box-shadow:0 8px 24px rgba(0,0,0,.3)}
+/* clickable thumbnail area */
+a.drill-thumb{position:relative;display:flex;align-items:center;justify-content:center;width:100%;height:160px;overflow:hidden;text-decoration:none;cursor:pointer;flex-direction:column;border-bottom:1px solid var(--border)}
+.drill-thumb-bg{position:absolute;inset:0;background:linear-gradient(135deg,#070d1a 0%,#0d1c33 50%,#071120 100%)}
+.drill-field-lines{position:absolute;inset:0;opacity:.12;background:
+  repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(255,255,255,.5) 40px),
+  repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(255,255,255,.5) 40px)}
+.drill-thumb-overlay{position:absolute;inset:0;background:rgba(0,0,0,.25);transition:background .2s}
+.drill-card:hover .drill-thumb-overlay{background:rgba(0,0,0,.1)}
+.drill-cat-badge{position:absolute;top:.6rem;left:.6rem;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);color:var(--text2);font-size:.62rem;font-weight:700;padding:.22rem .5rem;border-radius:5px;letter-spacing:.05em;z-index:3;border:1px solid rgba(255,255,255,.1)}
+.drill-play-wrap{display:flex;flex-direction:column;align-items:center;gap:.5rem;z-index:3;pointer-events:none}
+.drill-play{width:56px;height:56px;border-radius:50%;background:rgba(0,230,118,.88);display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:#060e1c;transition:all .22s;padding-left:5px;font-weight:900;box-shadow:0 4px 20px rgba(0,230,118,.3)}
+.drill-card:hover .drill-play{transform:scale(1.1);background:rgba(0,230,118,1);box-shadow:0 6px 28px rgba(0,230,118,.5)}
+.drill-play-label{font-size:.68rem;color:rgba(255,255,255,.75);letter-spacing:.07em;font-weight:500}
+.drill-yt-badge{position:absolute;bottom:.55rem;right:.55rem;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);color:#fff;font-size:.62rem;font-weight:700;padding:.22rem .5rem;border-radius:5px;letter-spacing:.04em;z-index:3;display:flex;align-items:center;gap:.3rem;border:1px solid rgba(255,255,255,.1)}
+/* info section */
+.drill-info{padding:1rem 1.1rem;display:flex;flex-direction:column;flex:1}
+.drill-name{font-family:'Barlow Condensed',sans-serif;font-size:1.05rem;font-weight:800;letter-spacing:.02em;margin-bottom:.4rem;color:var(--text);line-height:1.2}
+.drill-why{font-size:.78rem;color:var(--text2);line-height:1.6;flex:1}
+a.drill-watch-btn{display:inline-flex;align-items:center;gap:.5rem;margin-top:.8rem;padding:.45rem .9rem;background:rgba(255,0,0,.12);border:1px solid rgba(255,0,0,.3);border-radius:7px;color:#ff6b6b;font-size:.75rem;font-weight:700;letter-spacing:.04em;text-decoration:none;transition:all .2s;cursor:pointer;width:fit-content}
+a.drill-watch-btn:hover{background:rgba(255,0,0,.22);border-color:rgba(255,0,0,.5);color:#ff4444;transform:translateX(2px)}
+.drill-section{margin-top:1.4rem;padding-top:1.2rem;border-top:1px solid var(--border)}
+.drill-section-title{font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:800;letter-spacing:.1em;color:var(--green);text-transform:uppercase;display:flex;align-items:center;gap:.5rem;margin-bottom:1rem}
+@media(max-width:600px){.drill-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-logo">
+      <span style="font-size:1.5rem">⚽</span>
+      <div><div class="sb-logo-t">Squadwise</div><div class="sb-logo-s">Coach Analytics</div></div>
+    </div>
+    <div>
+      <div class="sb-sec">Menu</div>
+      <div class="nav-i active" id="nav-team" onclick="go('team')"><span class="ni">🏟️</span>Team Overview</div>
+      <div class="nav-i" id="nav-player" onclick="go('player')" style="display:none"><span class="ni">👤</span>Player Profile</div>
+      <div class="nav-i" id="nav-compare" onclick="go('compare')"><span class="ni">⚖️</span>Compare Players</div>
+      <div class="nav-i" id="nav-log" onclick="go('log')"><span class="ni">📝</span>Log Match</div>
+      <div class="nav-i" id="nav-settings" onclick="go('settings')"><span class="ni">⚙️</span>Settings</div>
+    </div>
+    <div class="sb-sec">Squad (<span id="sbc">0</span>)</div>
+    <div class="sb-players" id="sbp"></div>
+    <div style="padding:0 .8rem .3rem"><button class="sb-add" onclick="openAddP()">＋ Add Player</button></div>
+    <div class="sb-plan" id="sbplan" onclick="go('settings')">
+      <div class="sb-pn" id="sbpn">⚡ FREE PLAN</div>
+      <div class="sb-ps" id="sbps">Upgrade for AI features</div>
+    </div>
+    <div class="sb-foot">Squadwise v3.0 · Data saved locally<br/>AI powered by Claude · Anthropic</div>
+  </aside>
+
+  <header class="topbar">
+    <div class="tb-l">
+      <button class="hamburger" onclick="toggleSB()">☰</button>
+      <div class="tb-title" id="tbt">Team Overview</div>
+    </div>
+    <div class="tb-r" id="tbr">
+      <div class="tb-badge" id="tbb">2024–25</div>
+      <button class="tbtn" onclick="exportCSV()">⬇ Export</button>
+      <button class="tbtn pri" id="aiBtn" onclick="runAI()">🤖 AI Report</button>
+    </div>
+  </header>
+
+  <main class="content-area" id="ca"></main>
+</div>
+
+<div class="sbov" id="sbov" onclick="toggleSB()"></div>
+<div class="tc2" id="tc"></div>
+
+<!-- ADD/EDIT PLAYER -->
+<div class="ov" id="pmov">
+  <div class="modal">
+    <div class="mtitle" id="pmt">➕ Add Player</div>
+    <div class="fr o"><div class="fg"><label class="fl">Full Name *</label><input class="fi" id="pm-n" placeholder="e.g. Marcus Thompson" maxlength="50"/></div></div>
+    <div class="fr t">
+      <div class="fg"><label class="fl">Jersey #</label><input class="fi" id="pm-nb" type="number" min="1" max="99" placeholder="10"/></div>
+      <div class="fg"><label class="fl">Age</label><input class="fi" id="pm-a" type="number" min="14" max="45" placeholder="20"/></div>
+      <div class="fg"><label class="fl">Foot</label><select class="fs" id="pm-f"><option>Right</option><option>Left</option><option>Both</option></select></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label class="fl">Position</label>
+        <select class="fs" id="pm-p"><option>Goalkeeper</option><option>Centre-Back</option><option>Full-Back</option><option>Defensive Mid</option><option>Central Mid</option><option>Attacking Mid</option><option>Winger</option><option>Striker</option></select>
+      </div>
+      <div class="fg"><label class="fl">Nationality</label><input class="fi" id="pm-na" placeholder="e.g. Brazilian" maxlength="30"/></div>
+    </div>
+    <div class="fr o"><div class="fg"><label class="fl">Coach Notes</label><input class="fi" id="pm-no" placeholder="Notes about this player..." maxlength="200"/></div></div>
+    <div class="mact">
+      <button class="bcan" onclick="cm('pmov')">Cancel</button>
+      <button class="bdng" id="pm-del" onclick="delP()" style="display:none">🗑 Remove</button>
+      <button class="bpri" onclick="saveP()">Save Player</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOG MATCH -->
+<div class="ov" id="mmov">
+  <div class="modal">
+    <div class="mtitle">📝 Log Match</div>
+    <div class="fr">
+      <div class="fg"><label class="fl">Player *</label><select class="fs" id="mm-pl"></select></div>
+      <div class="fg"><label class="fl">Date *</label><input class="fi" id="mm-d" type="date"/></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label class="fl">Opponent *</label><input class="fi" id="mm-o" placeholder="e.g. Riverside FC" maxlength="40"/></div>
+      <div class="fg"><label class="fl">Result</label><select class="fs" id="mm-r"><option value="W">Win</option><option value="D">Draw</option><option value="L">Loss</option></select></div>
+    </div>
+    <div style="font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.7rem;padding-top:.5rem;border-top:1px solid var(--border)">Stats</div>
+    <div class="fr t">
+      <div class="fg"><label class="fl">⚽ Goals</label><input class="fi" id="mm-g" type="number" min="0" value="0"/></div>
+      <div class="fg"><label class="fl">🎯 Assists</label><input class="fi" id="mm-as" type="number" min="0" value="0"/></div>
+      <div class="fg"><label class="fl">🔫 Shots</label><input class="fi" id="mm-sh" type="number" min="0" value="0"/></div>
+    </div>
+    <div class="fr t">
+      <div class="fg"><label class="fl">📊 Passes</label><input class="fi" id="mm-pa" type="number" min="0" value="0"/></div>
+      <div class="fg"><label class="fl">✅ Pass Acc%</label><input class="fi" id="mm-pp" type="number" min="0" max="100" value="75"/></div>
+      <div class="fg"><label class="fl">💪 Tackles</label><input class="fi" id="mm-t" type="number" min="0" value="0"/></div>
+    </div>
+    <div class="fr t">
+      <div class="fg"><label class="fl">🏃 Distance km</label><input class="fi" id="mm-di" type="number" min="0" step=".1" value="9.0"/></div>
+      <div class="fg"><label class="fl">⏱ Minutes</label><input class="fi" id="mm-m" type="number" min="1" max="120" value="90"/></div>
+      <div class="fg"><label class="fl">⭐ Rating /10</label><input class="fi" id="mm-ra" type="number" min="0" max="10" step=".1" value="7.0"/></div>
+    </div>
+    <div class="fr o"><div class="fg"><label class="fl">Notes</label><input class="fi" id="mm-n" placeholder="Optional..." maxlength="200"/></div></div>
+    <div class="mact">
+      <button class="bcan" onclick="cm('mmov')">Cancel</button>
+      <button class="bpri" onclick="saveM()">✓ Save Match</button>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- API KEY SETUP -->
+<div class="ov" id="akim">
+  <div class="modal" style="max-width:500px">
+    <div class="mtitle">🤖 One Last Step to Activate AI</div>
+    <p style="font-size:.85rem;color:var(--text2);line-height:1.75;margin-bottom:1.3rem">
+      Squadwise needs a free <strong>Anthropic API key</strong> to power the AI coaching reports. It takes 2 minutes to set up and costs you about <strong style="color:var(--green)">$0.01 per report</strong>.
+    </p>
+
+    <div style="background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.2);border-radius:10px;padding:1rem 1.1rem;margin-bottom:1.2rem">
+      <div style="font-size:.78rem;font-weight:600;color:var(--green);margin-bottom:.6rem">📋 How to get your free key (2 min):</div>
+      <div style="font-size:.82rem;color:var(--text2);line-height:2">
+        <div>1️⃣ Go to <a href="https://console.anthropic.com" target="_blank" style="color:var(--blue);font-weight:600">console.anthropic.com</a> and sign up free</div>
+        <div>2️⃣ Click <strong style="color:var(--text)">API Keys</strong> in the left sidebar</div>
+        <div>3️⃣ Click <strong style="color:var(--text)">Create Key</strong> → copy the key</div>
+        <div>4️⃣ Paste it below and click Save</div>
+      </div>
+      <div style="font-size:.73rem;color:var(--muted);margin-top:.6rem">✅ New accounts get free starter credits. Your key is stored only in your browser.</div>
+    </div>
+
+    <div class="fg" style="margin-bottom:1.2rem">
+      <label class="fl">Paste your API key here</label>
+      <input class="fi" id="aki" type="password" placeholder="sk-ant-api03-..." autocomplete="off" style="font-family:monospace;font-size:.85rem"/>
+    </div>
+    <div class="mact">
+      <button class="bcan" onclick="cm('akim')">Skip for now</button>
+      <button class="bpri" onclick="saveApiKey()">✓ Save & Activate AI</button>
+    </div>
+  </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="ov" id="authm" style="z-index:10000">
+  <div class="modal" style="max-width:420px" onclick="event.stopPropagation()">
+    <div style="display:flex;gap:0;margin-bottom:1.5rem;background:var(--card2);border-radius:8px;padding:.2rem">
+      <button id="auth-tab-login" onclick="switchAuthTab('login')" style="flex:1;padding:.55rem;border:none;border-radius:6px;font-size:.85rem;font-weight:600;cursor:pointer;background:var(--green);color:#080f1e;transition:all .2s">Sign In</button>
+      <button id="auth-tab-signup" onclick="switchAuthTab('signup')" style="flex:1;padding:.55rem;border:none;border-radius:6px;font-size:.85rem;font-weight:500;cursor:pointer;background:transparent;color:var(--muted);transition:all .2s">Create Account</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div id="auth-login">
+      <div class="mtitle" style="margin-bottom:.3rem">Welcome back</div>
+      <p style="font-size:.82rem;color:var(--muted);margin-bottom:1.2rem">Sign in to access your squad data</p>
+      <div class="fg" style="margin-bottom:.8rem"><label class="fl">Email</label><input class="fi" id="auth-email" type="email" placeholder="coach@example.com" autocomplete="email"/></div>
+      <div class="fg" style="margin-bottom:.4rem"><label class="fl">Password</label><input class="fi" id="auth-pass" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')signIn()"/></div>
+      <div style="text-align:right;margin-bottom:1.1rem"><button onclick="forgotPassword()" style="background:none;border:none;color:var(--blue);font-size:.75rem;cursor:pointer">Forgot password?</button></div>
+      <button class="bpri" style="width:100%;margin-bottom:.7rem" onclick="signIn()">Sign In →</button>
+      <div id="auth-err" style="color:var(--red);font-size:.78rem;text-align:center;display:none;margin-bottom:.5rem"></div>
+      <div style="text-align:center;font-size:.75rem;color:var(--muted)">No account? <button onclick="switchAuthTab('signup')" style="background:none;border:none;color:var(--green);cursor:pointer;font-size:.75rem">Create one free</button></div>
+    </div>
+
+    <!-- SIGNUP -->
+    <div id="auth-signup" style="display:none">
+      <div class="mtitle" style="margin-bottom:.3rem">Create your account</div>
+      <p style="font-size:.82rem;color:var(--muted);margin-bottom:1.2rem">Free to start · 7-day Pro trial included</p>
+      <div class="fg" style="margin-bottom:.8rem"><label class="fl">Email</label><input class="fi" id="auth-email2" type="email" placeholder="coach@example.com" autocomplete="email"/></div>
+      <div class="fg" style="margin-bottom:.8rem"><label class="fl">Password</label><input class="fi" id="auth-pass2" type="password" placeholder="Min 6 characters" autocomplete="new-password" onkeydown="if(event.key==='Enter')signUp()"/></div>
+      <div class="fg" style="margin-bottom:1.1rem"><label class="fl">Team Name</label><input class="fi" id="auth-team" type="text" placeholder="e.g. FC Northgate U16" maxlength="40" onkeydown="if(event.key==='Enter')signUp()"/></div>
+      <button class="bpri" style="width:100%;margin-bottom:.7rem" onclick="signUp()">Create Account →</button>
+      <div id="auth-err2" style="color:var(--red);font-size:.78rem;text-align:center;display:none;margin-bottom:.5rem"></div>
+      <div style="text-align:center;font-size:.75rem;color:var(--muted)">Already have an account? <button onclick="switchAuthTab('login')" style="background:none;border:none;color:var(--green);cursor:pointer;font-size:.75rem">Sign in</button></div>
+    </div>
+
+    <!-- LOADING -->
+    <div id="auth-loading" style="display:none;text-align:center;padding:1rem 0">
+      <div style="font-size:1.5rem;margin-bottom:.5rem">⏳</div>
+      <div style="font-size:.85rem;color:var(--muted)" id="auth-loading-msg">Signing in...</div>
+    </div>
+  </div>
+</div>
+
+<!-- PAYWALL -->
+<div class="ov" id="pwm" style="z-index:9999">
+  <div class="modal" style="max-width:520px;text-align:center;padding:2rem 2rem 1.5rem">
+    <div style="display:inline-flex;align-items:center;justify-content:center;width:4rem;height:4rem;border-radius:50%;background:linear-gradient(135deg,rgba(0,230,118,.15),rgba(41,182,246,.1));border:1px solid rgba(0,230,118,.3);font-size:1.8rem;margin-bottom:1rem">⚽</div>
+    <div style="font-size:1.35rem;font-weight:700;margin-bottom:.4rem;font-family:'Barlow Condensed',sans-serif;letter-spacing:.02em">Unlock Squadwise Pro</div>
+    <p style="font-size:.85rem;color:var(--text2);line-height:1.75;margin-bottom:1.4rem">Start free for 7 days. Then just <strong style="color:var(--green)">$12/month</strong>.<br/>Cancel anytime — no questions asked.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin-bottom:1.4rem;text-align:left">
+      <div style="background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.15);border-radius:8px;padding:.8rem .9rem;font-size:.8rem;color:var(--text2);display:flex;gap:.6rem;align-items:flex-start"><span style="font-size:1rem;margin-top:.05rem">🤖</span><div><div style="font-weight:600;color:var(--text);margin-bottom:.15rem">AI Coaching Reports</div>Deep analysis on every player & your full squad</div></div>
+      <div style="background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.15);border-radius:8px;padding:.8rem .9rem;font-size:.8rem;color:var(--text2);display:flex;gap:.6rem;align-items:flex-start"><span style="font-size:1rem;margin-top:.05rem">🎬</span><div><div style="font-weight:600;color:var(--text);margin-bottom:.15rem">Drill Videos</div>AI-picked training drills for each player's weaknesses</div></div>
+      <div style="background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.15);border-radius:8px;padding:.8rem .9rem;font-size:.8rem;color:var(--text2);display:flex;gap:.6rem;align-items:flex-start"><span style="font-size:1rem;margin-top:.05rem">⚖️</span><div><div style="font-weight:600;color:var(--text);margin-bottom:.15rem">Player Comparison</div>Side-by-side stats across your entire squad</div></div>
+      <div style="background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.15);border-radius:8px;padding:.8rem .9rem;font-size:.8rem;color:var(--text2);display:flex;gap:.6rem;align-items:flex-start"><span style="font-size:1rem;margin-top:.05rem">📤</span><div><div style="font-weight:600;color:var(--text);margin-bottom:.15rem">CSV Export</div>Download all stats for your own records</div></div>
+    </div>
+    <button class="bpri" style="width:100%;padding:1rem;font-size:1rem;margin-bottom:.7rem;border-radius:10px;letter-spacing:.02em" onclick="startCheckout()">🚀 Start 7-Day Free Trial</button>
+    <div style="font-size:.71rem;color:var(--muted)">No charge today · $12/month after trial · Cancel anytime</div>
+    <div id="pwm-err" style="color:var(--red);font-size:.8rem;margin-top:.8rem;display:none"></div>
+    <button onclick="cm('pwm')" style="background:none;border:none;color:var(--muted);font-size:.75rem;cursor:pointer;margin-top:.8rem;padding:.3rem">Not now</button>
+  </div>
+</div>
+
+<!-- SUBSCRIPTION -->
+<div class="ov" id="subm">
+  <div class="modal" style="width:680px;max-width:100%">
+    <div class="mtitle">⚡ Choose Your Plan</div>
+    <p style="font-size:.83rem;color:var(--muted);margin-bottom:1.5rem">Upgrade to Pro to unlock AI features and advanced tools.</p>
+    <div class="pgrid">
+      <div class="pcard">
+        <div class="pplan">Free</div>
+        <div class="pamt"><sup>$</sup>0</div>
+        <div class="pper">forever</div>
+        <ul class="pfeat">
+          <li>Up to 5 players</li>
+          <li>Match logging</li>
+          <li>Basic stats &amp; charts</li>
+          <li style="color:var(--muted);text-decoration:line-through">AI coaching reports</li>
+          <li style="color:var(--muted);text-decoration:line-through">Drill video recommendations</li>
+          <li style="color:var(--muted);text-decoration:line-through">Player comparison</li>
+          <li style="color:var(--muted);text-decoration:line-through">CSV export</li>
+        </ul>
+        <button class="pbtn" onclick="cm('subm')">Continue Free</button>
+      </div>
+      <div class="pcard feat">
+        <div class="pbadge">⭐ Recommended</div>
+        <div class="pplan">Pro Coach</div>
+        <div class="pamt"><sup>$</sup>12</div>
+        <div class="pper">per month · 7-day free trial</div>
+        <ul class="pfeat">
+          <li>Unlimited players</li>
+          <li>Match logging</li>
+          <li>Full stats, radar &amp; trends</li>
+          <li>🤖 AI player reports</li>
+          <li>🎬 Drill video recommendations</li>
+          <li>⚖️ Player comparison tool</li>
+          <li>📤 CSV export</li>
+        </ul>
+        <button class="pbtn fb" onclick="startCheckout()">🚀 Start Free Trial</button>
+      </div>
+      <div class="pcard">
+        <div class="pplan">Club</div>
+        <div class="pamt"><sup>$</sup>29</div>
+        <div class="pper">per month · coming soon</div>
+        <ul class="pfeat">
+          <li>Everything in Pro</li>
+          <li>Multiple team rosters</li>
+          <li>5 coach accounts</li>
+          <li>Priority support</li>
+          <li>Early access to new features</li>
+        </ul>
+        <button class="pbtn" style="opacity:.5;cursor:not-allowed">Coming Soon</button>
+      </div>
+    </div>
+    <div style="text-align:center;font-size:.72rem;color:var(--muted)">💳 Secure payments via Stripe · Cancel anytime · 7-day free trial</div>
+    <div class="mact" style="justify-content:center;border-top:none;padding-top:.5rem">
+      <button class="bcan" onclick="cm('subm')">Maybe Later</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── STATE ──
+const COLORS=['#00e676','#29b6f6','#ffd600','#ff9800','#e040fb','#ff4081','#69f0ae','#40c4ff','#ffab40','#b388ff'];
+const SK='squadwise_v3';
+let S={players:[],season:'2024–25',teamName:'My Team',selectedId:null,view:'team',editPid:null,plan:'free',apiKey:'',cp1:null,cp2:null,trialStart:null,subStatus:'trial',customerId:'',email:''};
+let SUPA_USER=null; // current Supabase user
+let SUPA_CLIENT=null; // Supabase client instance
+
+// ── SUPABASE INIT ──
+const SUPA_URL='https://wtpvdyeweqxrbvqywecx.supabase.co';
+const SUPA_KEY='sb_publishable_dTmGkLDWqHHqFcN7NHRnTw_YmyB-qvd';
+function initSupabase(){
+  try{
+    SUPA_CLIENT=supabase.createClient(SUPA_URL,SUPA_KEY);
+    // Listen for auth state changes
+    SUPA_CLIENT.auth.onAuthStateChange(async(event,session)=>{
+      if(event==='SIGNED_IN'&&session){
+        SUPA_USER=session.user;
+        await loadCloudData();
+        cm('authm');
+        render();
+        checkPaywall();
+        showTrialBanner();
+      } else if(event==='SIGNED_OUT'){
+        SUPA_USER=null;
+        S={...S,players:[],subStatus:'trial',trialStart:Date.now(),customerId:'',email:''};
+        seed();
+        render();
+        om('authm');
+      }
+    });
+  }catch(e){console.warn('Supabase init failed',e);}
+}
+
+function save(){
+  try{localStorage.setItem(SK,JSON.stringify(S));}catch(e){}
+  // Sync to cloud if logged in (debounced)
+  if(SUPA_USER){ clearTimeout(save._t); save._t=setTimeout(saveCloudData,1500); }
+}
+function load(){
+  try{const d=localStorage.getItem(SK);if(d){const p=JSON.parse(d);S={...S,...p};}}catch(e){}
+  if(!S.players.length)seed();
+  S.players.forEach(p=>p.matches.forEach(m=>{if(!m.id)m.id=Date.now()+Math.random();}));
+  // Load user API key from separate localStorage key
+  try{S.userApiKey=localStorage.getItem('squadwise_apikey')||'';}catch(e){S.userApiKey='';}
+  // Init trial start date if first visit
+  if(!S.trialStart){S.trialStart=Date.now();save();}
+}
+// ── CLOUD DATA SYNC ──
+async function saveCloudData(){
+  if(!SUPA_CLIENT||!SUPA_USER)return;
+  try{
+    const data={
+      user_id:SUPA_USER.id,
+      team_name:S.teamName,
+      season:S.season,
+      players:JSON.stringify(S.players),
+      sub_status:S.subStatus,
+      customer_id:S.customerId,
+      trial_start:S.trialStart,
+      updated_at:new Date().toISOString()
+    };
+    await SUPA_CLIENT.from('coach_data').upsert(data,{onConflict:'user_id'});
+  }catch(e){console.warn('Cloud save failed',e);}
+}
+async function loadCloudData(){
+  if(!SUPA_CLIENT||!SUPA_USER)return;
+  try{
+    const{data,error}=await SUPA_CLIENT.from('coach_data').select('*').eq('user_id',SUPA_USER.id).single();
+    if(data&&!error){
+      S.teamName=data.team_name||S.teamName;
+      S.season=data.season||S.season;
+      S.subStatus=data.sub_status||'trial';
+      S.customerId=data.customer_id||'';
+      S.trialStart=data.trial_start||S.trialStart;
+      S.email=SUPA_USER.email||'';
+      if(data.players){
+        try{
+          const players=JSON.parse(data.players);
+          if(players&&players.length){ S.players=players; S.selectedId=players[0].id; }
+        }catch(e){}
+      }
+      save(); // sync to localStorage too
+    } else {
+      // New user — save initial data
+      await saveCloudData();
+    }
+  }catch(e){console.warn('Cloud load failed',e);}
+}
+
+function seed(){
+  S.players=[
+    {id:1,name:'Marcus Silva',number:10,pos:'Attacking Mid',age:22,foot:'Right',nation:'Brazilian',notes:'Captain material.',color:COLORS[0],matches:[
+      {id:101,date:'2025-03-01',opp:'FC Northgate',result:'W',goals:2,assists:1,shots:5,passes:42,passAcc:88,tackles:1,distance:11.2,minutes:90,rating:9.1,notes:''},
+      {id:102,date:'2025-02-22',opp:'Riverton FC',result:'W',goals:1,assists:2,shots:4,passes:38,passAcc:84,tackles:2,distance:10.8,minutes:90,rating:8.5,notes:''},
+      {id:103,date:'2025-02-15',opp:'City Athletic',result:'D',goals:0,assists:1,shots:2,passes:35,passAcc:79,tackles:1,distance:9.5,minutes:85,rating:6.8,notes:'Quiet game'},
+      {id:104,date:'2025-02-08',opp:'Eastfield',result:'L',goals:0,assists:0,shots:3,passes:28,passAcc:72,tackles:0,distance:8.9,minutes:90,rating:5.5,notes:''},
+      {id:105,date:'2025-01-31',opp:'Bayshore',result:'W',goals:1,assists:0,shots:4,passes:40,passAcc:85,tackles:2,distance:10.1,minutes:90,rating:7.8,notes:''},
+    ]},
+    {id:2,name:'Jamie Okafor',number:7,pos:'Winger',age:19,foot:'Left',nation:'Nigerian',notes:'Explosive pace.',color:COLORS[1],matches:[
+      {id:201,date:'2025-03-01',opp:'FC Northgate',result:'W',goals:1,assists:2,shots:6,passes:30,passAcc:75,tackles:3,distance:12.1,minutes:90,rating:8.8,notes:''},
+      {id:202,date:'2025-02-22',opp:'Riverton FC',result:'W',goals:0,assists:1,shots:3,passes:25,passAcc:72,tackles:4,distance:11.5,minutes:90,rating:7.2,notes:''},
+      {id:203,date:'2025-02-15',opp:'City Athletic',result:'D',goals:1,assists:0,shots:4,passes:22,passAcc:68,tackles:2,distance:10.8,minutes:90,rating:7.5,notes:''},
+    ]},
+    {id:3,name:'Tyler Brooks',number:4,pos:'Centre-Back',age:25,foot:'Right',nation:'English',notes:'Leader at the back.',color:COLORS[2],matches:[
+      {id:301,date:'2025-03-01',opp:'FC Northgate',result:'W',goals:0,assists:0,shots:1,passes:52,passAcc:92,tackles:6,distance:9.8,minutes:90,rating:7.9,notes:''},
+      {id:302,date:'2025-02-22',opp:'Riverton FC',result:'W',goals:1,assists:0,shots:2,passes:48,passAcc:90,tackles:7,distance:9.5,minutes:90,rating:8.2,notes:''},
+      {id:303,date:'2025-02-15',opp:'City Athletic',result:'D',goals:0,assists:0,shots:0,passes:45,passAcc:88,tackles:5,distance:9.2,minutes:90,rating:7.0,notes:''},
+      {id:304,date:'2025-02-08',opp:'Eastfield',result:'L',goals:0,assists:0,shots:1,passes:40,passAcc:83,tackles:4,distance:8.8,minutes:90,rating:6.0,notes:''},
+    ]},
+  ];
+  S.selectedId=1; save();
+}
+
+// ── UTILS ──
+const ini=n=>n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+const fd=d=>new Date(d+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'2-digit'});
+const ts=(p,k)=>p.matches.reduce((a,x)=>a+(Number(x[k])||0),0);
+const as2=(p,k)=>p.matches.length?p.matches.reduce((a,x)=>a+(Number(x[k])||0),0)/p.matches.length:0;
+const ar=p=>p.matches.length?(p.matches.reduce((a,x)=>a+Number(x.rating),0)/p.matches.length).toFixed(1):'–';
+function ov2(p){if(!p.matches.length)return 0;const r=parseFloat(ar(p));return Math.min(99,Math.round((r/10)*82+(Math.min(ts(p,'goals'),20)/20)*12+(as2(p,'passAcc')/100)*5));}
+// ── SUBSCRIPTION STATUS ──
+function trialDaysLeft(){
+  if(!S.trialStart) return 7;
+  const ms = Date.now() - S.trialStart;
+  const days = Math.floor(ms / (1000*60*60*24));
+  return Math.max(0, 7 - days);
+}
+function isSubscribed(){
+  // Active paid subscription
+  if(S.subStatus==='active') return true;
+  // Still in trial
+  if(trialDaysLeft()>0) return true;
+  return false;
+}
+const isPro=()=>isSubscribed();
+const rc=v=>parseFloat(v)>=7.5?'var(--green)':parseFloat(v)>=6?'var(--yellow)':'var(--red)';
+
+// ── NAV ──
+function go(v,pid){
+  S.view=v;if(pid!==undefined)S.selectedId=pid;
+  if(v==='player'&&S.selectedId)document.getElementById('nav-player').style.display='flex';
+  document.querySelectorAll('.nav-i').forEach(el=>el.classList.remove('active'));
+  const el=document.getElementById('nav-'+v);if(el)el.classList.add('active');
+  if(window.innerWidth<=780){document.getElementById('sidebar').classList.remove('open');document.getElementById('sbov').classList.remove('open');}
+  document.getElementById('aiBtn').style.display='';
+  render();
+}
+function toggleSB(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('sbov').classList.toggle('open');}
+
+// ── RENDER ──
+function render(){
+  renderSB();
+  const c=document.getElementById('ca');
+  if(S.view==='team')return rTeam(c);
+  if(S.view==='player')return rPlayer(c);
+  if(S.view==='compare')return rCompare(c);
+  if(S.view==='log')return rLog(c);
+  if(S.view==='settings')return rSettings(c);
+}
+
+// ── SIDEBAR ──
+function renderSB(){
+  document.getElementById('sbc').textContent=S.players.length;
+  const bp=document.getElementById('sbplan'),pn=document.getElementById('sbpn'),ps=document.getElementById('sbps');
+  const days=trialDaysLeft();
+  if(S.subStatus==='active'){
+    bp.className='sb-plan pro';pn.textContent='✅ PRO COACH';ps.textContent='Full AI access active';
+  } else if(days>0){
+    bp.className='sb-plan by';pn.textContent='⏳ FREE TRIAL';ps.textContent=days+' day'+(days!==1?'s':'')+' left — then $12/mo';
+  } else {
+    bp.className='sb-plan br';pn.textContent='⚠️ TRIAL ENDED';ps.textContent='Upgrade to unlock AI features';
+  }
+  const el=document.getElementById('sbp');
+  if(!S.players.length){el.innerHTML='<div style="padding:.5rem .6rem;font-size:.75rem;color:var(--muted)">No players yet</div>';return;}
+  el.innerHTML=S.players.map(p=>{
+    const avg=ar(p),rco=rc(avg);
+    return`<div class="pchip${p.id===S.selectedId&&S.view==='player'?' active':''}" onclick="selP(${p.id})">
+      <div class="pav" style="background:${p.color}1a;color:${p.color}">${ini(p.name)}</div>
+      <div style="flex:1;min-width:0"><div class="pnm">${p.name}</div><div class="pps">#${p.number} · ${p.pos}</div></div>
+      ${p.matches.length?`<div class="prt" style="color:${rco}">${avg}</div>`:''}
+    </div>`;
+  }).join('');
+}
+function selP(id){S.selectedId=id;go('player',id);}
+
+// ── TEAM OVERVIEW ──
+function rTeam(c){
+  document.getElementById('tbt').textContent=S.teamName;
+  document.getElementById('tbb').textContent=S.season;
+  document.getElementById('aiBtn').textContent='🤖 Team Report';
+  if(!S.players.length){
+    c.innerHTML=`<div class="page">
+      <div style="max-width:600px;margin:3rem auto;text-align:center;padding:0 1rem">
+        <div style="font-size:3.5rem;margin-bottom:1rem">⚽</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:700;margin-bottom:.5rem">Welcome to Squadwise</div>
+        <div style="font-size:.95rem;color:var(--text2);line-height:1.75;margin-bottom:2rem">The AI-powered soccer coaching platform. Track your players, get deep coaching reports, and watch drill videos tailored to each player's weaknesses.</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:2rem;text-align:left">
+          <div style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:1.1rem">
+            <div style="font-size:1.5rem;margin-bottom:.4rem">📊</div>
+            <div style="font-weight:600;font-size:.88rem;margin-bottom:.25rem">Track Every Match</div>
+            <div style="font-size:.78rem;color:var(--muted);line-height:1.5">Goals, assists, passes, tackles, distance and ratings — all in one place.</div>
+          </div>
+          <div style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:1.1rem">
+            <div style="font-size:1.5rem;margin-bottom:.4rem">🤖</div>
+            <div style="font-weight:600;font-size:.88rem;margin-bottom:.25rem">AI Coaching Reports</div>
+            <div style="font-size:.78rem;color:var(--muted);line-height:1.5">Get Claude AI analysis on strengths, weaknesses and tactical recommendations.</div>
+          </div>
+          <div style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:1.1rem">
+            <div style="font-size:1.5rem;margin-bottom:.4rem">🎬</div>
+            <div style="font-weight:600;font-size:.88rem;margin-bottom:.25rem">Drill Videos</div>
+            <div style="font-size:.78rem;color:var(--muted);line-height:1.5">AI picks the best YouTube drill videos for each player's specific weaknesses.</div>
+          </div>
+        </div>
+        <button class="bpri" onclick="openAddP()" style="padding:.9rem 2rem;font-size:1rem">＋ Add Your First Player</button>
+        <div style="font-size:.75rem;color:var(--muted);margin-top:.8rem">${isSubscribed()?'Trial active — all features unlocked':'7-day free trial · No credit card required to start'}</div>
+      </div>
+    </div>`;return;
+  }
+  const all=S.players.flatMap(p=>p.matches);
+  const tg=all.reduce((a,x)=>a+x.goals,0),ta=all.reduce((a,x)=>a+x.assists,0);
+  const tr=all.length?(all.reduce((a,x)=>a+x.rating,0)/all.length).toFixed(1):'–';
+  const tp=all.length?Math.round(all.reduce((a,x)=>a+x.passAcc,0)/all.length):0;
+  const topS=[...S.players].sort((a,b)=>ts(b,'goals')-ts(a,'goals'))[0];
+  const topA=[...S.players].sort((a,b)=>ts(b,'assists')-ts(a,'assists'))[0];
+  const topR=[...S.players].filter(p=>p.matches.length).sort((a,b)=>parseFloat(ar(b))-parseFloat(ar(a)))[0];
+  c.innerHTML=`<div class="page">
+    <div id="team-banner"></div>
+    <div class="sgrid">
+      <div class="scard"><div class="slbl">Squad Size</div><div class="sval" style="color:var(--blue)">${S.players.length}</div><div class="ssub">${all.length} performances logged</div><div class="sbdg bb">Active</div></div>
+      <div class="scard"><div class="slbl">Total Goals</div><div class="sval" style="color:var(--green)">${tg}</div><div class="ssub">${ta} assists · ${tg+ta} G+A</div><div class="sbdg bg">⚽</div></div>
+      <div class="scard"><div class="slbl">Avg Rating</div><div class="sval" style="color:${rc(tr)}">${tr}</div><div class="ssub">across all players</div><div class="sbdg ${parseFloat(tr)>=7.5?'bg':parseFloat(tr)>=6?'by':'br'}">${parseFloat(tr)>=7.5?'Strong':'Average'}</div></div>
+      <div class="scard"><div class="slbl">Team Pass Acc.</div><div class="sval" style="color:var(--yellow)">${tp}%</div><div class="ssub">passing sharpness</div><div class="sbdg ${tp>=80?'bg':'by'}">${tp>=80?'Sharp':'Needs Work'}</div></div>
+    </div>
+    ${topS||topA||topR?`<div class="three-c">
+      ${topS?hcard(topS,'🏆 Top Scorer',`${ts(topS,'goals')} goals`):''}
+      ${topA?hcard(topA,'🎯 Top Assister',`${ts(topA,'assists')} assists`):''}
+      ${topR?hcard(topR,'⭐ Best Rated',`${ar(topR)} avg rating`):''}
+    </div>`:''}
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:700">Full Squad</div>
+      <button class="tbtn" onclick="openAddP()">＋ Add Player</button>
+    </div>
+    <div class="tgrid">${S.players.map(p=>tcard(p)).join('')}</div>
+    <div id="tais"></div>
+  </div>`;
+  setTimeout(fillTeamBanner,10);
+}
+function hcard(p,lbl,sub){return`<div class="card cp" style="border-left:3px solid ${p.color}"><div style="font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:${p.color};margin-bottom:.6rem">${lbl}</div><div style="display:flex;align-items:center;gap:.7rem"><div class="pav" style="background:${p.color}1a;color:${p.color};width:2.2rem;height:2.2rem;font-size:.9rem">${ini(p.name)}</div><div><div style="font-weight:600;font-size:.9rem">${p.name}</div><div style="font-size:.72rem;color:var(--muted)">${sub}</div></div></div></div>`;}
+function tcard(p){
+  const g=ts(p,'goals'),a=ts(p,'assists'),avg=ar(p),rco=rc(avg);
+  return`<div class="tcard" onclick="selP(${p.id})">
+    <div style="position:absolute;top:-40px;right:-40px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,${p.color}18 0%,transparent 70%);pointer-events:none"></div>
+    <div class="tc-top"><div class="pav" style="background:${p.color}1a;color:${p.color};width:2.4rem;height:2.4rem;font-size:1rem">${ini(p.name)}</div>
+      <div><div class="tc-n">${p.name}</div><div class="tc-p">#${p.number} · ${p.pos} · ${p.age}yo</div></div></div>
+    <div class="tc-s">
+      <div class="tci"><div class="tcv" style="color:var(--green)">${g}</div><div class="tcl">Goals</div></div>
+      <div class="tci"><div class="tcv" style="color:var(--blue)">${a}</div><div class="tcl">Assists</div></div>
+      <div class="tci"><div class="tcv" style="color:${p.matches.length?rco:'var(--muted)'}">${p.matches.length?avg:'–'}</div><div class="tcl">Rating</div></div>
+    </div>
+    ${p.matches.length?`<div style="margin-top:.9rem"><div style="font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem">Form</div>
+      <div style="display:flex;gap:3px">${p.matches.slice(0,6).reverse().map(m=>`<div style="width:18px;height:5px;border-radius:2px;background:${m.result==='W'?'var(--green)':m.result==='D'?'var(--yellow)':'var(--red)'}" title="${m.result} vs ${m.opp}"></div>`).join('')}</div></div>`
+    :`<div style="margin-top:.8rem;font-size:.72rem;color:var(--muted)">No matches yet</div>`}
+  </div>`;
+}
+
+// ── PLAYER PROFILE ──
+function rPlayer(c){
+  const p=S.players.find(x=>x.id===S.selectedId);if(!p){go('team');return;}
+  document.getElementById('tbt').textContent=p.name;
+  document.getElementById('tbb').textContent=`#${p.number} · ${p.pos}`;
+  document.getElementById('aiBtn').textContent='🤖 AI Analysis';
+  const m=p.matches,g=ts(p,'goals'),a=ts(p,'assists'),avg=ar(p),avgPA=Math.round(as2(p,'passAcc'));
+  const avgT=as2(p,'tackles').toFixed(1),avgSh=as2(p,'shots').toFixed(1);
+  const W=m.filter(x=>x.result==='W').length,D=m.filter(x=>x.result==='D').length,L=m.filter(x=>x.result==='L').length;
+  const ovr=ov2(p),trend=m.length>=2?(m[0].rating-m[1].rating):0;
+  const tTxt=trend>0.2?`▲ +${trend.toFixed(1)}`:trend<-0.2?`▼ ${trend.toFixed(1)}`:'— Stable';
+  const tCls=trend>0.2?'bg':trend<-0.2?'br':'by';
+  const rd=getRadar(p);
+
+  c.innerHTML=`<div class="page">
+    <div class="phero">
+      <div class="hav" style="background:${p.color}18;color:${p.color};border-color:${p.color}40">${ini(p.name)}</div>
+      <div>
+        <div class="hn">${p.name}</div>
+        <div class="hmeta">
+          <span class="mtag">👕 #${p.number}</span><span class="mtag">🎯 ${p.pos}</span><span class="mtag">🎂 ${p.age}y</span>
+          <span class="mtag">🦶 ${p.foot}</span>${p.nation?`<span class="mtag">🌍 ${p.nation}</span>`:''}
+          <span class="mtag">📅 ${m.length} match${m.length!==1?'es':''}</span>
+        </div>
+        ${p.notes?`<div style="margin-top:.5rem;font-size:.78rem;color:var(--muted);font-style:italic">"${p.notes}"</div>`:''}
+        <div class="hact">
+          <button class="tbtn" onclick="openEditP(${p.id})">✏️ Edit</button>
+          <button class="tbtn" onclick="openLogM(${p.id})">＋ Log Match</button>
+          <button class="tbtn" onclick="go('compare')">⚖️ Compare</button>
+        </div>
+      </div>
+      <div class="hr">
+        <div class="oring">
+          <svg width="74" height="74" viewBox="0 0 74 74">
+            <circle cx="37" cy="37" r="30" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="5"/>
+            <circle cx="37" cy="37" r="30" fill="none" stroke="${p.color}" stroke-width="5"
+              stroke-dasharray="${2*Math.PI*30}" stroke-dashoffset="${2*Math.PI*30*(1-ovr/99)}" stroke-linecap="round"/>
+          </svg>
+          <div class="onum" style="color:${p.color}">${ovr}<span style="font-size:.55rem;color:var(--muted)">/99</span></div>
+        </div>
+        <div class="osub">Overall</div>
+      </div>
+    </div>
+
+    <div class="sgrid">
+      <div class="scard"><div class="slbl">Goals</div><div class="sval" style="color:var(--green)">${g}</div><div class="ssub">${m.length?(g/m.length).toFixed(2):0}/game · ${avgSh} shots/g</div><div class="sbdg bg">⚽</div></div>
+      <div class="scard"><div class="slbl">Assists</div><div class="sval" style="color:var(--blue)">${a}</div><div class="ssub">${g+a} total G+A</div><div class="sbdg bb">🎯</div></div>
+      <div class="scard"><div class="slbl">Avg Rating</div><div class="sval" style="color:${rc(avg)}">${avg}</div><div class="ssub">${W}W · ${D}D · ${L}L</div><div class="sbdg ${tCls}">${tTxt}</div></div>
+      <div class="scard"><div class="slbl">Pass Accuracy</div><div class="sval" style="color:var(--yellow)">${avgPA}%</div><div class="ssub">${avgT} tackles/game</div><div class="sbdg ${avgPA>=80?'bg':'by'}">${avgPA>=80?'Sharp':'Improve'}</div></div>
+    </div>
+
+    <div class="two-c">
+      <div class="card cp"><div class="ctitle">📡 <span class="hl">Attribute Radar</span></div><div class="rw">${renderRadar(rd,p.color)}</div></div>
+      <div class="card cp"><div class="ctitle">📊 <span class="hl">Performance Breakdown</span></div>${renderBars(rd,p.color)}
+        ${m.length>=2?`<div style="margin-top:1.2rem"><div class="ctitle" style="margin-bottom:.6rem">📈 <span class="hl">Rating Trend</span></div>${renderSpk(m.slice(0,8).reverse())}</div>`:''}
+      </div>
+    </div>
+
+    ${m.length>=3?`<div class="card cp" style="margin-bottom:1.2rem"><div class="ctitle">📦 <span class="hl">Goals Per Match</span></div>${renderGChart(p)}</div>`:''}
+
+    <div class="aip" id="aipanel">
+      <div class="aih"><div class="aic">🤖</div><div><div class="ait">AI Coaching Analysis</div><div class="ais">Powered by Claude · For ${p.name}</div></div></div>
+      ${m.length?`<div class="aie"><div style="font-size:2rem">💡</div><div>Click <strong style="color:var(--green)">🤖 AI Analysis</strong> above for a full coaching report.</div></div>`
+      :`<div class="aie"><div style="font-size:2rem">📋</div><div>Log at least one match to unlock AI analysis.</div></div>`}
+    </div>
+
+    <div class="card" id="mlcard">
+      <div style="padding:1.1rem 1.4rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+        <div class="ctitle" style="margin:0">📋 <span class="hl">Match Log</span> <span style="font-size:.75rem;color:var(--muted);text-transform:none;letter-spacing:normal;font-weight:400">(${m.length})</span></div>
+        <button class="tbtn" onclick="openLogM(${p.id})" style="font-size:.72rem;padding:.3rem .7rem">＋ Log</button>
+      </div>
+      ${m.length?`<div style="overflow-x:auto"><table class="mt">
+        <thead><tr><th>Date</th><th>Opponent</th><th>Res</th><th style="text-align:center">⚽</th><th style="text-align:center">🎯</th><th style="text-align:center">Shots</th><th style="text-align:center">Pass%</th><th style="text-align:center">Tackles</th><th style="text-align:center">Mins</th><th style="text-align:center">Rating</th><th></th></tr></thead>
+        <tbody>${m.map(x=>`<tr>
+          <td class="tdm">${fd(x.date)}</td><td style="font-weight:500">${x.opp}</td>
+          <td><span class="rp ${x.result==='W'?'rw2':x.result==='D'?'rd2':'rl'}">${x.result}</span></td>
+          <td class="tdn">${x.goals}</td><td class="tdn">${x.assists}</td><td class="tdn">${x.shots}</td>
+          <td class="tdn">${x.passAcc}%</td><td class="tdn">${x.tackles}</td><td class="tdn">${x.minutes||90}</td>
+          <td class="tdn" style="color:${x.rating>=8?'var(--green)':x.rating>=6.5?'var(--yellow)':'var(--red)'}">${x.rating}</td>
+          <td><button class="tdd" onclick="delM(${p.id},${x.id})">✕</button></td>
+        </tr>`).join('')}</tbody>
+      </table></div>`:`<div style="padding:2rem;text-align:center;color:var(--muted);font-size:.85rem">No matches yet. <button class="tbtn" onclick="openLogM(${p.id})" style="display:inline-flex;margin-left:.5rem">Log First</button></div>`}
+    </div>
+  </div>`;
+  setTimeout(()=>document.querySelectorAll('.mbf').forEach(el=>el.style.width=el.dataset.w),60);
+}
+
+// ── COMPARE ──
+function rCompare(c){
+  if(!isSubscribed()){
+    document.getElementById('tbt').textContent='Compare Players';
+    document.getElementById('tbb').textContent='Pro Feature';
+    document.getElementById('aiBtn').style.display='none';
+    c.innerHTML=proGate('⚖️ Player Comparison','Compare any two players side-by-side across all stats, ratings and match history.');return;
+  }
+  document.getElementById('tbt').textContent='Compare Players';
+  document.getElementById('tbb').textContent='Compare';
+  document.getElementById('aiBtn').style.display='none';
+  if(S.players.length<2){c.innerHTML=`<div class="page"><div class="empty2"><div class="ei">⚖️</div><div class="et">Need 2+ Players</div><div class="es">Add at least two players to use the comparison tool.</div></div></div>`;return;}
+  const opts=S.players.map(p=>`<option value="${p.id}">${p.name} (#${p.number})</option>`).join('');
+  const p1=S.cp1||S.players[0].id,p2=S.cp2||(S.players[1]||S.players[0]).id;
+  c.innerHTML=`<div class="page"><div class="two-c" style="margin-bottom:1.2rem">
+    <div class="fg"><label class="fl">Player 1</label><select class="fs" id="cp1" onchange="updCmp()">${opts}</select></div>
+    <div class="fg"><label class="fl">Player 2</label><select class="fs" id="cp2" onchange="updCmp()">${opts}</select></div>
+  </div><div id="cmpR"></div></div>`;
+  document.getElementById('cp1').value=p1;document.getElementById('cp2').value=p2;
+  rCmpResult(p1,p2);
+}
+function updCmp(){
+  const p1=parseInt(document.getElementById('cp1').value),p2=parseInt(document.getElementById('cp2').value);
+  S.cp1=p1;S.cp2=p2;rCmpResult(p1,p2);
+}
+function rCmpResult(id1,id2){
+  const p1=S.players.find(x=>x.id===id1),p2=S.players.find(x=>x.id===id2);
+  if(!p1||!p2){document.getElementById('cmpR').innerHTML='';return;}
+  const rows=[
+    {l:'Matches Played',fn:p=>p.matches.length},
+    {l:'Goals',fn:p=>ts(p,'goals')},
+    {l:'Assists',fn:p=>ts(p,'assists')},
+    {l:'G+A',fn:p=>ts(p,'goals')+ts(p,'assists')},
+    {l:'Avg Rating',fn:p=>parseFloat(ar(p)||0)},
+    {l:'Pass Accuracy',fn:p=>Math.round(as2(p,'passAcc'))},
+    {l:'Tackles/game',fn:p=>parseFloat(as2(p,'tackles').toFixed(1))},
+    {l:'Shots/game',fn:p=>parseFloat(as2(p,'shots').toFixed(1))},
+    {l:'Distance/game',fn:p=>parseFloat(as2(p,'distance').toFixed(1))},
+    {l:'Overall Score',fn:p=>ov2(p)},
+  ];
+  const trows=rows.map(r=>{
+    const v1=r.fn(p1),v2=r.fn(p2);
+    const c1=v1>v2?'cb':v1<v2?'cw':'',c2=v2>v1?'cb':v2<v1?'cw':'';
+    const fmt=v=>typeof v==='number'&&!Number.isInteger(v)?v.toFixed(1):v;
+    return`<tr><td class="${c1}" style="text-align:right;font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:700">${fmt(v1)}</td><td style="text-align:center;font-size:.72rem;color:var(--muted);padding:.7rem .5rem">${r.l}</td><td class="${c2}" style="font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:700">${fmt(v2)}</td></tr>`;
+  }).join('');
+  document.getElementById('cmpR').innerHTML=`
+    <div class="card cp">
+      <div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:1rem;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--border)">
+        <div style="display:flex;align-items:center;gap:.8rem"><div class="pav" style="background:${p1.color}1a;color:${p1.color};width:3rem;height:3rem;font-size:1.1rem">${ini(p1.name)}</div>
+          <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:800">${p1.name}</div><div style="font-size:.72rem;color:var(--muted)">${p1.pos}</div></div></div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:800;color:var(--muted);text-align:center">VS</div>
+        <div style="display:flex;align-items:center;gap:.8rem;justify-content:flex-end;text-align:right">
+          <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:1.2rem;font-weight:800">${p2.name}</div><div style="font-size:.72rem;color:var(--muted)">${p2.pos}</div></div>
+          <div class="pav" style="background:${p2.color}1a;color:${p2.color};width:3rem;height:3rem;font-size:1.1rem">${ini(p2.name)}</div></div>
+      </div>
+      <table style="width:100%;border-collapse:collapse"><tbody>${trows}</tbody></table>
+      <div style="margin-top:1rem;font-size:.72rem;color:var(--muted);text-align:center"><span style="color:var(--green)">■</span> Higher &nbsp; <span style="color:var(--red)">■</span> Lower</div>
+    </div>
+    <div class="two-c" style="margin-top:1.2rem">
+      <div class="card cp"><div class="ctitle">📡 <span class="hl">${p1.name}</span></div><div class="rw">${renderRadar(getRadar(p1),p1.color)}</div></div>
+      <div class="card cp"><div class="ctitle">📡 <span class="hl">${p2.name}</span></div><div class="rw">${renderRadar(getRadar(p2),p2.color)}</div></div>
+    </div>`;
+}
+
+// ── LOG PAGE ──
+function rLog(c){
+  document.getElementById('tbt').textContent='Log Match';document.getElementById('tbb').textContent=S.season;document.getElementById('aiBtn').style.display='none';
+  c.innerHTML=`<div class="page"><div class="card cp" style="max-width:520px"><div class="ctitle">📝 <span class="hl">Log Match Performance</span></div><p style="font-size:.83rem;color:var(--muted);margin-bottom:1.2rem">Record performance stats for any player.</p><button class="bpri" onclick="openLogM()">Open Match Logger</button></div></div>`;
+  openLogM();
+}
+
+// ── SETTINGS ──
+function rSettings(c){
+  document.getElementById('tbt').textContent='Settings';document.getElementById('tbb').textContent='Config';document.getElementById('aiBtn').style.display='none';
+  c.innerHTML=`<div class="page">
+    <div class="two-c">
+      <div class="card cp">
+        <div class="ctitle">⚙️ <span class="hl">Team Settings</span></div>
+        <div class="fg" style="margin-bottom:1rem"><label class="fl">Team Name</label><input class="fi" id="st" value="${S.teamName}" maxlength="40"/></div>
+        <div class="fg" style="margin-bottom:1.2rem"><label class="fl">Season</label><input class="fi" id="ss" value="${S.season}" maxlength="20"/></div>
+        <button class="bpri" onclick="saveSt()">Save Settings</button>
+      </div>
+      <div class="card cp">
+        <div class="ctitle">🔑 <span class="hl">AI API Key</span></div>
+        <p style="font-size:.82rem;color:var(--muted);margin-bottom:.9rem;line-height:1.6">Your key is stored only in your browser. Get one free at <strong style="color:var(--blue)">console.anthropic.com</strong></p>
+        <div id="apikey-status"></div>
+        <div id="apikey-btns"></div>
+      </div>
+    </div>
+    <div class="card cp" style="margin-bottom:1.2rem">
+      <div class="ctitle">💳 <span class="hl">Subscription</span></div>
+      <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap" id="sub-status-row">
+      </div>
+    </div>
+    <div class="card cp">
+      <div class="ctitle">💾 <span class="hl">Data</span></div>
+      <p style="font-size:.83rem;color:var(--muted);margin-bottom:1rem;line-height:1.6">All data saved locally and synced to your account.</p>
+      <div style="display:flex;gap:.7rem;flex-wrap:wrap">
+        <button class="tbtn" onclick="exportCSV()">⬇ Export CSV</button>
+        <button class="bdng" onclick="clrAll()">🗑 Clear All Data</button>
+      </div>
+    </div>
+    <div class="card cp">
+      <div class="ctitle">👤 <span class="hl">Account</span></div>
+      <div id="account-info" style="font-size:.83rem;color:var(--muted);margin-bottom:1rem"></div>
+      <div style="display:flex;gap:.7rem;flex-wrap:wrap">
+        <button class="bdng" onclick="signOut()">Sign Out</button>
+      </div>
+    </div>
+    <div class="card cp">
+      <div class="ctitle">📄 <span class="hl">Legal</span></div>
+      <div style="display:flex;gap:.7rem;flex-wrap:wrap">
+        <a href="/terms.html" target="_blank" class="tbtn" style="text-decoration:none">Terms of Service</a>
+        <a href="/privacy.html" target="_blank" class="tbtn" style="text-decoration:none">Privacy Policy</a>
+      </div>
+    </div>
+  </div>`;
+  setTimeout(fillSettingsDynamic,10);
+}
+function saveSt(){S.teamName=document.getElementById('st').value.trim()||'My Team';S.season=document.getElementById('ss').value.trim()||'2024–25';save();toast('Settings saved!','s');render();}
+function fillTeamBanner(){
+  const el=document.getElementById('team-banner');
+  if(!el)return;
+  const sub=isSubscribed(),days=trialDaysLeft(),active=S.subStatus==='active';
+  const color=sub?'var(--green)':'var(--yellow)';
+  const icon=sub?'✅':'⏳';
+  const title=active?'Pro Active':sub?'Free Trial — '+days+' day'+(days!==1?'s':'')+' left':'Trial Ended';
+  const desc=sub?'AI reports, drill videos and player comparison are fully active.':'Upgrade to Pro to unlock AI coaching reports, drill videos and more.';
+  el.className='abanner '+(sub?'ok':'warn');
+  el.innerHTML='<div style="font-size:1.5rem">'+icon+'</div>'
+    +'<div style="flex:1"><div class="abt" style="color:'+color+'">'+title+'</div>'
+    +'<div class="abs2">'+desc+'</div></div>'
+    +(!sub?'<button class="tbtn" onclick="om(&quot;pwm&quot;)">Upgrade \u2192</button>':'');
+}
+function fillSettingsDynamic(){
+  const ai=document.getElementById('account-info');
+  if(ai){
+    if(SUPA_USER){ai.innerHTML='<strong style="color:var(--text)">'+SUPA_USER.email+'</strong><br/>Your data is synced to the cloud.';}
+    else{ai.innerHTML='Not signed in — <button onclick="openAuth()" style="background:none;border:none;color:var(--green);cursor:pointer;font-size:.83rem">Sign in</button> to sync across devices.';}
+  }
+  // API key status
+  const ks=document.getElementById('apikey-status');
+  const kb=document.getElementById('apikey-btns');
+  if(ks){
+    ks.style.cssText='background:var(--card3);border:1px solid var(--border);border-radius:7px;padding:.65rem 1rem;font-size:.78rem;margin-bottom:.9rem;font-family:monospace';
+    ks.style.color=S.userApiKey?'var(--green)':'var(--muted)';
+    ks.textContent=S.userApiKey?'✓ Key saved: '+S.userApiKey.slice(0,12)+'••••••••':'No key set';
+  }
+  if(kb){
+    kb.innerHTML='<div style="display:flex;gap:.6rem;flex-wrap:wrap">'
+      +'<button class="tbtn" onclick="promptApiKey()">'+(S.userApiKey?'🔑 Update Key':'🔑 Add API Key')+'</button>'
+      +(S.userApiKey?'<button class="bdng" onclick="clearApiKey()">Remove</button>':'')
+      +'</div>';
+  }
+  // Subscription status
+  const sr=document.getElementById('sub-status-row');
+  if(sr){
+    const days=trialDaysLeft();
+    let statusHTML='';
+    if(S.subStatus==='active'){
+      statusHTML='<div style="flex:1"><div style="font-size:.95rem;font-weight:600;margin-bottom:.2rem;color:var(--green)">✅ Pro — $12/month</div>'
+        +'<div style="font-size:.78rem;color:var(--muted)">'+(S.email?'Subscribed as '+S.email:'Active subscription')+'</div></div>';
+    } else if(days>0){
+      statusHTML='<div style="flex:1"><div style="font-size:.95rem;font-weight:600;margin-bottom:.2rem;color:var(--yellow)">⏳ Free Trial</div>'
+        +'<div style="font-size:.78rem;color:var(--muted)">'+days+' day'+(days!==1?'s':'')+' remaining — then $12/month</div></div>'
+        +'<button class="bpri" onclick="om(\'pwm\')">🚀 Upgrade $12/mo</button>';
+    } else {
+      statusHTML='<div style="flex:1"><div style="font-size:.95rem;font-weight:600;margin-bottom:.2rem;color:var(--red)">⚠️ Trial Expired</div>'
+        +'<div style="font-size:.78rem;color:var(--muted)">Subscribe to continue using AI features</div></div>'
+        +'<button class="bpri" onclick="om(\'pwm\')">🚀 Upgrade $12/mo</button>';
+    }
+    sr.innerHTML=statusHTML;
+  }
+}
+function clrAll(){if(confirm('⚠️ Delete ALL data? This cannot be undone.')){localStorage.removeItem(SK);S.players=[];S.selectedId=null;S.view='team';toast('All data cleared','i');render();}}
+
+// ── VISUALIZATIONS ──
+function getRadar(p){
+  if(!p.matches.length)return[{label:'Shooting',val:0},{label:'Passing',val:0},{label:'Defending',val:0},{label:'Dribbling',val:0},{label:'Pace',val:0},{label:'Stamina',val:0}];
+  const ag=as2(p,'goals'),as3=as2(p,'shots'),ap=as2(p,'passAcc'),at=as2(p,'tackles'),ar2=as2(p,'rating'),ad=as2(p,'distance');
+  return[{label:'Shooting',val:Math.min(99,Math.round(ag*22+as3*5+10))},{label:'Passing',val:Math.round(ap)},{label:'Defending',val:Math.min(99,Math.round(at*13+28))},{label:'Dribbling',val:Math.min(99,Math.round(ar2*7.5+15))},{label:'Pace',val:Math.min(99,Math.round(ad*4+25))},{label:'Stamina',val:Math.min(99,Math.round(ap*0.5+at*3.5+ad*2.5))}];
+}
+function renderRadar(data,color){
+  const cx=120,cy=120,r=80,n=data.length;
+  const pt=(s,i)=>{const a=(2*Math.PI*i/n)-Math.PI/2;return[cx+s*r*Math.cos(a),cy+s*r*Math.sin(a)];};
+  const poly=pts=>pts.map(p=>p.join(',')).join(' ');
+  const grids=[.25,.5,.75,1].map(s=>`<polygon points="${poly(data.map((_,i)=>pt(s,i)))}" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="1"/>`).join('');
+  const axes=data.map((_,i)=>{const[x,y]=pt(1,i);return`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="rgba(255,255,255,.05)" stroke-width="1"/>`;}).join('');
+  const vals=data.map((d,i)=>{const v=d.val/100,a=(2*Math.PI*i/n)-Math.PI/2;return[cx+v*r*Math.cos(a),cy+v*r*Math.sin(a)];});
+  const lbs=data.map((d,i)=>{const[x,y]=pt(1.22,i);return`<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle" fill="rgba(232,237,245,.45)" font-size="9.5" font-family="Barlow,sans-serif" font-weight="500">${d.label}</text>`;}).join('');
+  return`<svg width="240" height="240" viewBox="0 0 240 240">${grids}${axes}<polygon points="${poly(vals)}" fill="${color}1a" stroke="${color}" stroke-width="1.5"/>${vals.map(([x,y])=>`<circle cx="${x}" cy="${y}" r="2.5" fill="${color}"/>`).join('')}${lbs}</svg>`;
+}
+function renderBars(data,color){
+  return data.map(d=>{const col=d.val>=70?color:d.val>=50?'var(--yellow)':'var(--red)';return`<div class="mbr"><div class="mbl">${d.label}</div><div class="mbt"><div class="mbf" data-w="${d.val}%" style="width:0%;background:${col}"></div></div><div class="mbv" style="color:${col}">${d.val}</div></div>`;}).join('');
+}
+function renderSpk(matches){
+  const rs=matches.map(m=>m.rating),mn=Math.min(...rs,5),mx=Math.max(...rs,8),rng=mx-mn||1;
+  return`<div class="spk">${rs.map(r=>{const h=Math.max(5,((r-mn)/rng)*36),col=r>=7.5?'var(--green)':r>=6?'var(--yellow)':'var(--red)';return`<div class="spkb" style="height:${h}px;background:${col};opacity:.8" title="${r}"></div>`;}).join('')}</div>
+  <div style="display:flex;justify-content:space-between;margin-top:4px"><span style="font-size:.6rem;color:var(--muted)">${matches[0]?fd(matches[0].date):''}</span><span style="font-size:.6rem;color:var(--muted)">${matches[matches.length-1]?fd(matches[matches.length-1].date):''}</span></div>`;
+}
+function renderGChart(p){
+  const r=p.matches.slice(0,8).reverse(),mx=Math.max(...r.map(m=>m.goals),1);
+  return`<div style="display:flex;align-items:flex-end;gap:6px;height:90px">${r.map(m=>{const h=Math.max(4,(m.goals/mx)*64),col=m.goals>=2?'var(--green)':m.goals===1?'var(--blue)':'rgba(255,255,255,.15)';return`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><div style="font-size:.65rem;color:var(--muted)">${m.goals}</div><div style="width:100%;height:${h}px;background:${col};border-radius:3px 3px 0 0;min-height:4px"></div><div style="font-size:.58rem;color:var(--muted);text-align:center;overflow:hidden;white-space:nowrap;width:100%;text-overflow:ellipsis">${m.opp.split(' ')[0]}</div></div>`;}).join('')}</div>`;
+}
+
+// ── MODALS ──
+const om=id=>{document.getElementById(id).classList.add('open');if(id==='subm')setTimeout(updatePlanButtons,10);};
+const cm=id=>document.getElementById(id).classList.remove('open');
+document.querySelectorAll('.ov').forEach(el=>el.addEventListener('click',e=>{
+  if(e.target===el && el.id!=='authm') cm(el.id); // auth modal can't be dismissed by clicking outside
+}));
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape') document.querySelectorAll('.ov.open').forEach(el=>{
+    if(el.id!=='authm') cm(el.id); // auth modal can't be dismissed by Escape
+  });
+});
+
+function openAddP(){
+  if(!isSubscribed() && S.players.length>=5){
+    toast('Free plan limited to 5 players — upgrade to Pro for unlimited','e');
+    setTimeout(()=>om('pwm'),800);
+    return;
+  }
+  S.editPid=null;document.getElementById('pmt').textContent='➕ Add Player';
+  ['pm-n','pm-nb','pm-a','pm-na','pm-no'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('pm-p').value='Central Mid';document.getElementById('pm-f').value='Right';
+  document.getElementById('pm-del').style.display='none';om('pmov');
+}
+function openEditP(id){
+  const p=S.players.find(x=>x.id===id);if(!p)return;
+  S.editPid=id;document.getElementById('pmt').textContent=`✏️ Edit ${p.name}`;
+  document.getElementById('pm-n').value=p.name;document.getElementById('pm-nb').value=p.number;
+  document.getElementById('pm-a').value=p.age;document.getElementById('pm-na').value=p.nation||'';
+  document.getElementById('pm-no').value=p.notes||'';document.getElementById('pm-p').value=p.pos;
+  document.getElementById('pm-f').value=p.foot;document.getElementById('pm-del').style.display='flex';om('pmov');
+}
+function saveP(){
+  const name=document.getElementById('pm-n').value.trim();
+  if(!name){toast('Please enter a player name','e');return;}
+
+  if(S.editPid){
+    const p=S.players.find(x=>x.id===S.editPid);
+    if(p){p.name=name;p.number=parseInt(document.getElementById('pm-nb').value)||99;p.pos=document.getElementById('pm-p').value;p.age=parseInt(document.getElementById('pm-a').value)||18;p.foot=document.getElementById('pm-f').value;p.nation=document.getElementById('pm-na').value.trim();p.notes=document.getElementById('pm-no').value.trim();}
+    toast(`${name} updated!`,'s');
+  } else {
+    const np={id:Date.now(),name,number:parseInt(document.getElementById('pm-nb').value)||99,pos:document.getElementById('pm-p').value,age:parseInt(document.getElementById('pm-a').value)||18,foot:document.getElementById('pm-f').value,nation:document.getElementById('pm-na').value.trim(),notes:document.getElementById('pm-no').value.trim(),color:COLORS[S.players.length%COLORS.length],matches:[]};
+    S.players.push(np);S.selectedId=np.id;toast(`${name} added!`,'s');
+  }
+  save();cm('pmov');go('player',S.selectedId);
+}
+function delP(){
+  const p=S.players.find(x=>x.id===S.editPid);if(!p)return;
+  if(!confirm(`Remove ${p.name}? All data deleted.`))return;
+  S.players=S.players.filter(x=>x.id!==S.editPid);
+  if(S.selectedId===S.editPid)S.selectedId=S.players[0]?.id||null;
+  save();toast(`${p.name} removed`,'i');cm('pmov');go('team');
+}
+function openLogM(pid){
+  const sel=document.getElementById('mm-pl');
+  sel.innerHTML=S.players.map(p=>`<option value="${p.id}"${p.id===(pid||S.selectedId)?' selected':''}>${p.name} (#${p.number})</option>`).join('');
+  document.getElementById('mm-d').value=new Date().toISOString().split('T')[0];
+  document.getElementById('mm-o').value='';document.getElementById('mm-r').value='W';
+  ['mm-g','mm-as','mm-sh','mm-pa','mm-t'].forEach(id=>document.getElementById(id).value=0);
+  document.getElementById('mm-pp').value=75;document.getElementById('mm-di').value=9.0;
+  document.getElementById('mm-m').value=90;document.getElementById('mm-ra').value=7.0;document.getElementById('mm-n').value='';
+  document.getElementById('aiBtn').style.display='';om('mmov');
+}
+function saveM(){
+  const pid=parseInt(document.getElementById('mm-pl').value);
+  const p=S.players.find(x=>x.id===pid);if(!p)return;
+  const opp=document.getElementById('mm-o').value.trim();
+  if(!opp){toast('Enter opponent name','e');return;}
+  const rating=parseFloat(document.getElementById('mm-ra').value);
+  if(isNaN(rating)||rating<0||rating>10){toast('Rating must be 0–10','e');return;}
+  const e={id:Date.now(),date:document.getElementById('mm-d').value,opp,result:document.getElementById('mm-r').value,
+    goals:parseInt(document.getElementById('mm-g').value)||0,assists:parseInt(document.getElementById('mm-as').value)||0,
+    shots:parseInt(document.getElementById('mm-sh').value)||0,passes:parseInt(document.getElementById('mm-pa').value)||0,
+    passAcc:parseInt(document.getElementById('mm-pp').value)||75,tackles:parseInt(document.getElementById('mm-t').value)||0,
+    distance:parseFloat(document.getElementById('mm-di').value)||9.0,minutes:parseInt(document.getElementById('mm-m').value)||90,
+    rating,notes:document.getElementById('mm-n').value.trim()};
+  p.matches.unshift(e);S.selectedId=pid;save();toast(`Match vs ${opp} logged!`,'s');cm('mmov');go('player',pid);
+}
+function delM(pid,mid){
+  if(!confirm('Delete this match?'))return;
+  const p=S.players.find(x=>x.id===pid);if(!p)return;
+  p.matches=p.matches.filter(x=>x.id!==mid);save();toast('Match deleted','i');render();
+}
+
+// ── SUBSCRIPTION ──
+function setPlan(plan){
+  const labels={free:'Free',pro:'Pro Coach',club:'Club'};
+  S.plan=plan;save();
+  toast(`✅ ${labels[plan]||plan} plan activated!`,'s');
+  updatePlanButtons();
+  cm('subm');renderSB();render();
+}
+function updatePlanButtons(){
+  const labels={free:'Select Free',pro:'Select Pro — $12/mo',club:'Select Club — $29/mo'};
+  ['free','pro','club'].forEach(p=>{
+    const btn=document.getElementById('btn-'+p);
+    if(!btn)return;
+    if(p===S.plan){btn.textContent='✓ Current Plan';btn.style.background='rgba(0,230,118,0.15)';btn.style.borderColor='rgba(0,230,118,0.5)';btn.style.color='var(--green)';}
+    else{btn.textContent=labels[p];btn.style.background='';btn.style.borderColor='';btn.style.color='';}
+  });
+}
+
+// ── AI CALL — uses user's own Anthropic API key ──
+async function callClaude(prompt, maxTokens=1800){
+  if(!S.userApiKey){
+    promptApiKey();
+    throw new Error('Please add your Anthropic API key to use AI features.');
+  }
+  const payload = JSON.stringify({
+    model: 'claude-sonnet-4-5',
+    max_tokens: maxTokens,
+    messages: [{ role: 'user', content: prompt }]
+  });
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': S.userApiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: payload
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(()=>({}));
+    const msg = err.error?.message || 'HTTP ' + res.status;
+    if(msg.toLowerCase().includes('credit') || msg.toLowerCase().includes('billing')){
+      throw new Error('Your Anthropic credits are empty — add credits at console.anthropic.com/settings/billing');
+    }
+    if(msg.toLowerCase().includes('invalid') || msg.toLowerCase().includes('auth')){
+      S.userApiKey=''; save();
+      promptApiKey();
+      throw new Error('Invalid API key — please re-enter it.');
+    }
+    throw new Error(msg);
+  }
+  const data = await res.json();
+  return data.content?.find(b=>b.type==='text')?.text || 'No response received.';
+}
+
+// ── FORMAT AI REPORT TEXT (headings → styled HTML) ──
+function formatReport(text){
+  const lines=text.split('\n');
+  let html='';
+  for(const raw of lines){
+    const line=raw.trim();
+    if(!line){html+='<div style="height:.5rem"></div>';continue;}
+    // numbered heading like "1. OVERALL ASSESSMENT" or "**1. OVERALL**"
+    const heading=line.match(/^\**\d+\.\s+([A-Z][A-Z\s&()]+)\**$/);
+    if(heading){
+      html+=`<div style="font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:800;letter-spacing:.08em;color:var(--green);margin:1.2rem 0 .4rem;text-transform:uppercase">${heading[1].replace(/\*/g,'')}</div>`;
+    } else if(line.startsWith('**')&&line.endsWith('**')){
+      html+=`<div style="font-weight:700;color:var(--text);margin:.4rem 0">${line.slice(2,-2)}</div>`;
+    } else if(line.match(/^[-•]\s/)){
+      html+=`<div style="display:flex;gap:.5rem;margin:.2rem 0;font-size:.85rem;color:var(--text2)"><span style="color:var(--green);flex-shrink:0">▸</span><span>${line.slice(2)}</span></div>`;
+    } else {
+      html+=`<div style="font-size:.87rem;line-height:1.75;color:var(--text2);margin:.15rem 0">${line}</div>`;
+    }
+  }
+  return html;
+}
+
+// ── DRILL LIBRARY — keyed search queries that always find the right video ──
+// Each entry has a verified YouTube search URL that returns the correct drill content
+const DRILL_VIDEOS = {
+  'shooting_finishing':   {q:'soccer finishing drill tutorial coerver',    title:'Shooting & Finishing Drill',        cat:'⚽ Shooting'},
+  'shooting_1v1':         {q:'1v1 finishing drill soccer goalkeeper',       title:'1v1 Finishing',                     cat:'⚽ Shooting'},
+  'shooting_volleys':     {q:'volley technique soccer drill tutorial',      title:'Volley Technique',                  cat:'⚽ Shooting'},
+  'shooting_weak_foot':   {q:'weak foot shooting soccer training drill',    title:'Weak Foot Shooting',                cat:'⚽ Shooting'},
+  'shooting_long_range':  {q:'long range shooting soccer drill practice',   title:'Long Range Shooting',               cat:'⚽ Shooting'},
+  'shooting_movement':    {q:'shooting off the run soccer movement drill',  title:'Shooting Off the Run',              cat:'⚽ Shooting'},
+  'passing_rondo':        {q:'rondo passing drill soccer possession',       title:'Rondo Possession Drill',            cat:'🎯 Passing'},
+  'passing_combination':  {q:'combination passing drill soccer tutorial',   title:'Combination Passing',               cat:'🎯 Passing'},
+  'passing_first_touch':  {q:'first touch passing drill soccer control',    title:'First Touch & Passing',             cat:'🎯 Passing'},
+  'passing_long_ball':    {q:'long passing accuracy drill soccer training', title:'Long Pass Accuracy',                cat:'🎯 Passing'},
+  'passing_wall_pass':    {q:'wall pass one two combination soccer drill',  title:'Wall Pass Combination',             cat:'🎯 Passing'},
+  'passing_switching':    {q:'switching play wide passing drill soccer',    title:'Switching Play Drill',              cat:'🎯 Passing'},
+  'defending_1v1':        {q:'1v1 defending technique soccer tutorial',     title:'1v1 Defending',                     cat:'🛡 Defending'},
+  'defending_pressing':   {q:'high press pressing drill soccer training',   title:'Pressing Drill',                    cat:'🛡 Defending'},
+  'defending_shape':      {q:'defensive shape organization soccer drill',   title:'Defensive Shape',                   cat:'🛡 Defending'},
+  'defending_headers':    {q:'defensive heading drill soccer tutorial',     title:'Defensive Heading',                 cat:'🛡 Defending'},
+  'defending_tackling':   {q:'tackling technique timing soccer drill',      title:'Tackling Technique',                cat:'🛡 Defending'},
+  'defending_recovery':   {q:'recovery run tracking back soccer defender',  title:'Recovery Runs',                     cat:'🛡 Defending'},
+  'dribbling_close':      {q:'close control dribbling soccer ball mastery', title:'Close Control Dribbling',           cat:'🌀 Dribbling'},
+  'dribbling_speed':      {q:'speed dribbling drill soccer sprint control', title:'Speed Dribbling',                   cat:'🌀 Dribbling'},
+  'dribbling_1v1_attack': {q:'1v1 attacking dribbling beat defender soccer',title:'1v1 Attacking Dribbling',           cat:'🌀 Dribbling'},
+  'dribbling_cone_weave': {q:'cone weave dribbling drill soccer agility',   title:'Cone Weave Drill',                  cat:'🌀 Dribbling'},
+  'dribbling_turns':      {q:'cruyff turn step over soccer dribbling move', title:'Turns & Skill Moves',               cat:'🌀 Dribbling'},
+  'crossing_delivery':    {q:'crossing delivery drill soccer winger',       title:'Crossing & Delivery',               cat:'↗ Crossing'},
+  'crossing_movement':    {q:'winger crossing movement soccer training',    title:'Winger Movement',                   cat:'↗ Crossing'},
+  'fitness_agility':      {q:'soccer agility ladder footwork drill speed',  title:'Agility & Footwork',                cat:'💪 Fitness'},
+  'fitness_sprint':       {q:'sprint speed training soccer acceleration',   title:'Sprint Training',                   cat:'💪 Fitness'},
+  'fitness_endurance':    {q:'soccer endurance stamina conditioning drill', title:'Endurance Training',                cat:'💪 Fitness'},
+  'fitness_plyometric':   {q:'plyometric power training soccer jumps',      title:'Plyometric Power',                  cat:'💪 Fitness'},
+  'position_striker':     {q:'striker movement positioning runs soccer',    title:'Striker Positioning',               cat:'📍 Positioning'},
+  'position_midfielder':  {q:'midfielder movement press resistance soccer', title:'Midfielder Movement',               cat:'📍 Positioning'},
+  'position_winger':      {q:'winger runs off ball movement soccer',        title:'Winger Positioning',                cat:'📍 Positioning'},
+  'position_defender':    {q:'defender positioning cover shadow soccer',    title:'Defender Positioning',              cat:'📍 Positioning'},
+  'gk_shot_stopping':     {q:'goalkeeper shot stopping drill tutorial',     title:'Shot Stopping Drills',              cat:'🧤 Goalkeeper'},
+  'gk_distribution':      {q:'goalkeeper distribution kicking technique',   title:'GK Distribution',                   cat:'🧤 Goalkeeper'},
+  'gk_footwork':          {q:'goalkeeper footwork drill agility training',  title:'GK Footwork Drills',                cat:'🧤 Goalkeeper'},
+  'setpiece_freekick':    {q:'free kick technique bending shooting soccer', title:'Free Kick Technique',               cat:'🎯 Set Pieces'},
+  'setpiece_corners':     {q:'corner kick delivery runs attacking soccer',  title:'Corner Kick Delivery',              cat:'🎯 Set Pieces'},
+  'team_possession':      {q:'team possession rondo keep ball soccer drill',title:'Team Possession Rondo',             cat:'👥 Team'},
+  'team_transition':      {q:'transition attack defence soccer drill fast', title:'Transition Drill',                  cat:'👥 Team'},
+  'team_pressing':        {q:'team pressing compactness high press soccer', title:'Team Pressing',                     cat:'👥 Team'},
+  'team_build_up':        {q:'build up play from back soccer passing drill',title:'Build-Up Play',                     cat:'👥 Team'},
+};
+
+function drillMenu(){
+  return Object.entries(DRILL_VIDEOS).map(([k,v])=>`  "${k}" — ${v.title} (${v.cat})`).join('\n');
+}
+
+// ── RENDER DRILL CARDS ──
+function renderDrillCards(drills, prefix='drill'){
+  if(!drills||!drills.length) return '';
+  const cards = drills.map((d,i)=>{
+    const vid  = DRILL_VIDEOS[d.drill_id] || null;
+    const name = d.name || (vid ? vid.title : 'Soccer Drill');
+    const cat  = vid ? vid.cat : '⚽ Drill';
+    const why  = d.why || '';
+    // YouTube search URL — always works, no fake IDs
+    const ytUrl = vid
+      ? `https://www.youtube.com/results?search_query=${encodeURIComponent(vid.q)}`
+      : `https://www.youtube.com/results?search_query=${encodeURIComponent(name+' soccer drill tutorial')}`;
+    const uid = `${prefix}-${i}`;
+    return `<div class="drill-card" id="${uid}">
+      <a href="${ytUrl}" target="_blank" rel="noopener" class="drill-thumb" title="Watch ${name} on YouTube">
+        <div class="drill-thumb-bg">
+          <div class="drill-field-lines"></div>
+        </div>
+        <div class="drill-thumb-overlay"></div>
+        <div class="drill-cat-badge">${cat}</div>
+        <div class="drill-play-wrap">
+          <div class="drill-play">▶</div>
+          <div class="drill-play-label">Watch on YouTube</div>
+        </div>
+        <div class="drill-yt-badge"><svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M13.7 1.56A1.76 1.76 0 0 0 12.47.31C11.37 0 7 0 7 0S2.63 0 1.53.31A1.76 1.76 0 0 0 .3 1.56 18.5 18.5 0 0 0 0 5c0 1.15.1 2.3.3 3.44A1.76 1.76 0 0 0 1.53 9.7C2.63 10 7 10 7 10s4.37 0 5.47-.31a1.76 1.76 0 0 0 1.23-1.25C13.9 7.3 14 6.15 14 5s-.1-2.3-.3-3.44Z" fill="#FF0000"/><path d="M5.59 7.14 9.18 5 5.59 2.86v4.28Z" fill="white"/></svg> YouTube</div>
+      </a>
+      <div class="drill-info">
+        <div class="drill-name">${name}</div>
+        <div class="drill-why">${why}</div>
+        <a href="${ytUrl}" target="_blank" rel="noopener" class="drill-watch-btn">
+          <svg width="13" height="13" viewBox="0 0 14 10" fill="none" style="flex-shrink:0"><path d="M13.7 1.56A1.76 1.76 0 0 0 12.47.31C11.37 0 7 0 7 0S2.63 0 1.53.31A1.76 1.76 0 0 0 .3 1.56 18.5 18.5 0 0 0 0 5c0 1.15.1 2.3.3 3.44A1.76 1.76 0 0 0 1.53 9.7C2.63 10 7 10 7 10s4.37 0 5.47-.31a1.76 1.76 0 0 0 1.23-1.25C13.9 7.3 14 6.15 14 5s-.1-2.3-.3-3.44Z" fill="#FF0000"/><path d="M5.59 7.14 9.18 5 5.59 2.86v4.28Z" fill="white"/></svg>
+          Watch Drill on YouTube
+        </a>
+      </div>
+    </div>`;
+  }).join('');
+  return `<div class="drill-section">
+    <div class="drill-section-title">🎬 Recommended Drill Videos</div>
+    <div class="drill-grid">${cards}</div>
+  </div>`;
+}
+
+// ── MAIN AI ANALYSIS ──
+async function runAI(){
+  document.getElementById('aiBtn').style.display='';
+  if(S.view==='team'){await runTeamAI();return;}
+  if(S.view!=='player')return;
+
+  if(!isSubscribed()){om('pwm');return;}
+  if(!S.userApiKey){promptApiKey();return;}
+  const p=S.players.find(x=>x.id===S.selectedId);
+  if(!p||!p.matches.length){toast('Log at least one match first','e');return;}
+
+  const btn=document.getElementById('aiBtn');
+  btn.disabled=true;btn.textContent='⏳ Analysing...';
+
+  const panel=document.getElementById('aipanel');
+  if(!panel){btn.disabled=false;btn.textContent='🤖 AI Analysis';return;}
+  panel.querySelectorAll('.aie,.aib,.drill-section').forEach(el=>el.remove());
+  const loader=document.createElement('div');
+  loader.className='aib ld';
+  loader.textContent='Generating coaching report + drill videos…';
+  panel.appendChild(loader);
+
+  const m=p.matches,g=ts(p,'goals'),a=ts(p,'assists'),avgR=ar(p),avgPA=Math.round(as2(p,'passAcc')),avgT=as2(p,'tackles').toFixed(1);
+  const W=m.filter(x=>x.result==='W').length,D=m.filter(x=>x.result==='D').length,L=m.filter(x=>x.result==='L').length;
+  const form=m.slice(0,5).map(x=>`${x.result}(${x.rating}★)`).join(', ');
+
+  const prompt=`You are a UEFA-certified soccer coach analyst. Analyse this player and respond in EXACTLY this JSON format with no markdown, no code fences, just raw JSON:
+
+{
+  "report": {
+    "overall_assessment": "2-4 sentences",
+    "key_strengths": "2-4 sentences",
+    "areas_for_improvement": "2-4 sentences",
+    "form_and_trend": "2-4 sentences",
+    "tactical_deployment": "2-4 sentences",
+    "coachs_verdict": "2-3 punchy sentences"
+  },
+  "drills": [
+    {
+      "drill_id": "pick the BEST matching id from the list below",
+      "name": "Short descriptive drill name",
+      "why": "1-2 sentences: why this specific drill fixes this player's weakness based on their stats"
+    },
+    { "drill_id": "...", "name": "...", "why": "..." },
+    { "drill_id": "...", "name": "...", "why": "..." }
+  ]
+}
+
+AVAILABLE DRILL IDs (pick 3 that best match this player's weaknesses):
+${drillMenu()}
+
+PLAYER: ${p.name} | POS: ${p.pos} | AGE: ${p.age} | FOOT: ${p.foot}${p.nation?' | '+p.nation:''}
+MATCHES: ${m.length} | NOTES: "${p.notes||'none'}"
+STATS:
+- Goals: ${g} (${(g/m.length).toFixed(2)}/match) | Assists: ${a} | G+A: ${g+a}
+- Avg Rating: ${avgR}/10 | Pass Acc: ${avgPA}% | Tackles/game: ${avgT}
+- Record: ${W}W/${D}D/${L}L (${Math.round(W/m.length*100)}% win rate)
+- Shots/game: ${as2(p,'shots').toFixed(1)} | Distance/game: ${as2(p,'distance').toFixed(1)}km
+RECENT FORM: ${form}
+
+Pick drill_ids that directly target weak stats. Return ONLY valid JSON, nothing else.`;
+
+  try{
+    const raw=await callClaude(prompt,1800);
+    // Parse JSON — strip any accidental markdown fences
+    const clean=raw.replace(/```json|```/g,'').trim();
+    let parsed;
+    try{ parsed=JSON.parse(clean); }
+    catch(e){
+      // Fallback: show raw text if JSON parse fails
+      loader.className='aib';loader.textContent=raw;
+      btn.disabled=false;btn.textContent='🤖 AI Analysis';
+      return;
+    }
+    const r=parsed.report||{};
+    const reportHTML=`
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:800;letter-spacing:.08em;color:var(--green);margin-bottom:.4rem;text-transform:uppercase">Overall Assessment</div>
+      <div style="font-size:.87rem;line-height:1.75;color:var(--text2);margin-bottom:1rem">${r.overall_assessment||''}</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:800;letter-spacing:.08em;color:var(--green);margin-bottom:.4rem;text-transform:uppercase">Key Strengths</div>
+      <div style="font-size:.87rem;line-height:1.75;color:var(--text2);margin-bottom:1rem">${r.key_strengths||''}</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:800;letter-spacing:.08em;color:var(--green);margin-bottom:.4rem;text-transform:uppercase">Areas for Improvement</div>
+      <div style="font-size:.87rem;line-height:1.75;color:var(--text2);margin-bottom:1rem">${r.areas_for_improvement||''}</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:800;letter-spacing:.08em;color:var(--green);margin-bottom:.4rem;text-transform:uppercase">Form & Trend</div>
+      <div style="font-size:.87rem;line-height:1.75;color:var(--text2);margin-bottom:1rem">${r.form_and_trend||''}</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:800;letter-spacing:.08em;color:var(--green);margin-bottom:.4rem;text-transform:uppercase">Tactical Deployment</div>
+      <div style="font-size:.87rem;line-height:1.75;color:var(--text2);margin-bottom:1rem">${r.tactical_deployment||''}</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:800;letter-spacing:.08em;color:var(--green);margin-bottom:.4rem;text-transform:uppercase">Coach's Verdict</div>
+      <div style="font-size:.87rem;line-height:1.75;color:var(--text2);margin-bottom:.5rem;font-style:italic">${r.coachs_verdict||''}</div>
+    `;
+    loader.className='aib';
+    loader.innerHTML=reportHTML;
+
+    // Append drill video section — renderDrillCards returns the full section HTML
+    if(parsed.drills&&parsed.drills.length){
+      panel.insertAdjacentHTML('beforeend', renderDrillCards(parsed.drills,'pdrill'));
+    }
+  }catch(e){
+    loader.className='aib';loader.style.color='var(--red)';
+    loader.textContent=`Error: ${e.message}`;
+  }
+  btn.disabled=false;btn.textContent='🤖 AI Analysis';
+}
+
+async function runTeamAI(){
+  if(!isSubscribed()){om('pwm');return;}
+  if(!S.userApiKey){promptApiKey();return;}
+  if(!S.players.length){toast('Add players first','e');return;}
+  const btn=document.getElementById('aiBtn');btn.disabled=true;btn.textContent='⏳ Generating...';
+  const sec=document.getElementById('tais');
+  sec.innerHTML=`<div class="aip" style="margin-top:1.2rem"><div class="aih"><div class="aic">🤖</div><div><div class="ait">AI Team Report</div><div class="ais">Powered by Claude</div></div></div><div class="aib ld">Generating squad analysis + drill videos…</div></div>`;
+
+  const sums=S.players.map(p=>{
+    if(!p.matches.length)return`${p.name} (${p.pos}): No matches logged`;
+    return`${p.name} (#${p.number}, ${p.pos}, ${p.age}yo): ${ts(p,'goals')}G/${ts(p,'assists')}A in ${p.matches.length} matches, rating ${ar(p)}/10, pass ${Math.round(as2(p,'passAcc'))}%, tackles ${as2(p,'tackles').toFixed(1)}/g`;
+  }).join('\n');
+
+  const prompt=`You are a head soccer coach. Analyse this squad and respond in EXACTLY this JSON format, no markdown, no code fences, just raw JSON:
+
+{
+  "report": {
+    "squad_overview": "3-4 sentences",
+    "best_xi": "Recommended formation and starting lineup with player names",
+    "star_performers": "Top 2 players and why",
+    "concern_areas": "Players underperforming and why",
+    "tactical_recommendation": "Best system for this squad"
+  },
+  "team_drills": [
+    {
+      "drill_id": "pick the BEST matching id from the list below",
+      "name": "Short drill name",
+      "why": "Why this drill benefits the whole team based on squad weaknesses"
+    },
+    { "drill_id": "...", "name": "...", "why": "..." },
+    { "drill_id": "...", "name": "...", "why": "..." }
+  ]
+}
+
+AVAILABLE DRILL IDs (pick 3 team-wide drills):
+${drillMenu()}
+
+TEAM: ${S.teamName} | SEASON: ${S.season}
+SQUAD:
+${sums}
+
+Return ONLY valid JSON, nothing else.`;
+
+  try{
+    const raw=await callClaude(prompt,1400);
+    const clean=raw.replace(/```json|```/g,'').trim();
+    let parsed;
+    try{ parsed=JSON.parse(clean); }
+    catch(e){ 
+      const ld=sec.querySelector('.aib');
+      if(ld){ld.className='aib';ld.textContent=raw;}
+      btn.disabled=false;btn.textContent='🤖 Team Report';
+      return;
+    }
+    const r=parsed.report||{};
+    const reportHTML=`
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:800;letter-spacing:.08em;color:var(--green);margin-bottom:.4rem;text-transform:uppercase">Squad Overview</div>
+      <div style="font-size:.87rem;line-height:1.75;color:var(--text2);margin-bottom:1rem">${r.squad_overview||''}</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:800;letter-spacing:.08em;color:var(--green);margin-bottom:.4rem;text-transform:uppercase">Best XI</div>
+      <div style="font-size:.87rem;line-height:1.75;color:var(--text2);margin-bottom:1rem">${r.best_xi||''}</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:800;letter-spacing:.08em;color:var(--green);margin-bottom:.4rem;text-transform:uppercase">Star Performers</div>
+      <div style="font-size:.87rem;line-height:1.75;color:var(--text2);margin-bottom:1rem">${r.star_performers||''}</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:800;letter-spacing:.08em;color:var(--green);margin-bottom:.4rem;text-transform:uppercase">Concern Areas</div>
+      <div style="font-size:.87rem;line-height:1.75;color:var(--text2);margin-bottom:1rem">${r.concern_areas||''}</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:800;letter-spacing:.08em;color:var(--green);margin-bottom:.4rem;text-transform:uppercase">Tactical Recommendation</div>
+      <div style="font-size:.87rem;line-height:1.75;color:var(--text2);margin-bottom:.5rem">${r.tactical_recommendation||''}</div>
+    `;
+    const ld=sec.querySelector('.aib');
+    if(ld){ld.className='aib';ld.innerHTML=reportHTML;}
+
+    if(parsed.team_drills&&parsed.team_drills.length){
+      sec.querySelector('.aip').insertAdjacentHTML('beforeend', renderDrillCards(parsed.team_drills,'tdrill'));
+    }
+  }catch(e){
+    const ld=sec.querySelector('.aib');
+    if(ld){ld.className='aib';ld.style.color='var(--red)';ld.textContent=`Error: ${e.message}`;}
+  }
+  btn.disabled=false;btn.textContent='🤖 Team Report';
+}
+
+// ── EXPORT ──
+function exportCSV(){
+  if(!isSubscribed()){om('pwm');return;}
+  if(!S.userApiKey){promptApiKey();return;}
+  if(!S.players.length){toast('No data to export','e');return;}
+  let csv='Player,Jersey,Position,Age,Foot,Nationality,Date,Opponent,Result,Goals,Assists,Shots,Passes,PassAcc%,Tackles,Distance(km),Minutes,Rating,Notes\n';
+  S.players.forEach(p=>{
+    if(!p.matches.length){csv+=`"${p.name}",${p.number},"${p.pos}",${p.age},${p.foot},"${p.nation||''}",,,,,,,,,,,,,\n`;}
+    else p.matches.forEach(m=>{csv+=`"${p.name}",${p.number},"${p.pos}",${p.age},${p.foot},"${p.nation||''}",${m.date},"${m.opp}",${m.result},${m.goals},${m.assists},${m.shots},${m.passes},${m.passAcc},${m.tackles},${m.distance||''},${m.minutes||90},${m.rating},"${(m.notes||'').replace(/"/g,"'")}"\n`;});
+  });
+  const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=`squadwise_${S.teamName.replace(/\s+/g,'_')}_${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();URL.revokeObjectURL(url);toast('CSV exported!','s');
+}
+
+// ── TOAST ──
+function toast(msg,type='i'){
+  const icon=type==='s'?'✓':type==='e'?'✕':'ℹ';
+  const el=document.createElement('div');el.className=`toast2 ${type}`;
+  el.innerHTML=`<span>${icon}</span><span>${msg}</span>`;
+  document.getElementById('tc').appendChild(el);setTimeout(()=>el.remove(),3200);
+}
+
+
+// ── PRO GATE UI ──
+function proGate(title, desc){
+  return `<div class="page"><div class="empty2">
+    <div style="font-size:2.5rem;margin-bottom:.5rem">🔒</div>
+    <div class="et">${title}</div>
+    <div class="es" style="max-width:320px;margin:0 auto .3rem">${desc}</div>
+    <div class="es" style="color:var(--yellow);margin-bottom:1.2rem">Pro feature — 7-day free trial included</div>
+    <button class="bpri" onclick="om(&quot;pwm&quot;)">🚀 Unlock with Pro Trial</button>
+    <div style="font-size:.72rem;color:var(--muted);margin-top:.6rem">$12/month after trial · Cancel anytime</div>
+  </div></div>`;
+}
+
+// ── USER API KEY ──
+function saveApiKey(){
+  const key=(document.getElementById('aki').value||'').trim();
+  if(!key.startsWith('sk-ant-')){toast('Key must start with sk-ant-','e');return;}
+  try{localStorage.setItem('squadwise_apikey',key);}catch(e){}
+  S.userApiKey=key;
+  toast('API key saved! AI is now active ✓','s');
+  cm('akim');render();
+}
+function clearApiKey(){
+  if(!confirm('Remove your API key?'))return;
+  try{localStorage.removeItem('squadwise_apikey');}catch(e){}
+  S.userApiKey='';
+  toast('API key removed','i');render();
+}
+function promptApiKey(){om('akim');setTimeout(()=>{const el=document.getElementById('aki');if(el&&S.userApiKey)el.value=S.userApiKey;},50);}
+async function cancelSub(){
+  if(!S.customerId){ toast('No subscription found to cancel','e'); return; }
+  if(!confirm('Manage your Squadwise Pro subscription?\n\nYou can cancel or update your billing details.')) return;
+  try {
+    const res = await fetch('/api/cancel-subscription', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ customerId: S.customerId, returnUrl: window.location.href })
+    });
+    const data = await res.json();
+    if(data.url){ window.location.href = data.url; }
+    else { throw new Error(data.error || 'Could not open billing portal'); }
+  } catch(e) {
+    toast('Error: ' + e.message, 'e');
+  }
+}
+
+
+// ── STRIPE PAYMENTS ──
+const STRIPE_PK = 'pk_test_51T99JABfa9evEoDsoXu9JqHsAL5tOKDnMZwfkUy76Jv36d44g3FIxhIadH1FaOF2I8RJ8vYPiGEPXE7Lc7ssw9U400wHEoxmvl';
+const PRICE_ID  = 'price_1T99QLBfa9evEoDsQMxXulo4';
+
+async function startCheckout(){
+  const btn = document.querySelector('#pwm .bpri');
+  const errEl = document.getElementById('pwm-err');
+  btn.disabled=true; btn.textContent='⏳ Loading...'; errEl.style.display='none';
+  try {
+    const res = await fetch('/api/create-checkout', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        priceId: PRICE_ID,
+        successUrl: window.location.origin + '/app.html?session_id={CHECKOUT_SESSION_ID}',
+        cancelUrl: window.location.href,
+        trialDays: 7
+      })
+    });
+    const data = await res.json();
+    if(data.error){ throw new Error(data.error); }
+    // Redirect to Stripe Checkout
+    window.location.href = data.url;
+  } catch(e) {
+    errEl.textContent = 'Error: ' + e.message;
+    errEl.style.display='block';
+    btn.disabled=false; btn.textContent='🚀 Start Free Trial — $0 today';
+  }
+}
+
+async function verifySession(sessionId){
+  try {
+    const res = await fetch('/api/verify-session?id='+sessionId);
+    const data = await res.json();
+    if(data.active){
+      S.subStatus='active';
+      S.customerId=data.customerId||'';
+      S.email=data.email||'';
+      save();
+      // Also update cloud DB if logged in
+      if(SUPA_USER) await saveCloudData();
+      window.history.replaceState({},'',window.location.pathname);
+      render();
+      toast('🎉 Subscription active! Welcome to Squadwise Pro.','s');
+      // Prompt for API key if not set
+      if(!S.userApiKey){
+        setTimeout(()=>{
+          om('akim');
+          toast('One more step — add your Anthropic API key to activate AI reports.','i');
+        }, 1200);
+      }
+    }
+  } catch(e){ console.warn('Session verify failed',e); }
+}
+
+function checkPaywall(){
+  // Check URL for Stripe success redirect
+  const params = new URLSearchParams(window.location.search);
+  const sessionId = params.get('session_id');
+  if(sessionId){ verifySession(sessionId); return; }
+  // Show paywall if trial expired and not subscribed
+  if(!isSubscribed()){ om('pwm'); }
+}
+
+function showTrialBanner(){
+  const days = trialDaysLeft();
+  if(days>0 && S.subStatus!=='active'){
+    const existing = document.getElementById('trial-banner');
+    if(existing) return;
+    const banner = document.createElement('div');
+    banner.id='trial-banner';
+    banner.style.cssText='position:fixed;bottom:1rem;right:1rem;background:linear-gradient(135deg,#0d1c33,#152033);border:1px solid rgba(0,230,118,.3);border-radius:10px;padding:.75rem 1.1rem;font-size:.78rem;color:var(--text2);z-index:500;display:flex;align-items:center;gap:.8rem;box-shadow:0 4px 20px rgba(0,0,0,.4)';
+    banner.innerHTML='<span>⏳ <strong style="color:var(--green)">' + days + ' day' + (days!==1?'s':'') + ' left</strong> in your free trial</span><button class="tbtn" style="font-size:.7rem;padding:.28rem .65rem;white-space:nowrap" onclick="om(&quot;pwm&quot;)">Upgrade $12/mo</button>';
+    document.body.appendChild(banner);
+  }
+}
+
+
+// ── AUTH FUNCTIONS ──
+function switchAuthTab(tab){
+  document.getElementById('auth-login').style.display=tab==='login'?'block':'none';
+  document.getElementById('auth-signup').style.display=tab==='signup'?'block':'none';
+  document.getElementById('auth-loading').style.display='none';
+  const tl=document.getElementById('auth-tab-login'),ts=document.getElementById('auth-tab-signup');
+  if(tab==='login'){tl.style.background='var(--green)';tl.style.color='#080f1e';tl.style.fontWeight='600';ts.style.background='transparent';ts.style.color='var(--muted)';ts.style.fontWeight='500';}
+  else{ts.style.background='var(--green)';ts.style.color='#080f1e';ts.style.fontWeight='600';tl.style.background='transparent';tl.style.color='var(--muted)';tl.style.fontWeight='500';}
+  document.getElementById('auth-err').style.display='none';
+  document.getElementById('auth-err2').style.display='none';
+}
+function showAuthLoading(msg){
+  document.getElementById('auth-login').style.display='none';
+  document.getElementById('auth-signup').style.display='none';
+  document.getElementById('auth-loading').style.display='block';
+  document.getElementById('auth-loading-msg').textContent=msg||'Loading...';
+}
+async function signIn(){
+  const email=document.getElementById('auth-email').value.trim();
+  const pass=document.getElementById('auth-pass').value;
+  const errEl=document.getElementById('auth-err');
+  if(!email||!pass){errEl.textContent='Please enter email and password';errEl.style.display='block';return;}
+  showAuthLoading('Signing in...');
+  try{
+    const{error}=await SUPA_CLIENT.auth.signInWithPassword({email,password:pass});
+    if(error){throw error;}
+    // onAuthStateChange handles the rest
+  }catch(e){
+    document.getElementById('auth-login').style.display='block';
+    document.getElementById('auth-loading').style.display='none';
+    errEl.textContent=e.message||'Sign in failed';errEl.style.display='block';
+  }
+}
+async function signUp(){
+  const email=document.getElementById('auth-email2').value.trim();
+  const pass=document.getElementById('auth-pass2').value;
+  const team=document.getElementById('auth-team').value.trim();
+  const errEl=document.getElementById('auth-err2');
+  if(!email||!pass){errEl.textContent='Please enter email and password';errEl.style.display='block';return;}
+  if(pass.length<6){errEl.textContent='Password must be at least 6 characters';errEl.style.display='block';return;}
+  showAuthLoading('Creating your account...');
+  try{
+    const{error}=await SUPA_CLIENT.auth.signUp({
+      email,password:pass,
+      options:{data:{team_name:team||'My Team'}}
+    });
+    if(error){throw error;}
+    if(team)S.teamName=team;
+    // Show confirmation — switch to login tab
+    switchAuthTab('login');
+    document.getElementById('auth-err').style.color='var(--green)';
+    document.getElementById('auth-err').textContent='✓ Account created! Check your email to confirm, then sign in.';
+    document.getElementById('auth-err').style.display='block';
+  }catch(e){
+    document.getElementById('auth-signup').style.display='block';
+    document.getElementById('auth-loading').style.display='none';
+    errEl.textContent=e.message||'Sign up failed';errEl.style.display='block';
+  }
+}
+async function forgotPassword(){
+  const email=document.getElementById('auth-email').value.trim();
+  if(!email){document.getElementById('auth-err').textContent='Enter your email first';document.getElementById('auth-err').style.display='block';return;}
+  showAuthLoading('Sending reset email...');
+  await SUPA_CLIENT.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+'/app.html'});
+  document.getElementById('auth-loading').style.display='none';
+  document.getElementById('auth-login').style.display='block';
+  document.getElementById('auth-err').style.color='var(--green)';
+  document.getElementById('auth-err').textContent='✓ Password reset email sent!';
+  document.getElementById('auth-err').style.display='block';
+}
+async function signOut(){
+  try { await SUPA_CLIENT.auth.signOut(); } catch(e){ console.warn('signOut error',e); }
+  SUPA_USER=null;
+  localStorage.removeItem(SK);
+  localStorage.removeItem('squadwise_apikey');
+  S={players:[],season:'2024–25',teamName:'My Team',selectedId:null,view:'team',editPid:null,plan:'free',apiKey:'',cp1:null,cp2:null,trialStart:Date.now(),subStatus:'trial',customerId:'',email:'',userApiKey:''};
+  const tb=document.getElementById('trial-banner');
+  if(tb)tb.remove();
+  render();
+  om('authm');
+  switchAuthTab('login');
+  toast('Signed out','i');
+}
+function openAuth(){om('authm');switchAuthTab('login');}
+
+// ── INIT ──
+load();
+initSupabase();
+// Check for existing session
+setTimeout(async()=>{
+  if(SUPA_CLIENT){
+    const{data:{session}}=await SUPA_CLIENT.auth.getSession();
+    if(session){
+      SUPA_USER=session.user;
+      await loadCloudData();
+      render();
+      checkPaywall();
+      showTrialBanner();
+    } else {
+      render();
+      // Show auth on first visit
+      setTimeout(()=>om('authm'),700);
+    }
+  } else {
+    render();
+    setTimeout(()=>{ checkPaywall(); showTrialBanner(); },600);
+  }
+},100);
+</script>
+</body>
+</html>

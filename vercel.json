@@ -1,0 +1,9 @@
+{
+  "rewrites": [
+    { "source": "/api/create-checkout", "destination": "/api/create-checkout" },
+    { "source": "/api/verify-session", "destination": "/api/verify-session" },
+    { "source": "/api/cancel-subscription", "destination": "/api/cancel-subscription" },
+    { "source": "/api/claude", "destination": "/api/claude" },
+    { "source": "/api/supabase-admin", "destination": "/api/supabase-admin" }
+  ]
+}
