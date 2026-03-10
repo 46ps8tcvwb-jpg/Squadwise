@@ -748,6 +748,23 @@ function trialDaysLeft(){
   const days = Math.floor(ms / (1000*60*60*24));
   return Math.max(0, 7 - days);
 }
+function trialTimeLeft(){
+  // Returns {days, hours, mins, secs, total_secs, expired}
+  if(!S.trialStart) return {days:7,hours:0,mins:0,secs:0,total_secs:7*86400,expired:false};
+  const elapsed = Date.now() - S.trialStart;
+  const total = 7 * 24 * 60 * 60 * 1000;
+  const remaining = Math.max(0, total - elapsed);
+  if(remaining === 0) return {days:0,hours:0,mins:0,secs:0,total_secs:0,expired:true};
+  const secs = Math.floor(remaining/1000);
+  return {
+    days: Math.floor(secs/86400),
+    hours: Math.floor((secs%86400)/3600),
+    mins: Math.floor((secs%3600)/60),
+    secs: secs%60,
+    total_secs: secs,
+    expired: false
+  };
+}
 function isSubscribed(){
   // Active paid subscription
   if(S.subStatus==='active') return true;
@@ -789,7 +806,9 @@ function renderSB(){
   if(S.subStatus==='active'){
     bp.className='sb-plan pro';pn.textContent='✅ PRO COACH';ps.textContent='Full AI access active';
   } else if(days>0){
-    bp.className='sb-plan by';pn.textContent='⏳ FREE TRIAL';ps.textContent=days+' day'+(days!==1?'s':'')+' left — then $12/mo';
+    const t=trialTimeLeft();
+    const tStr=t.days>0?t.days+'d '+t.hours+'h left':t.hours>0?t.hours+'h '+t.mins+'m left':t.mins+'m '+t.secs+'s left';
+    bp.className='sb-plan by';pn.textContent='⏳ FREE TRIAL';ps.textContent=tStr+' — then $12/mo';
   } else {
     bp.className='sb-plan br';pn.textContent='⚠️ TRIAL ENDED';ps.textContent='Upgrade to unlock AI features';
   }
@@ -1747,19 +1766,49 @@ function checkPaywall(){
   const sessionId = params.get('session_id');
   if(sessionId){ verifySession(sessionId); return; }
   // Show paywall if trial expired and not subscribed
-  if(!isSubscribed()){ om('pwm'); }
+  if(!isSubscribed()){
+    // Update modal text to "trial ended" state
+    const title = document.getElementById('pwm-title');
+    const sub = document.getElementById('pwm-sub');
+    if(title) title.innerHTML = '⏰ Your Free Trial Has Ended';
+    if(sub) sub.innerHTML = 'Your 7-day trial is up. Upgrade to Pro to keep using AI reports, drill videos, player comparison and more.';
+    om('pwm');
+  }
 }
 
 function showTrialBanner(){
-  const days = trialDaysLeft();
-  if(days>0 && S.subStatus!=='active'){
-    const existing = document.getElementById('trial-banner');
-    if(existing) return;
-    const banner = document.createElement('div');
+  if(S.subStatus==='active') return;
+  const t = trialTimeLeft();
+  if(t.expired){ checkPaywall(); return; }
+
+  let banner = document.getElementById('trial-banner');
+  if(!banner){
+    banner = document.createElement('div');
     banner.id='trial-banner';
-    banner.style.cssText='position:fixed;bottom:1rem;right:1rem;background:linear-gradient(135deg,#0d1c33,#152033);border:1px solid rgba(0,230,118,.3);border-radius:10px;padding:.75rem 1.1rem;font-size:.78rem;color:var(--text2);z-index:500;display:flex;align-items:center;gap:.8rem;box-shadow:0 4px 20px rgba(0,0,0,.4)';
-    banner.innerHTML='<span>⏳ <strong style="color:var(--green)">' + days + ' day' + (days!==1?'s':'') + ' left</strong> in your free trial</span><button class="tbtn" style="font-size:.7rem;padding:.28rem .65rem;white-space:nowrap" onclick="om(&quot;pwm&quot;)">Upgrade $12/mo</button>';
+    banner.style.cssText='position:fixed;bottom:1rem;right:1rem;background:linear-gradient(135deg,#0d1c33,#152033);border:1px solid rgba(0,230,118,.3);border-radius:12px;padding:.8rem 1.1rem;font-size:.78rem;color:var(--text2);z-index:500;display:flex;align-items:center;gap:.9rem;box-shadow:0 4px 24px rgba(0,0,0,.5);min-width:260px';
     document.body.appendChild(banner);
+  }
+
+  // Color changes as trial winds down
+  const urgentColor = t.days===0 ? 'var(--red)' : t.days<=2 ? 'var(--yellow)' : 'var(--green)';
+  const borderColor = t.days===0 ? 'rgba(255,80,80,.4)' : t.days<=2 ? 'rgba(255,214,0,.3)' : 'rgba(0,230,118,.3)';
+  banner.style.borderColor = borderColor;
+
+  let timeStr;
+  if(t.days>0) timeStr = `<strong style="color:${urgentColor}">${t.days}d ${t.hours}h ${t.mins}m</strong>`;
+  else if(t.hours>0) timeStr = `<strong style="color:${urgentColor}">${t.hours}h ${t.mins}m ${t.secs}s</strong>`;
+  else timeStr = `<strong style="color:var(--red)">${t.mins}m ${t.secs}s</strong>`;
+
+  banner.innerHTML=`<div><div style="font-size:.65rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.15rem">Free Trial</div><div>⏳ ${timeStr} remaining</div></div><button class="tbtn" style="font-size:.7rem;padding:.3rem .7rem;white-space:nowrap;flex-shrink:0" onclick="om('pwm')">Upgrade $12/mo</button>`;
+
+  // Tick every second
+  if(!window._trialTick){
+    window._trialTick = setInterval(()=>{
+      if(S.subStatus==='active'){ clearInterval(window._trialTick); window._trialTick=null; const tb=document.getElementById('trial-banner'); if(tb)tb.remove(); return; }
+      const t2=trialTimeLeft();
+      if(t2.expired){ clearInterval(window._trialTick); window._trialTick=null; const tb=document.getElementById('trial-banner'); if(tb)tb.remove(); om('pwm'); return; }
+      showTrialBanner();
+    }, 1000);
   }
 }
 
