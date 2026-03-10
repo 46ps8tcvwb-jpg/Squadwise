@@ -770,6 +770,7 @@ function initSupabase(){
         render();
         checkPaywall();
         showTrialBanner();
+        setTimeout(startOnboard, 700);
       } else if(event==='SIGNED_OUT'){
         SUPA_USER=null;
         S={...S,players:[],subStatus:'trial',trialStart:Date.now(),customerId:'',email:''};
@@ -2846,6 +2847,7 @@ async function signUp(){
       render();
       checkPaywall();
       showTrialBanner();
+      setTimeout(startOnboard, 700);
     } else {
       // Email confirmation required
       switchAuthTab('login');
