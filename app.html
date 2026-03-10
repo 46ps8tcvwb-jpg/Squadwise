@@ -363,6 +363,26 @@ a.drill-watch-btn:hover{background:rgba(255,0,0,.22);border-color:rgba(255,0,0,.
 .drill-section{margin-top:1.4rem;padding-top:1.2rem;border-top:1px solid var(--border)}
 .drill-section-title{font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:800;letter-spacing:.1em;color:var(--green);text-transform:uppercase;display:flex;align-items:center;gap:.5rem;margin-bottom:1rem}
 @media(max-width:600px){.drill-grid{grid-template-columns:1fr}}
+/* ── SESSION PLANNER & BEST XI ── */
+.session-form{background:var(--card2);border:1px solid var(--border2);border-radius:14px;padding:1.5rem;margin-bottom:1.5rem}
+.session-result{background:var(--card2);border:1px solid var(--border2);border-radius:14px;padding:1.5rem}
+.session-field{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem}
+@media(max-width:600px){.session-field{grid-template-columns:1fr}}
+.xi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem}
+.xi-card{background:var(--card2);border:1px solid var(--border2);border-radius:12px;padding:1rem;text-align:center;position:relative}
+.xi-card.starter{border-color:rgba(0,230,118,.35);background:linear-gradient(135deg,rgba(0,230,118,.05),var(--card2))}
+.xi-card.risk{border-color:rgba(255,100,100,.3);background:rgba(255,60,60,.03)}
+.xi-num{font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:800;line-height:1;margin-bottom:.2rem}
+.xi-name{font-size:.82rem;font-weight:700;margin-bottom:.15rem}
+.xi-pos{font-size:.68rem;color:var(--text2)}
+.xi-rating{font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;color:var(--green);margin-top:.3rem}
+.xi-badge{position:absolute;top:.4rem;right:.4rem;font-size:.6rem;padding:.15rem .4rem;border-radius:4px;font-weight:700}
+.xi-badge.fire{background:rgba(255,150,0,.15);color:#ff9800;border:1px solid rgba(255,150,0,.3)}
+.xi-badge.warn{background:rgba(255,60,60,.12);color:#ff6b6b;border:1px solid rgba(255,60,60,.25)}
+.injury-flag{background:rgba(255,60,60,.08);border:1px solid rgba(255,60,60,.2);border-radius:10px;padding:.9rem 1.1rem;margin-bottom:.7rem;display:flex;align-items:flex-start;gap:.7rem}
+.injury-flag-icon{font-size:1.1rem;flex-shrink:0}
+.injury-flag-text{font-size:.8rem;color:var(--text2);line-height:1.5}
+.injury-flag-text strong{color:var(--text)}
 </style>
 </head>
 <body>
@@ -379,6 +399,8 @@ a.drill-watch-btn:hover{background:rgba(255,0,0,.22);border-color:rgba(255,0,0,.
       <div class="nav-i" id="nav-player" onclick="go('player')" style="display:none"><span class="ni">👤</span>Player Profile</div>
       <div class="nav-i" id="nav-compare" onclick="go('compare')"><span class="ni">⚖️</span>Compare Players</div>
       <div class="nav-i" id="nav-log" onclick="go('log')"><span class="ni">📝</span>Log Match</div>
+      <div class="nav-i" id="nav-session" onclick="go('session')"><span class="ni">📋</span>Training Planner</div>
+      <div class="nav-i" id="nav-xi" onclick="go('xi')"><span class="ni">🏆</span>Best XI</div>
       <div class="nav-i" id="nav-settings" onclick="go('settings')"><span class="ni">⚙️</span>Settings</div>
     </div>
     <div class="sb-sec">Squad (<span id="sbc">0</span>)</div>
@@ -782,7 +804,9 @@ function go(v,pid){
   document.querySelectorAll('.nav-i').forEach(el=>el.classList.remove('active'));
   const el=document.getElementById('nav-'+v);if(el)el.classList.add('active');
   if(window.innerWidth<=780){document.getElementById('sidebar').classList.remove('open');document.getElementById('sbov').classList.remove('open');}
-  document.getElementById('aiBtn').style.display='';
+  // Hide AI button on views that manage their own AI
+  const noAIBtn=['session','xi'];
+  document.getElementById('aiBtn').style.display=noAIBtn.includes(v)?'none':'';
   render();
 }
 function toggleSB(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('sbov').classList.toggle('open');}
@@ -795,6 +819,8 @@ function render(){
   if(S.view==='player')return rPlayer(c);
   if(S.view==='compare')return rCompare(c);
   if(S.view==='log')return rLog(c);
+  if(S.view==='session')return rSession(c);
+  if(S.view==='xi')return rXI(c);
   if(S.view==='settings')return rSettings(c);
 }
 
@@ -1065,6 +1091,279 @@ function rLog(c){
 }
 
 // ── SETTINGS ──
+
+// ── SESSION PLANNER VIEW ──
+function rSession(c){
+  if(!isSubscribed()){
+    c.innerHTML=proGate("Training Session Planner","Generate full AI training session plans tailored to your squad's needs.");
+    return;
+  }
+  document.getElementById('tbt').textContent='Training Planner';
+  document.getElementById('aiBtn').style.display='none';
+  c.innerHTML=`
+  <div class="page">
+    <div class="ptitle">📋 <span class="hl">AI Training Planner</span></div>
+    <p style="font-size:.84rem;color:var(--text2);margin-bottom:1.5rem;line-height:1.6">Tell the AI what you want to work on and it'll generate a complete training session plan for your squad.</p>
+    <div class="session-form">
+      <div class="session-field">
+        <div class="fg"><label class="fl">Focus Area</label>
+          <select class="fs" id="sp-focus">
+            <option>Passing & Possession</option>
+            <option>Finishing & Shooting</option>
+            <option>Defending & Pressing</option>
+            <option>Crossing & Wide Play</option>
+            <option>Set Pieces</option>
+            <option>Physical Fitness</option>
+            <option>Goalkeeping</option>
+            <option>Transition Play</option>
+            <option>1v1 Defending</option>
+            <option>Team Shape & Formation</option>
+          </select>
+        </div>
+        <div class="fg"><label class="fl">Session Duration</label>
+          <select class="fs" id="sp-dur">
+            <option>60 minutes</option>
+            <option>75 minutes</option>
+            <option>90 minutes</option>
+            <option>120 minutes</option>
+          </select>
+        </div>
+        <div class="fg"><label class="fl">Player Count</label>
+          <select class="fs" id="sp-count">
+            <option>8–12 players</option>
+            <option>13–16 players</option>
+            <option>17–22 players</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg" style="margin-bottom:1rem"><label class="fl">Age Group / Level</label>
+        <select class="fs" id="sp-level">
+          <option>Youth (U12–U14)</option>
+          <option>Youth (U15–U17)</option>
+          <option>Adult Amateur</option>
+          <option>Adult Semi-Pro</option>
+        </select>
+      </div>
+      <div class="fg" style="margin-bottom:1.2rem"><label class="fl">Specific Focus (optional)</label>
+        <input class="fi" id="sp-notes" placeholder="e.g. we've been struggling with pressing triggers, players drop too deep..." maxlength="200"/>
+      </div>
+      <button class="bpri" onclick="genSession()" id="sp-btn">📋 Generate Session Plan</button>
+    </div>
+    <div id="sp-result" style="display:none" class="session-result">
+      <div id="sp-content"></div>
+    </div>
+  </div>`;
+}
+
+async function genSession(){
+  if(!isSubscribed()){om('pwm');return;}
+  const btn=document.getElementById('sp-btn');
+  btn.disabled=true;btn.textContent='⏳ Generating...';
+  const focus=document.getElementById('sp-focus').value;
+  const dur=document.getElementById('sp-dur').value;
+  const count=document.getElementById('sp-count').value;
+  const level=document.getElementById('sp-level').value;
+  const notes=document.getElementById('sp-notes').value;
+
+  // Build squad context
+  const players=S.players.slice(0,12).map(p=>p.name+' ('+p.pos+')').join(', ');
+
+  const prompt=`You are an elite soccer coaching assistant. Generate a detailed, structured training session plan with the following parameters:
+
+Team: ${S.teamName}
+Focus Area: ${focus}
+Duration: ${dur}
+Player Count: ${count}
+Age/Level: ${level}
+${notes?'Coach Notes: '+notes:''}
+${players?'Squad includes: '+players:''}
+
+Return ONLY valid JSON in this exact format:
+{
+  "title": "Session title",
+  "overview": "1-2 sentence overview",
+  "warmup": {"duration": "X mins", "activities": [{"name":"", "duration":"", "description":"", "coaching_points":""}]},
+  "main": {"duration": "X mins", "activities": [{"name":"", "duration":"", "description":"", "coaching_points":""}]},
+  "game": {"duration": "X mins", "name":"", "description":"", "constraints":"", "coaching_points":""},
+  "cooldown": {"duration": "X mins", "description":""},
+  "key_themes": ["theme1","theme2","theme3"]
+}`;
+
+  try{
+    const raw=await callClaude(prompt,2000);
+    let plan;
+    try{
+      const clean=raw.replace(/```json|```/g,'').trim();
+      plan=JSON.parse(clean);
+    }catch(e){throw new Error('Could not parse session plan — try again');}
+
+    const res=document.getElementById('sp-result');
+    const content=document.getElementById('sp-content');
+    res.style.display='block';
+
+    let html2=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem">
+      <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:800;color:var(--text)">${plan.title||focus+' Session'}</div>
+      <div style="font-size:.78rem;color:var(--text2);margin-top:.2rem">${plan.overview||''}</div></div>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap">${(plan.key_themes||[]).map(t=>`<span style="background:rgba(0,230,118,.1);border:1px solid rgba(0,230,118,.2);color:var(--green);font-size:.65rem;padding:.2rem .5rem;border-radius:4px;font-weight:600">${t}</span>`).join('')}</div>
+    </div>`;
+
+    const renderBlock=(title,icon,items,dur)=>{
+      if(!items)return'';
+      const rows=Array.isArray(items)?items:[items];
+      return`<div style="margin-bottom:1.2rem">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:.95rem;font-weight:800;color:var(--green);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.7rem;display:flex;align-items:center;gap:.5rem">${icon} ${title} <span style="font-size:.7rem;color:var(--text2);font-family:'Inter',sans-serif;font-weight:400;letter-spacing:0">${dur||''}</span></div>
+        ${rows.map(a=>`<div style="background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:.9rem;margin-bottom:.5rem">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.4rem">
+            <div style="font-weight:600;font-size:.85rem">${a.name||a.description||''}</div>
+            <div style="font-size:.7rem;color:var(--text2);flex-shrink:0;margin-left:.5rem">${a.duration||''}</div>
+          </div>
+          ${a.description&&a.name?`<div style="font-size:.78rem;color:var(--text2);line-height:1.5;margin-bottom:.4rem">${a.description}</div>`:''}
+          ${a.coaching_points?`<div style="font-size:.72rem;color:var(--blue);line-height:1.5">💬 ${a.coaching_points}</div>`:''}
+        </div>`).join('')}
+      </div>`;
+    };
+
+    html2+=renderBlock('Warm-Up','🔥',plan.warmup?.activities,plan.warmup?.duration);
+    html2+=renderBlock('Main Activities','⚽',plan.main?.activities,plan.main?.duration);
+    if(plan.game){
+      html2+=`<div style="margin-bottom:1.2rem">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:.95rem;font-weight:800;color:var(--green);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.7rem">🎮 Game / SSG <span style="font-size:.7rem;color:var(--text2);font-family:'Inter',sans-serif;font-weight:400;letter-spacing:0">${plan.game.duration||''}</span></div>
+        <div style="background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:.9rem">
+          <div style="font-weight:600;font-size:.85rem;margin-bottom:.4rem">${plan.game.name||'Small-Sided Game'}</div>
+          <div style="font-size:.78rem;color:var(--text2);line-height:1.5;margin-bottom:.4rem">${plan.game.description||''}</div>
+          ${plan.game.constraints?`<div style="font-size:.72rem;color:var(--yellow);margin-bottom:.3rem">🎯 Constraints: ${plan.game.constraints}</div>`:''}
+          ${plan.game.coaching_points?`<div style="font-size:.72rem;color:var(--blue)">💬 ${plan.game.coaching_points}</div>`:''}
+        </div>
+      </div>`;
+    }
+    if(plan.cooldown){
+      html2+=`<div style="background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:8px;padding:.9rem">
+        <div style="font-size:.75rem;font-weight:600;color:var(--text2);margin-bottom:.3rem">❄️ COOL DOWN ${plan.cooldown.duration||''}</div>
+        <div style="font-size:.78rem;color:var(--text2)">${plan.cooldown.description||''}</div>
+      </div>`;
+    }
+
+    content.innerHTML=html2;
+    btn.disabled=false;btn.textContent='📋 Generate New Plan';
+  }catch(e){
+    toast('Error: '+e.message,'e');
+    btn.disabled=false;btn.textContent='📋 Generate Session Plan';
+  }
+}
+
+// ── BEST XI VIEW ──
+function rXI(c){
+  document.getElementById('tbt').textContent='Best XI';
+  document.getElementById('aiBtn').style.display='none';
+
+  if(!S.players.length){
+    c.innerHTML=`<div class="empty2"><div style="font-size:3rem">🏆</div><div style="font-size:1.1rem;font-weight:600;margin:.5rem 0">No players yet</div><p style="color:var(--muted);font-size:.85rem">Add players and log matches to generate your Best XI</p></div>`;
+    return;
+  }
+
+  // Calculate player scores and injury risk
+  const scored=S.players.map(p=>{
+    const m=p.matches||[];
+    if(!m.length)return{...p,score:0,recentRating:0,trend:'—',riskFlag:false};
+    const recent=m.slice(-5);
+    const avgRating=recent.reduce((s,x)=>s+(parseFloat(x.rating)||0),0)/recent.length;
+    const avgGoals=recent.reduce((s,x)=>s+(x.goals||0),0)/recent.length;
+    const avgAssists=recent.reduce((s,x)=>s+(x.assists||0),0)/recent.length;
+    const passAcc=recent.reduce((s,x)=>s+(x.passAcc||0),0)/recent.length;
+    const score=avgRating*10+(avgGoals*5)+(avgAssists*3)+(passAcc*.1);
+
+    // Injury/fatigue risk: rating drop in last 2 games
+    const riskFlag=m.length>=3&&(
+      (parseFloat(m[m.length-1].rating)||0)<(parseFloat(m[m.length-3].rating)||0)-1.5 ||
+      (m[m.length-1].distance||0)<(m[m.length-3].distance||0)*0.8
+    );
+
+    // Form trend
+    const first=m.slice(0,Math.ceil(m.length/2));
+    const last=m.slice(Math.ceil(m.length/2));
+    const firstAvg=first.reduce((s,x)=>s+(parseFloat(x.rating)||0),0)/first.length;
+    const lastAvg=last.reduce((s,x)=>s+(parseFloat(x.rating)||0),0)/last.length;
+    const trend=lastAvg>firstAvg+0.3?'↑':lastAvg<firstAvg-0.3?'↓':'→';
+
+    return{...p,score,recentRating:avgRating.toFixed(1),trend,riskFlag};
+  }).sort((a,b)=>b.score-a.score);
+
+  const starters=scored.slice(0,11);
+  const bench=scored.slice(11,16);
+  const risks=scored.filter(p=>p.riskFlag);
+
+  let html2=`<div class="page">
+    <div class="ptitle">🏆 <span class="hl">Best XI</span></div>
+    <p style="font-size:.84rem;color:var(--text2);margin-bottom:1.5rem">Based on recent form, average rating and contribution. ${isSubscribed()?'<button class="tbtn" style="font-size:.72rem;padding:.25rem .6rem" onclick="genXIReport()">🤖 AI Analysis</button>':''}</p>`;
+
+  // Injury risk warnings
+  if(risks.length){
+    html2+=`<div style="margin-bottom:1.2rem">`;
+    risks.slice(0,3).forEach(p=>{
+      html2+=`<div class="injury-flag"><div class="injury-flag-icon">⚠️</div><div class="injury-flag-text"><strong>${p.name}</strong> — showing signs of fatigue or form drop. Consider managing minutes.</div></div>`;
+    });
+    html2+=`</div>`;
+  }
+
+  html2+=`<div style="font-family:'Barlow Condensed',sans-serif;font-size:.85rem;font-weight:800;color:var(--green);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.8rem">Starting XI</div>
+  <div class="xi-grid">`;
+
+  starters.forEach((p,i)=>{
+    const isHot=parseFloat(p.recentRating)>=8;
+    html2+=`<div class="xi-card starter">
+      ${isHot?`<div class="xi-badge fire">🔥 Hot</div>`:''}
+      ${p.riskFlag?`<div class="xi-badge warn">⚠️ Rest</div>`:''}
+      <div class="xi-num" style="color:${p.color||'var(--green)'}">${p.number||i+1}</div>
+      <div class="xi-name">${p.name}</div>
+      <div class="xi-pos">${p.pos||'—'}</div>
+      <div class="xi-rating">${p.recentRating} ${p.trend}</div>
+    </div>`;
+  });
+
+  html2+=`</div>`;
+
+  if(bench.length){
+    html2+=`<div style="font-family:'Barlow Condensed',sans-serif;font-size:.85rem;font-weight:800;color:var(--text2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.8rem">Bench</div>
+    <div class="xi-grid">`;
+    bench.forEach((p,i)=>{
+      html2+=`<div class="xi-card">
+        <div class="xi-num" style="color:var(--text2);font-size:1.4rem">${p.number||12+i}</div>
+        <div class="xi-name">${p.name}</div>
+        <div class="xi-pos">${p.pos||'—'}</div>
+        <div class="xi-rating" style="color:var(--text2)">${p.recentRating}</div>
+      </div>`;
+    });
+    html2+=`</div>`;
+  }
+
+  html2+=`<div id="xi-report-result"></div></div>`;
+  c.innerHTML=html2;
+}
+
+async function genXIReport(){
+  if(!isSubscribed()){om('pwm');return;}
+  const res=document.getElementById('xi-report-result');
+  if(!res)return;
+  res.innerHTML='<div style="text-align:center;padding:2rem;color:var(--text2)">🤖 Generating AI analysis...</div>';
+  const scored=S.players.map(p=>{
+    const m=(p.matches||[]).slice(-5);
+    const avgR=m.length?m.reduce((s,x)=>s+(parseFloat(x.rating)||0),0)/m.length:0;
+    return{name:p.name,pos:p.pos,avgRating:avgR.toFixed(1),goals:m.reduce((s,x)=>s+(x.goals||0),0),assists:m.reduce((s,x)=>s+(x.assists||0),0)};
+  }).sort((a,b)=>b.avgRating-a.avgRating);
+  const playerLines=scored.slice(0,14).map(function(p){return p.name+' ('+p.pos+') - Rating: '+p.avgRating+', Goals: '+p.goals+', Assists: '+p.assists;}).join('\n');
+  const prompt='You are a soccer coaching analyst. Provide tactical recommendations for team selection.\n\nTeam: '+S.teamName+'\nPlayers by recent form:\n'+playerLines+'\n\nWrite a concise tactical analysis (200-250 words) covering:\n1. Recommended formation and why\n2. Key players to build around\n3. Any selection concerns or risks\n4. One tactical suggestion for next match\n\nKeep it practical and coach-focused. No JSON, just plain text with clear section headers.';
+
+  try{
+    const text=await callClaude(prompt,800);
+    res.innerHTML=`<div style="background:var(--card2);border:1px solid rgba(0,230,118,.2);border-radius:12px;padding:1.3rem;margin-top:1rem">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:800;color:var(--green);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.8rem">🤖 AI Tactical Analysis</div>
+      <div style="font-size:.83rem;color:var(--text2);line-height:1.75;white-space:pre-line">${text}</div>
+    </div>`;
+  }catch(e){
+    res.innerHTML=`<div style="color:var(--red);font-size:.82rem;padding:1rem">${e.message}</div>`;
+  }
+}
+
 function rSettings(c){
   document.getElementById('tbt').textContent='Settings';document.getElementById('tbb').textContent='Config';document.getElementById('aiBtn').style.display='none';
   c.innerHTML=`<div class="page">
