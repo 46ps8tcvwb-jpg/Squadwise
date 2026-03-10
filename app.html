@@ -772,6 +772,7 @@ function initSupabase(){
         showTrialBanner();
         setTimeout(startOnboard, 700);
       } else if(event==='SIGNED_OUT'){
+        if(document.getElementById('authm').style.display==='flex')return;
         SUPA_USER=null;
         S={...S,players:[],subStatus:'trial',trialStart:Date.now(),customerId:'',email:''};
         render();
@@ -2875,13 +2876,11 @@ async function forgotPassword(){
   document.getElementById('auth-err').style.display='block';
 }
 async function signOut(){
-  showConfirm('Sign Out?','You will be signed out of your account.',async function(){
-    try { await SUPA_CLIENT.auth.signOut(); } catch(e){ console.warn('signOut error',e); }
-    localStorage.removeItem(SK);
-    localStorage.removeItem('squadwise_apikey');
-    localStorage.removeItem('sw_onboarded');
-    window.location.reload();
-  });
+  localStorage.removeItem(SK);
+  localStorage.removeItem('squadwise_apikey');
+  localStorage.removeItem('sw_onboarded');
+  try { await SUPA_CLIENT.auth.signOut(); } catch(e){}
+  window.location.href=window.location.href;
 }
 function openAuth(){om('authm');switchAuthTab('login');}
 
