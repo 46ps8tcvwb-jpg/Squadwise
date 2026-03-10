@@ -802,7 +802,15 @@ const fd=d=>new Date(d+'T00:00:00').toLocaleDateString('en-US',{month:'short',da
 const ts=(p,k)=>p.matches.reduce((a,x)=>a+(Number(x[k])||0),0);
 const as2=(p,k)=>p.matches.length?p.matches.reduce((a,x)=>a+(Number(x[k])||0),0)/p.matches.length:0;
 const ar=p=>p.matches.length?(p.matches.reduce((a,x)=>a+Number(x.rating),0)/p.matches.length).toFixed(1):'–';
-function ov2(p){if(!p.matches.length)return 0;const r=parseFloat(ar(p));return Math.min(99,Math.round((r/10)*82+(Math.min(ts(p,'goals'),20)/20)*12+(as2(p,'passAcc')/100)*5));}
+function ov2(p){
+  if(!p.matches.length)return 0;
+  const r=parseFloat(ar(p));
+  const gScore=(Math.min(ts(p,'goals'),25)/25)*15;
+  const aScore=(Math.min(ts(p,'assists'),20)/20)*10;
+  const paScore=(as2(p,'passAcc')/100)*8;
+  const tScore=(Math.min(as2(p,'tackles'),6)/6)*7;
+  return Math.min(99,Math.round((r/10)*60+gScore+aScore+paScore+tScore));
+}
 // ── SUBSCRIPTION STATUS ──
 function trialDaysLeft(){
   if(!S.trialStart) return 7;
@@ -1421,12 +1429,29 @@ function rXI(c){
   const scored=S.players.map(p=>{
     const m=p.matches||[];
     if(!m.length)return{...p,score:0,recentRating:0,trend:'—',riskFlag:false};
-    const recent=m.slice(-5);
+    const recent=m.slice(0,Math.min(5,m.length)); // newest-first: slice from front
     const avgRating=recent.reduce((s,x)=>s+(parseFloat(x.rating)||0),0)/recent.length;
     const avgGoals=recent.reduce((s,x)=>s+(x.goals||0),0)/recent.length;
     const avgAssists=recent.reduce((s,x)=>s+(x.assists||0),0)/recent.length;
     const passAcc=recent.reduce((s,x)=>s+(x.passAcc||0),0)/recent.length;
-    const score=avgRating*10+(avgGoals*5)+(avgAssists*3)+(passAcc*.1);
+    const avgTackles=recent.reduce((s,x)=>s+(x.tackles||0),0)/recent.length;
+    // Position-aware scoring
+    const pos=(p.pos||'').toLowerCase();
+    let score=avgRating*10; // base: rating matters for everyone
+    if(pos.includes('keeper')||pos==='gk'){
+      // GK: rating is primary, wins bonus
+      const wins=recent.filter(x=>x.result==='W').length;
+      score=avgRating*12+wins*2;
+    } else if(pos.includes('back')||pos.includes('defend')){
+      // Defenders: rating + tackles heavily weighted, assists bonus
+      score=avgRating*10+avgTackles*4+avgAssists*2+(passAcc*0.05);
+    } else if(pos.includes('mid')){
+      // Midfielders: balanced — rating + assists + pass accuracy + some goals
+      score=avgRating*9+avgAssists*4+avgGoals*3+(passAcc*0.08);
+    } else {
+      // Forwards/Wingers: goals primary, assists secondary
+      score=avgRating*8+avgGoals*6+avgAssists*3;
+    }
 
     // Injury/fatigue risk: m[0]=most recent, m[2]=3 games ago (newest-first storage)
     // Flag if: rating dropped 1.5+ pts in last 3 games OR distance dropped 20%+ in last 3 games
@@ -1873,8 +1898,22 @@ function clrAll(){if(confirm('⚠️ Delete ALL data? This cannot be undone.')){
 // ── VISUALIZATIONS ──
 function getRadar(p){
   if(!p.matches.length)return[{label:'Shooting',val:0},{label:'Passing',val:0},{label:'Defending',val:0},{label:'Dribbling',val:0},{label:'Pace',val:0},{label:'Stamina',val:0}];
-  const ag=as2(p,'goals'),as3=as2(p,'shots'),ap=as2(p,'passAcc'),at=as2(p,'tackles'),ar2=as2(p,'rating'),ad=as2(p,'distance');
-  return[{label:'Shooting',val:Math.min(99,Math.round(ag*22+as3*5+10))},{label:'Passing',val:Math.round(ap)},{label:'Defending',val:Math.min(99,Math.round(at*13+28))},{label:'Dribbling',val:Math.min(99,Math.round(ar2*7.5+15))},{label:'Pace',val:Math.min(99,Math.round(ad*4+25))},{label:'Stamina',val:Math.min(99,Math.round(ap*0.5+at*3.5+ad*2.5))}];
+  const ag=as2(p,'goals'),as3=as2(p,'shots'),ap=as2(p,'passAcc'),at=as2(p,'tackles'),ar2=as2(p,'rating'),ad=as2(p,'distance'),aas=as2(p,'assists');
+  // Shooting: goals/game (primary) + shots/game (secondary) — capped at 99
+  const shooting=Math.min(99,Math.round(ag*20+as3*4+8));
+  // Passing: pass accuracy % directly
+  const passing=Math.round(Math.min(99,ap));
+  // Defending: tackles/game — meaningful defensive metric
+  const defending=Math.min(99,Math.round(at*12+25));
+  // Dribbling: assists/game + shot conversion (goals/shots ratio) — creative/technical proxy
+  const shotConv=as3>0?Math.round((ag/as3)*100):50;
+  const dribbling=Math.min(99,Math.round(aas*18+shotConv*0.3+20));
+  // Pace: distance/game — km covered is the best pace/work-rate proxy we have
+  const pace=Math.min(99,Math.round(Math.max(0,(ad-6)*12+30)));
+  // Stamina: distance/game weighted more heavily + minutes played ratio
+  const avgMins=as2(p,'minutes');
+  const stamina=Math.min(99,Math.round(ad*7+avgMins*0.25));
+  return[{label:'Shooting',val:shooting},{label:'Passing',val:passing},{label:'Defending',val:defending},{label:'Dribbling',val:dribbling},{label:'Pace',val:pace},{label:'Stamina',val:stamina}];
 }
 function renderRadar(data,color){
   const cx=120,cy=120,r=80,n=data.length;
