@@ -74,6 +74,18 @@ button,input,select,textarea{font-family:'Barlow',sans-serif}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:4px}
 
+/* ── MOBILE BOTTOM NAV ── */
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:250;background:var(--pitch2);border-top:1px solid var(--border2);padding:0;padding-bottom:env(safe-area-inset-bottom)}
+.bottom-nav-inner{display:grid;grid-template-columns:repeat(5,1fr);height:56px}
+.bn-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;color:var(--muted);transition:color .2s;font-size:.6rem;font-weight:500;letter-spacing:.02em;-webkit-tap-highlight-color:transparent;padding:.3rem 0}
+.bn-item.active{color:var(--green)}
+.bn-icon{font-size:1.15rem;line-height:1}
+@media(max-width:780px){
+  .bottom-nav{display:block}
+  .content-area{padding-bottom:64px}
+  #trial-banner{bottom:64px!important}
+}
+
 .app{display:grid;grid-template-columns:var(--sw) 1fr;grid-template-rows:var(--th) 1fr;min-height:100vh}
 .sidebar{grid-row:1/-1;background:var(--pitch2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;width:var(--sw);height:100vh;overflow-y:auto;overflow-x:hidden;z-index:200;transition:transform .3s}
 .topbar{grid-column:2;background:var(--pitch2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;position:sticky;top:0;z-index:100;height:var(--th)}
@@ -388,7 +400,8 @@ a.drill-watch-btn:hover{background:rgba(255,0,0,.22);border-color:rgba(255,0,0,.
 .ql-stat{background:var(--card3);border:1px solid var(--border2);border-radius:12px;padding:1rem;text-align:center}
 .ql-label{font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text2);margin-bottom:.5rem}
 .ql-controls{display:flex;align-items:center;justify-content:center;gap:.6rem}
-.ql-btn{width:36px;height:36px;border-radius:50%;border:1px solid var(--border2);background:var(--card2);color:var(--text);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.ql-btn{width:44px;height:44px;border-radius:50%;border:1px solid var(--border2);background:var(--card2);color:var(--text);font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.ql-btn:active{transform:scale(.92);background:rgba(0,230,118,.15)}
 .ql-btn:hover{border-color:var(--green);color:var(--green)}
 .ql-val{font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:800;min-width:2rem;color:var(--text)}
 .ql-slider-wrap{display:flex;align-items:center;gap:.7rem}
@@ -414,6 +427,22 @@ a.drill-watch-btn:hover{background:rgba(255,0,0,.22);border-color:rgba(255,0,0,.
 .goal-card{background:var(--card2);border:1px solid var(--border2);border-radius:12px;padding:1rem;margin-bottom:.7rem}
 .goal-progress{height:6px;border-radius:3px;background:var(--border2);margin:.5rem 0;overflow:hidden}
 .goal-bar{height:100%;border-radius:3px;background:var(--green);transition:width .5s}
+/* ── CUSTOM CONFIRM ── */
+.confirm-modal{max-width:340px!important;text-align:center;padding:2rem!important}
+.confirm-icon{font-size:2.5rem;margin-bottom:.5rem}
+.confirm-title{font-family:'Barlow Condensed',sans-serif;font-size:1.3rem;font-weight:700;margin-bottom:.4rem}
+.confirm-desc{font-size:.82rem;color:var(--muted);margin-bottom:1.5rem;line-height:1.6}
+.confirm-btns{display:flex;gap:.7rem;justify-content:center}
+/* ── TOOLTIP ── */
+.tip{position:relative;cursor:help}
+.tip::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--card3);border:1px solid var(--border2);color:var(--text2);font-size:.7rem;padding:.3rem .6rem;border-radius:6px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s;z-index:500;font-family:'Barlow',sans-serif;font-weight:400;max-width:200px;white-space:normal;text-align:center}
+.tip:hover::after{opacity:1}
+/* ── SKELETON LOADER ── */
+.skeleton{background:linear-gradient(90deg,var(--card2) 25%,var(--card3) 50%,var(--card2) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:6px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+/* ── PULSE SAVE ── */
+@keyframes savePulse{0%{box-shadow:0 0 0 0 rgba(0,230,118,.4)}70%{box-shadow:0 0 0 10px rgba(0,230,118,0)}100%{box-shadow:0 0 0 0 rgba(0,230,118,0)}}
+.save-pulse{animation:savePulse .6s ease-out}
 /* ── ONBOARDING ── */
 .onboard-step{background:var(--card2);border:1px solid var(--border2);border-radius:14px;padding:1.5rem;margin-bottom:1rem;display:flex;align-items:flex-start;gap:1rem}
 .onboard-icon{font-size:1.8rem;flex-shrink:0}
@@ -465,6 +494,27 @@ a.drill-watch-btn:hover{background:rgba(255,0,0,.22);border-color:rgba(255,0,0,.
 </div>
 
 <div class="sbov" id="sbov" onclick="toggleSB()"></div>
+<nav class="bottom-nav" id="bottom-nav">
+  <div class="bottom-nav-inner">
+    <div class="bn-item active" id="bn-team" onclick="go('team')"><div class="bn-icon">🏟️</div><div>Team</div></div>
+    <div class="bn-item" id="bn-log" onclick="go('log')"><div class="bn-icon">📝</div><div>Log</div></div>
+    <div class="bn-item" id="bn-xi" onclick="go('xi')"><div class="bn-icon">🏆</div><div>Best XI</div></div>
+    <div class="bn-item" id="bn-session" onclick="go('session')"><div class="bn-icon">📋</div><div>Plans</div></div>
+    <div class="bn-item" id="bn-settings" onclick="go('settings')"><div class="bn-icon">⚙️</div><div>Settings</div></div>
+  </div>
+</nav>
+<!-- CONFIRM DIALOG -->
+<div class="ov" id="cfmov">
+  <div class="modal confirm-modal">
+    <div class="confirm-icon" id="cfm-icon">⚠️</div>
+    <div class="confirm-title" id="cfm-title">Are you sure?</div>
+    <div class="confirm-desc" id="cfm-desc"></div>
+    <div class="confirm-btns">
+      <button class="bcan" onclick="cm('cfmov')" id="cfm-cancel">Cancel</button>
+      <button class="bdng" id="cfm-ok">Delete</button>
+    </div>
+  </div>
+</div>
 <div class="tc2" id="tc"></div>
 
 <!-- ADD/EDIT PLAYER -->
@@ -851,6 +901,10 @@ function go(v,pid){
   if(v==='player'&&S.selectedId)document.getElementById('nav-player').style.display='flex';
   document.querySelectorAll('.nav-i').forEach(el=>el.classList.remove('active'));
   const el=document.getElementById('nav-'+v);if(el)el.classList.add('active');
+  // Sync bottom nav
+  document.querySelectorAll('.bn-item').forEach(el=>el.classList.remove('active'));
+  const bnMap={team:'bn-team',log:'bn-log',xi:'bn-xi',session:'bn-session',settings:'bn-settings',player:'bn-team',compare:'bn-team',prematch:'bn-xi'};
+  const bnEl=document.getElementById(bnMap[v]||'bn-team');if(bnEl)bnEl.classList.add('active');
   if(window.innerWidth<=780){document.getElementById('sidebar').classList.remove('open');document.getElementById('sbov').classList.remove('open');}
   // Hide AI button on views that manage their own AI
   const noAIBtn=['session','xi'];
@@ -1725,10 +1779,12 @@ function saveSession(plan,title){
   toast('Session saved to history ✅','s');
 }
 function delSession(id){
+  showConfirm('Delete Session','This saved training plan will be permanently deleted.',function(){
   const sessions=getSessions().filter(s=>s.id!==id);
   localStorage.setItem('squadwise_sessions',JSON.stringify(sessions));
   toast('Session deleted','i');
   go('session');
+  },'🗑️');
 }
 
 // ── ONBOARDING CHECK ──
@@ -1794,9 +1850,10 @@ function renderSeasonGoals(p){
 function rSettings(c){
   document.getElementById('tbt').textContent='Settings';document.getElementById('tbb').textContent='Config';document.getElementById('aiBtn').style.display='none';
   c.innerHTML=`<div class="page">
+    <div class="ptitle">⚙️ <span class="hl">Settings</span></div>
     <div class="two-c">
       <div class="card cp">
-        <div class="ctitle">⚙️ <span class="hl">Team Settings</span></div>
+        <div class="ctitle">🏟️ <span class="hl">Team Settings</span></div>
         <div class="fg" style="margin-bottom:1rem"><label class="fl">Team Name</label><input class="fi" id="st" value="${S.teamName}" maxlength="40"/></div>
         <div class="fg" style="margin-bottom:1.2rem"><label class="fl">Season</label><input class="fi" id="ss" value="${S.season}" maxlength="20"/></div>
         <button class="bpri" onclick="saveSt()">Save Settings</button>
@@ -1893,7 +1950,7 @@ function fillSettingsDynamic(){
     sr.innerHTML=statusHTML;
   }
 }
-function clrAll(){if(confirm('⚠️ Delete ALL data? This cannot be undone.')){localStorage.removeItem(SK);S.players=[];S.selectedId=null;S.view='team';toast('All data cleared','i');render();}}
+function clrAll(){showConfirm('Clear All Data?','This will permanently delete all players, matches and settings. This cannot be undone.',function(){localStorage.removeItem(SK);S.players=[];S.selectedId=null;S.view='team';toast('All data cleared','i');render();},'🗑️');}
 
 // ── VISUALIZATIONS ──
 function getRadar(p){
@@ -1926,7 +1983,18 @@ function renderRadar(data,color){
   return`<svg width="240" height="240" viewBox="0 0 240 240">${grids}${axes}<polygon points="${poly(vals)}" fill="${color}1a" stroke="${color}" stroke-width="1.5"/>${vals.map(([x,y])=>`<circle cx="${x}" cy="${y}" r="2.5" fill="${color}"/>`).join('')}${lbs}</svg>`;
 }
 function renderBars(data,color){
-  return data.map(d=>{const col=d.val>=70?color:d.val>=50?'var(--yellow)':'var(--red)';return`<div class="mbr"><div class="mbl">${d.label}</div><div class="mbt"><div class="mbf" data-w="${d.val}%" style="width:0%;background:${col}"></div></div><div class="mbv" style="color:${col}">${d.val}</div></div>`;}).join('');
+  const tips={
+    'Shooting':'Based on goals and shots per game',
+    'Passing':'Based on pass accuracy %',
+    'Defending':'Based on tackles per game',
+    'Dribbling':'Based on assists and shot conversion',
+    'Pace':'Based on distance covered per game (km)',
+    'Stamina':'Based on distance and minutes played'
+  };
+  return data.map(d=>{
+    const col=d.val>=70?color:d.val>=50?'var(--yellow)':'var(--red)';
+    return '<div class="mbr"><div class="mbl tip" data-tip="'+tips[d.label]+'">'+d.label+'</div><div class="mbt"><div class="mbf" data-w="'+d.val+'%" style="width:0%;background:'+col+'"></div></div><div class="mbv" style="color:'+col+'">'+d.val+'</div></div>';
+  }).join('');
 }
 function renderSpk(matches){
   const rs=matches.map(m=>m.rating),mn=Math.min(...rs,5),mx=Math.max(...rs,8),rng=mx-mn||1;
@@ -1987,10 +2055,11 @@ function saveP(){
 }
 function delP(){
   const p=S.players.find(x=>x.id===S.editPid);if(!p)return;
-  if(!confirm(`Remove ${p.name}? All data deleted.`))return;
+  showConfirm('Remove '+p.name+'?','All match history and data for this player will be permanently deleted.',function(){
   S.players=S.players.filter(x=>x.id!==S.editPid);
   if(S.selectedId===S.editPid)S.selectedId=S.players[0]?.id||null;
   save();toast(`${p.name} removed`,'i');cm('pmov');go('team');
+  },'👤');
 }
 function openLogM(pid){
   const sel=document.getElementById('mm-pl');
@@ -2015,12 +2084,24 @@ function saveM(){
     passAcc:parseInt(document.getElementById('mm-pp').value)||75,tackles:parseInt(document.getElementById('mm-t').value)||0,
     distance:parseFloat(document.getElementById('mm-di').value)||9.0,minutes:parseInt(document.getElementById('mm-m').value)||90,
     rating,notes:document.getElementById('mm-n').value.trim()};
-  p.matches.unshift(e);S.selectedId=pid;save();toast(`Match vs ${opp} logged!`,'s');cm('mmov');go('player',pid);
+  p.matches.unshift(e);S.selectedId=pid;save();toast('✅ Match vs '+opp+' logged!','s');cm('mmov');go('player',pid);
 }
 function delM(pid,mid){
-  if(!confirm('Delete this match?'))return;
-  const p=S.players.find(x=>x.id===pid);if(!p)return;
-  p.matches=p.matches.filter(x=>x.id!==mid);save();toast('Match deleted','i');render();
+  showConfirm('Delete Match','This match will be permanently deleted.',function(){
+    const p=S.players.find(x=>x.id===pid);if(!p)return;
+    p.matches=p.matches.filter(x=>x.id!==mid);save();toast('Match deleted','i');render();
+  },'🗑️');
+}
+
+// ── CUSTOM CONFIRM ──
+function showConfirm(title, desc, onOk, icon){
+  document.getElementById('cfm-title').textContent=title||'Are you sure?';
+  document.getElementById('cfm-desc').textContent=desc||'';
+  document.getElementById('cfm-icon').textContent=icon||'⚠️';
+  const btn=document.getElementById('cfm-ok');
+  btn.textContent=title&&title.toLowerCase().includes('delete')?'Delete':'Confirm';
+  btn.onclick=function(){cm('cfmov');if(onOk)onOk();};
+  om('cfmov');
 }
 
 // ── SUBSCRIPTION ──
@@ -2078,6 +2159,22 @@ async function callClaude(prompt, maxTokens=1800){
   const data = await res.json();
   return data.content?.find(b=>b.type==='text')?.text || 'No response received.';
 }
+
+// ── SWIPE GESTURES (mobile back navigation) ──
+(function(){
+  let sx=0,sy=0;
+  document.addEventListener('touchstart',function(e){
+    sx=e.touches[0].clientX;sy=e.touches[0].clientY;
+  },{passive:true});
+  document.addEventListener('touchend',function(e){
+    const dx=e.changedTouches[0].clientX-sx;
+    const dy=e.changedTouches[0].clientY-sy;
+    if(dx>60&&Math.abs(dy)<40&&sx<40){
+      // Swipe right from left edge = back
+      if(S.view==='player')go('team');
+    }
+  },{passive:true});
+})();
 
 // ── FORMAT AI REPORT TEXT (headings → styled HTML) ──
 function formatReport(text){
@@ -2196,6 +2293,8 @@ function renderDrillCards(drills, prefix='drill'){
 
 // ── MAIN AI ANALYSIS ──
 async function runAI(){
+  const btn=document.getElementById('aiBtn');
+  if(btn){btn.disabled=true;btn.textContent='⏳ Thinking...';}
   document.getElementById('aiBtn').style.display='';
   if(S.view==='team'){await runTeamAI();return;}
   if(S.view!=='player')return;
@@ -2205,8 +2304,7 @@ async function runAI(){
   const p=S.players.find(x=>x.id===S.selectedId);
   if(!p||!p.matches.length){toast('Log at least one match first','e');return;}
 
-  const btn=document.getElementById('aiBtn');
-  btn.disabled=true;btn.textContent='⏳ Analysing...';
+  if(btn){btn.disabled=true;btn.textContent='⏳ Analysing...';}
 
   const panel=document.getElementById('aipanel');
   if(!panel){btn.disabled=false;btn.textContent='🤖 AI Analysis';return;}
@@ -2423,7 +2521,7 @@ function saveApiKey(){
   cm('akim');render();
 }
 function clearApiKey(){
-  if(!confirm('Remove your API key?'))return;
+  // confirmed via custom modal below
   try{localStorage.removeItem('squadwise_apikey');}catch(e){}
   S.userApiKey='';
   toast('API key removed','i');render();
@@ -2431,7 +2529,7 @@ function clearApiKey(){
 function promptApiKey(){om('akim');setTimeout(()=>{const el=document.getElementById('aki');if(el&&S.userApiKey)el.value=S.userApiKey;},50);}
 async function cancelSub(){
   if(!S.customerId){ toast('No subscription found to cancel','e'); return; }
-  if(!confirm('Manage your Squadwise Pro subscription?\n\nYou can cancel or update your billing details.')) return;
+  showConfirm('Manage Subscription','You can cancel or update your billing details in the Stripe portal.',async function(){
   try {
     const res = await fetch('/api/cancel-subscription', {
       method: 'POST',
@@ -2444,6 +2542,7 @@ async function cancelSub(){
   } catch(e) {
     toast('Error: ' + e.message, 'e');
   }
+  },'💳');
 }
 
 
