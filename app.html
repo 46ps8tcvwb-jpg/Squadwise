@@ -2875,12 +2875,12 @@ async function forgotPassword(){
   document.getElementById('auth-err').textContent='✓ Password reset email sent! Check your inbox.';
   document.getElementById('auth-err').style.display='block';
 }
-async function signOut(){
+function signOut(){
+  try{SUPA_CLIENT.auth.signOut();}catch(e){}
   localStorage.removeItem(SK);
   localStorage.removeItem('squadwise_apikey');
   localStorage.removeItem('sw_onboarded');
-  try { await SUPA_CLIENT.auth.signOut(); } catch(e){}
-  window.location.href=window.location.href;
+  setTimeout(function(){window.location.reload();},300);
 }
 function openAuth(){om('authm');switchAuthTab('login');}
 
