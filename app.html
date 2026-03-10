@@ -454,25 +454,25 @@ a.drill-watch-btn:hover{background:rgba(255,0,0,.22);border-color:rgba(255,0,0,.
 <div class="app">
   <aside class="sidebar" id="sidebar">
     <div class="sb-logo">
-      <span style="font-size:1.5rem">⚽</span>
+      <span class="ico" style="width:24px;height:24px" data-ico="ball"></span>
       <div><div class="sb-logo-t">Squadwise</div><div class="sb-logo-s">Coach Analytics</div></div>
     </div>
     <div>
       <div class="sb-sec">Menu</div>
-      <div class="nav-i active" id="nav-team" onclick="go('team')"><span class="ni">🏟️</span>Team Overview</div>
-      <div class="nav-i" id="nav-player" onclick="go('player')" style="display:none"><span class="ni">👤</span>Player Profile</div>
-      <div class="nav-i" id="nav-compare" onclick="go('compare')"><span class="ni">⚖️</span>Compare Players</div>
-      <div class="nav-i" id="nav-log" onclick="go('log')"><span class="ni">📝</span>Log Match</div>
-      <div class="nav-i" id="nav-session" onclick="go('session')"><span class="ni">📋</span>Training Planner</div>
-      <div class="nav-i" id="nav-xi" onclick="go('xi')"><span class="ni">🏆</span>Best XI</div>
-      <div class="nav-i" id="nav-prematch" onclick="go('prematch')"><span class="ni">⚡</span>Pre-Match Brief</div>
-      <div class="nav-i" id="nav-settings" onclick="go('settings')"><span class="ni">⚙️</span>Settings</div>
+      <div class="nav-i active" id="nav-team" onclick="go('team')"><span class="ni"><span class="ico" style="width:16px;height:16px" data-ico="pitch"></span></span>Team Overview</div>
+      <div class="nav-i" id="nav-player" onclick="go('player')" style="display:none"><span class="ni"><span class="ico" style="width:16px;height:16px" data-ico="player"></span></span>Player Profile</div>
+      <div class="nav-i" id="nav-compare" onclick="go('compare')"><span class="ni"><span class="ico" style="width:16px;height:16px" data-ico="compare"></span></span>Compare Players</div>
+      <div class="nav-i" id="nav-log" onclick="go('log')"><span class="ni"><span class="ico" style="width:16px;height:16px" data-ico="log"></span></span>Log Match</div>
+      <div class="nav-i" id="nav-session" onclick="go('session')"><span class="ni"><span class="ico" style="width:16px;height:16px" data-ico="session"></span></span>Training Planner</div>
+      <div class="nav-i" id="nav-xi" onclick="go('xi')"><span class="ni"><span class="ico" style="width:16px;height:16px" data-ico="xi"></span></span>Best XI</div>
+      <div class="nav-i" id="nav-prematch" onclick="go('prematch')"><span class="ni"><span class="ico" style="width:16px;height:16px" data-ico="rocket"></span></span>Pre-Match Brief</div>
+      <div class="nav-i" id="nav-settings" onclick="go('settings')"><span class="ni"><span class="ico" style="width:16px;height:16px" data-ico="settings"></span></span>Settings</div>
     </div>
     <div class="sb-sec">Squad (<span id="sbc">0</span>)</div>
     <div class="sb-players" id="sbp"></div>
-    <div style="padding:0 .8rem .3rem"><button class="sb-add" onclick="openAddP()">＋ Add Player</button></div>
+    <div style="padding:0 .8rem .3rem"><button class="sb-add" onclick="openAddP()"><span class="ico" style="width:15px;height:15px" data-ico="add"></span> Add Player</button></div>
     <div class="sb-plan" id="sbplan" onclick="go('settings')">
-      <div class="sb-pn" id="sbpn">⚡ FREE PLAN</div>
+      <div class="sb-pn" id="sbpn"><span class="ico" style="width:16px;height:16px" data-ico="rocket"></span> FREE PLAN</div>
       <div class="sb-ps" id="sbps">Upgrade for AI features</div>
     </div>
     <div class="sb-foot">Squadwise v3.0 · Data saved locally<br/>AI powered by Claude · Anthropic</div>
@@ -485,8 +485,8 @@ a.drill-watch-btn:hover{background:rgba(255,0,0,.22);border-color:rgba(255,0,0,.
     </div>
     <div class="tb-r" id="tbr">
       <div class="tb-badge" id="tbb">2024–25</div>
-      <button class="tbtn" onclick="exportCSV()">⬇ Export</button>
-      <button class="tbtn pri" id="aiBtn" onclick="runAI()">🤖 AI Report</button>
+      <button class="tbtn" onclick="exportCSV()"><span class="ico" style="width:14px;height:14px" data-ico="export"></span> Export</button>
+      <button class="tbtn pri" id="aiBtn" onclick="runAI()"><span class="ico" style="width:16px;height:16px" data-ico="ai"></span> AI Report</button>
     </div>
   </header>
 
@@ -496,17 +496,17 @@ a.drill-watch-btn:hover{background:rgba(255,0,0,.22);border-color:rgba(255,0,0,.
 <div class="sbov" id="sbov" onclick="toggleSB()"></div>
 <nav class="bottom-nav" id="bottom-nav">
   <div class="bottom-nav-inner">
-    <div class="bn-item active" id="bn-team" onclick="go('team')"><div class="bn-icon">🏟️</div><div>Team</div></div>
-    <div class="bn-item" id="bn-log" onclick="go('log')"><div class="bn-icon">📝</div><div>Log</div></div>
-    <div class="bn-item" id="bn-xi" onclick="go('xi')"><div class="bn-icon">🏆</div><div>Best XI</div></div>
-    <div class="bn-item" id="bn-session" onclick="go('session')"><div class="bn-icon">📋</div><div>Plans</div></div>
-    <div class="bn-item" id="bn-settings" onclick="go('settings')"><div class="bn-icon">⚙️</div><div>Settings</div></div>
+    <div class="bn-item active" id="bn-team" onclick="go('team')"><div class="bn-icon">${ico('pitch',18)}</div><div>Team</div></div>
+    <div class="bn-item" id="bn-log" onclick="go('log')"><div class="bn-icon">${ico('log',18)}</div><div>Log</div></div>
+    <div class="bn-item" id="bn-xi" onclick="go('xi')"><div class="bn-icon">${ico('xi',18)}</div><div>Best XI</div></div>
+    <div class="bn-item" id="bn-session" onclick="go('session')"><div class="bn-icon">${ico('session',18)}</div><div>Plans</div></div>
+    <div class="bn-item" id="bn-settings" onclick="go('settings')"><div class="bn-icon">${ico('settings',18)}</div><div>Settings</div></div>
   </div>
 </nav>
 <!-- CONFIRM DIALOG -->
 <div class="ov" id="cfmov">
   <div class="modal confirm-modal">
-    <div class="confirm-icon" id="cfm-icon">⚠️</div>
+    <div class="confirm-icon" id="cfm-icon"><span class="ico" style="width:16px;height:16px" data-ico="warn"></span></div>
     <div class="confirm-title" id="cfm-title">Are you sure?</div>
     <div class="confirm-desc" id="cfm-desc"></div>
     <div class="confirm-btns">
@@ -520,7 +520,7 @@ a.drill-watch-btn:hover{background:rgba(255,0,0,.22);border-color:rgba(255,0,0,.
 <!-- ADD/EDIT PLAYER -->
 <div class="ov" id="pmov">
   <div class="modal">
-    <div class="mtitle" id="pmt">➕ Add Player</div>
+    <div class="mtitle" id="pmt">${ico('add',15)} Add Player</div>
     <div class="fr o"><div class="fg"><label class="fl">Full Name *</label><input class="fi" id="pm-n" placeholder="e.g. Marcus Thompson" maxlength="50"/></div></div>
     <div class="fr t">
       <div class="fg"><label class="fl">Jersey #</label><input class="fi" id="pm-nb" type="number" min="1" max="99" placeholder="10"/></div>
@@ -540,7 +540,7 @@ a.drill-watch-btn:hover{background:rgba(255,0,0,.22);border-color:rgba(255,0,0,.
     </div>
     <div class="mact">
       <button class="bcan" onclick="cm('pmov')">Cancel</button>
-      <button class="bdng" id="pm-del" onclick="delP()" style="display:none">🗑 Remove</button>
+      <button class="bdng" id="pm-del" onclick="delP()" style="display:none"><span class="ico" style="width:14px;height:14px" data-ico="trash"></span> Remove</button>
       <button class="bpri" onclick="saveP()">Save Player</button>
     </div>
   </div>
@@ -549,7 +549,7 @@ a.drill-watch-btn:hover{background:rgba(255,0,0,.22);border-color:rgba(255,0,0,.
 <!-- LOG MATCH -->
 <div class="ov" id="mmov">
   <div class="modal">
-    <div class="mtitle">📝 Log Match</div>
+    <div class="mtitle">${ico('log',15)} Log Match</div>
     <div class="fr">
       <div class="fg"><label class="fl">Player *</label><select class="fs" id="mm-pl"></select></div>
       <div class="fg"><label class="fl">Date *</label><input class="fi" id="mm-d" type="date"/></div>
@@ -560,19 +560,19 @@ a.drill-watch-btn:hover{background:rgba(255,0,0,.22);border-color:rgba(255,0,0,.
     </div>
     <div style="font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.7rem;padding-top:.5rem;border-top:1px solid var(--border)">Stats</div>
     <div class="fr t">
-      <div class="fg"><label class="fl">⚽ Goals</label><input class="fi" id="mm-g" type="number" min="0" value="0"/></div>
-      <div class="fg"><label class="fl">🎯 Assists</label><input class="fi" id="mm-as" type="number" min="0" value="0"/></div>
-      <div class="fg"><label class="fl">🔫 Shots</label><input class="fi" id="mm-sh" type="number" min="0" value="0"/></div>
+      <div class="fg"><label class="fl"><span class="ico" style="width:14px;height:14px" data-ico="goals"></span> Goals</label><input class="fi" id="mm-g" type="number" min="0" value="0"/></div>
+      <div class="fg"><label class="fl"><span class="ico" style="width:16px;height:16px" data-ico="goals"></span> Assists</label><input class="fi" id="mm-as" type="number" min="0" value="0"/></div>
+      <div class="fg"><label class="fl"><span class="ico" style="width:16px;height:16px" data-ico="ball"></span> Shots</label><input class="fi" id="mm-sh" type="number" min="0" value="0"/></div>
     </div>
     <div class="fr t">
-      <div class="fg"><label class="fl">📊 Passes</label><input class="fi" id="mm-pa" type="number" min="0" value="0"/></div>
-      <div class="fg"><label class="fl">✅ Pass Acc%</label><input class="fi" id="mm-pp" type="number" min="0" max="100" value="75"/></div>
-      <div class="fg"><label class="fl">💪 Tackles</label><input class="fi" id="mm-t" type="number" min="0" value="0"/></div>
+      <div class="fg"><label class="fl"><span class="ico" style="width:16px;height:16px" data-ico="stats"></span> Passes</label><input class="fi" id="mm-pa" type="number" min="0" value="0"/></div>
+      <div class="fg"><label class="fl"><span class="ico" style="width:14px;height:14px" data-ico="check"></span> Pass Acc%</label><input class="fi" id="mm-pp" type="number" min="0" max="100" value="75"/></div>
+      <div class="fg"><label class="fl"><span class="ico" style="width:16px;height:16px" data-ico="check"></span> Tackles</label><input class="fi" id="mm-t" type="number" min="0" value="0"/></div>
     </div>
     <div class="fr t">
-      <div class="fg"><label class="fl">🏃 Distance km</label><input class="fi" id="mm-di" type="number" min="0" step=".1" value="9.0"/></div>
+      <div class="fg"><label class="fl"><span class="ico" style="width:14px;height:14px" data-ico="fatigue"></span> Distance km</label><input class="fi" id="mm-di" type="number" min="0" step=".1" value="9.0"/></div>
       <div class="fg"><label class="fl">⏱ Minutes</label><input class="fi" id="mm-m" type="number" min="1" max="120" value="90"/></div>
-      <div class="fg"><label class="fl">⭐ Rating /10</label><input class="fi" id="mm-ra" type="number" min="0" max="10" step=".1" value="7.0"/></div>
+      <div class="fg"><label class="fl"><span class="ico" style="width:14px;height:14px" data-ico="xi"></span> Rating /10</label><input class="fi" id="mm-ra" type="number" min="0" max="10" step=".1" value="7.0"/></div>
     </div>
     <div class="fr o"><div class="fg"><label class="fl">Notes</label><input class="fi" id="mm-n" placeholder="Optional..." maxlength="200"/></div></div>
     <div class="mact">
@@ -588,18 +588,18 @@ a.drill-watch-btn:hover{background:rgba(255,0,0,.22);border-color:rgba(255,0,0,.
 <!-- API KEY SETUP -->
 <div class="ov" id="akim">
   <div class="modal" style="max-width:500px">
-    <div class="mtitle">🤖 One Last Step to Activate AI</div>
+    <div class="mtitle"><span class="ico" style="width:16px;height:16px" data-ico="ai"></span> One Last Step to Activate AI</div>
     <p style="font-size:.85rem;color:var(--text2);line-height:1.75;margin-bottom:1.3rem">
       Squadwise needs a free <strong>Anthropic API key</strong> to power the AI coaching reports. It takes 2 minutes to set up and costs you about <strong style="color:var(--green)">$0.01 per report</strong>.
     </p>
 
     <div style="background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.2);border-radius:10px;padding:1rem 1.1rem;margin-bottom:1.2rem">
-      <div style="font-size:.78rem;font-weight:600;color:var(--green);margin-bottom:.6rem">📋 How to get your free key (2 min):</div>
+      <div style="font-size:.78rem;font-weight:600;color:var(--green);margin-bottom:.6rem"><span class="ico" style="width:16px;height:16px" data-ico="session"></span> How to get your free key (2 min):</div>
       <div style="font-size:.82rem;color:var(--text2);line-height:2">
-        <div>1️⃣ Go to <a href="https://console.anthropic.com" target="_blank" style="color:var(--blue);font-weight:600">console.anthropic.com</a> and sign up free</div>
-        <div>2️⃣ Click <strong style="color:var(--text)">API Keys</strong> in the left sidebar</div>
-        <div>3️⃣ Click <strong style="color:var(--text)">Create Key</strong> → copy the key</div>
-        <div>4️⃣ Paste it below and click Save</div>
+        <div><strong style="color:var(--green)">1.</strong> Go to <a href="https://console.anthropic.com" target="_blank" style="color:var(--blue);font-weight:600">console.anthropic.com</a> and sign up free</div>
+        <div><strong style="color:var(--green)">2.</strong> Click <strong style="color:var(--text)">API Keys</strong> in the left sidebar</div>
+        <div><strong style="color:var(--green)">3.</strong> Click <strong style="color:var(--text)">Create Key</strong> → copy the key</div>
+        <div><strong style="color:var(--green)">4.</strong> Paste it below and click Save</div>
       </div>
       <div style="font-size:.73rem;color:var(--muted);margin-top:.6rem">✅ New accounts get free starter credits. Your key is stored only in your browser.</div>
     </div>
@@ -658,16 +658,16 @@ a.drill-watch-btn:hover{background:rgba(255,0,0,.22);border-color:rgba(255,0,0,.
 <!-- PAYWALL -->
 <div class="ov" id="pwm" style="z-index:9999">
   <div class="modal" style="max-width:520px;text-align:center;padding:2rem 2rem 1.5rem">
-    <div style="display:inline-flex;align-items:center;justify-content:center;width:4rem;height:4rem;border-radius:50%;background:linear-gradient(135deg,rgba(0,230,118,.15),rgba(41,182,246,.1));border:1px solid rgba(0,230,118,.3);font-size:1.8rem;margin-bottom:1rem">⚽</div>
+    <div style="display:inline-flex;align-items:center;justify-content:center;width:4rem;height:4rem;border-radius:50%;background:linear-gradient(135deg,rgba(0,230,118,.15),rgba(41,182,246,.1));border:1px solid rgba(0,230,118,.3);margin-bottom:1rem;color:var(--green)"><span class="ico" style="width:32px;height:32px" data-ico="ball"></span></div>
     <div style="font-size:1.35rem;font-weight:700;margin-bottom:.4rem;font-family:'Barlow Condensed',sans-serif;letter-spacing:.02em">Unlock Squadwise Pro</div>
     <p style="font-size:.85rem;color:var(--text2);line-height:1.75;margin-bottom:1.4rem">Start free for 7 days. Then just <strong style="color:var(--green)">$16/month</strong>.<br/>Cancel anytime — no questions asked.</p>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin-bottom:1.4rem;text-align:left">
-      <div style="background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.15);border-radius:8px;padding:.8rem .9rem;font-size:.8rem;color:var(--text2);display:flex;gap:.6rem;align-items:flex-start"><span style="font-size:1rem;margin-top:.05rem">🤖</span><div><div style="font-weight:600;color:var(--text);margin-bottom:.15rem">AI Coaching Reports</div>Deep analysis on every player & your full squad</div></div>
-      <div style="background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.15);border-radius:8px;padding:.8rem .9rem;font-size:.8rem;color:var(--text2);display:flex;gap:.6rem;align-items:flex-start"><span style="font-size:1rem;margin-top:.05rem">🎬</span><div><div style="font-weight:600;color:var(--text);margin-bottom:.15rem">Drill Videos</div>AI-picked training drills for each player's weaknesses</div></div>
-      <div style="background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.15);border-radius:8px;padding:.8rem .9rem;font-size:.8rem;color:var(--text2);display:flex;gap:.6rem;align-items:flex-start"><span style="font-size:1rem;margin-top:.05rem">⚖️</span><div><div style="font-weight:600;color:var(--text);margin-bottom:.15rem">Player Comparison</div>Side-by-side stats across your entire squad</div></div>
-      <div style="background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.15);border-radius:8px;padding:.8rem .9rem;font-size:.8rem;color:var(--text2);display:flex;gap:.6rem;align-items:flex-start"><span style="font-size:1rem;margin-top:.05rem">📤</span><div><div style="font-weight:600;color:var(--text);margin-bottom:.15rem">CSV Export</div>Download all stats for your own records</div></div>
+      <div style="background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.15);border-radius:8px;padding:.8rem .9rem;font-size:.8rem;color:var(--text2);display:flex;gap:.6rem;align-items:flex-start"><span style="font-size:1rem;margin-top:.05rem"><span class="ico" style="width:16px;height:16px" data-ico="ai"></span></span><div><div style="font-weight:600;color:var(--text);margin-bottom:.15rem">AI Coaching Reports</div>Deep analysis on every player & your full squad</div></div>
+      <div style="background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.15);border-radius:8px;padding:.8rem .9rem;font-size:.8rem;color:var(--text2);display:flex;gap:.6rem;align-items:flex-start"><span style="font-size:1rem;margin-top:.05rem"><span class="ico" style="width:16px;height:16px" data-ico="drill"></span></span><div><div style="font-weight:600;color:var(--text);margin-bottom:.15rem">Drill Videos</div>AI-picked training drills for each player's weaknesses</div></div>
+      <div style="background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.15);border-radius:8px;padding:.8rem .9rem;font-size:.8rem;color:var(--text2);display:flex;gap:.6rem;align-items:flex-start"><span style="font-size:1rem;margin-top:.05rem"><span class="ico" style="width:16px;height:16px" data-ico="compare"></span></span><div><div style="font-weight:600;color:var(--text);margin-bottom:.15rem">Player Comparison</div>Side-by-side stats across your entire squad</div></div>
+      <div style="background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.15);border-radius:8px;padding:.8rem .9rem;font-size:.8rem;color:var(--text2);display:flex;gap:.6rem;align-items:flex-start"><span style="font-size:1rem;margin-top:.05rem"><span class="ico" style="width:16px;height:16px" data-ico="export"></span></span><div><div style="font-weight:600;color:var(--text);margin-bottom:.15rem">CSV Export</div>Download all stats for your own records</div></div>
     </div>
-    <button class="bpri" style="width:100%;padding:1rem;font-size:1rem;margin-bottom:.7rem;border-radius:10px;letter-spacing:.02em" onclick="startCheckout()">🚀 Start 7-Day Free Trial</button>
+    <button class="bpri" style="width:100%;padding:1rem;font-size:1rem;margin-bottom:.7rem;border-radius:10px;letter-spacing:.02em" onclick="startCheckout()"><span class="ico" style="width:16px;height:16px" data-ico="rocket"></span> Start 7-Day Free Trial</button>
     <div style="font-size:.71rem;color:var(--muted)">No charge today · $16/month after trial · Cancel anytime</div>
     <div id="pwm-err" style="color:var(--red);font-size:.8rem;margin-top:.8rem;display:none"></div>
     <button onclick="cm('pwm')" style="background:none;border:none;color:var(--muted);font-size:.75rem;cursor:pointer;margin-top:.8rem;padding:.3rem">Not now</button>
@@ -677,7 +677,7 @@ a.drill-watch-btn:hover{background:rgba(255,0,0,.22);border-color:rgba(255,0,0,.
 <!-- SUBSCRIPTION -->
 <div class="ov" id="subm">
   <div class="modal" style="width:680px;max-width:100%">
-    <div class="mtitle">⚡ Choose Your Plan</div>
+    <div class="mtitle"><span class="ico" style="width:16px;height:16px" data-ico="rocket"></span> Choose Your Plan</div>
     <p style="font-size:.83rem;color:var(--muted);margin-bottom:1.5rem">Upgrade to Pro to unlock AI features and advanced tools.</p>
     <div class="pgrid">
       <div class="pcard">
@@ -696,7 +696,7 @@ a.drill-watch-btn:hover{background:rgba(255,0,0,.22);border-color:rgba(255,0,0,.
         <button class="pbtn" onclick="cm('subm')">Continue Free</button>
       </div>
       <div class="pcard feat">
-        <div class="pbadge">⭐ Recommended</div>
+        <div class="pbadge"><span class="ico" style="width:13px;height:13px" data-ico="xi"></span> Recommended</div>
         <div class="pplan">Pro Coach</div>
         <div class="pamt"><sup>$</sup>16</div>
         <div class="pper">per month · 7-day free trial</div>
@@ -704,12 +704,12 @@ a.drill-watch-btn:hover{background:rgba(255,0,0,.22);border-color:rgba(255,0,0,.
           <li>Unlimited players</li>
           <li>Match logging</li>
           <li>Full stats, radar &amp; trends</li>
-          <li>🤖 AI player reports</li>
-          <li>🎬 Drill video recommendations</li>
-          <li>⚖️ Player comparison tool</li>
-          <li>📤 CSV export</li>
+          <li><span class="ico" style="width:16px;height:16px" data-ico="ai"></span> AI player reports</li>
+          <li><span class="ico" style="width:16px;height:16px" data-ico="drill"></span> Drill video recommendations</li>
+          <li><span class="ico" style="width:16px;height:16px" data-ico="compare"></span> Player comparison tool</li>
+          <li><span class="ico" style="width:16px;height:16px" data-ico="export"></span> CSV export</li>
         </ul>
-        <button class="pbtn fb" onclick="startCheckout()">🚀 Start Free Trial</button>
+        <button class="pbtn fb" onclick="startCheckout()"><span class="ico" style="width:16px;height:16px" data-ico="rocket"></span> Start Free Trial</button>
       </div>
       <div class="pcard">
         <div class="pplan">Club</div>
@@ -725,7 +725,7 @@ a.drill-watch-btn:hover{background:rgba(255,0,0,.22);border-color:rgba(255,0,0,.
         <button class="pbtn" style="opacity:.5;cursor:not-allowed">Coming Soon</button>
       </div>
     </div>
-    <div style="text-align:center;font-size:.72rem;color:var(--muted)">💳 Secure payments via Stripe · Cancel anytime · 7-day free trial</div>
+    <div style="text-align:center;font-size:.72rem;color:var(--muted)"><span class="ico" style="width:16px;height:16px" data-ico="card"></span> Secure payments via Stripe · Cancel anytime · 7-day free trial</div>
     <div class="mact" style="justify-content:center;border-top:none;padding-top:.5rem">
       <button class="bcan" onclick="cm('subm')">Maybe Later</button>
     </div>
@@ -895,6 +895,46 @@ function isSubscribed(){
 const isPro=()=>isSubscribed();
 const rc=v=>parseFloat(v)>=7.5?'var(--green)':parseFloat(v)>=6?'var(--yellow)':'var(--red)';
 
+
+// ── SVG ICON LIBRARY ──
+const ICONS={
+  team:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="16" height="14" rx="2"/><circle cx="7" cy="9" r="2"/><circle cx="13" cy="9" r="2"/><path d="M3 17c0-2 2-3 4-3h6c2 0 4 1 4 3"/></svg>',
+  player:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="6" r="3"/><path d="M4 18c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>',
+  compare:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4v12M15 4v12M2 10h6M12 10h6M8 7l-3 3 3 3M12 7l3 3-3 3"/></svg>',
+  log:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="12" height="16" rx="2"/><line x1="7" y1="7" x2="13" y2="7"/><line x1="7" y1="10" x2="13" y2="10"/><line x1="7" y1="13" x2="11" y2="13"/></svg>',
+  session:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="14" height="13" rx="2"/><path d="M3 8h14"/><path d="M7 2v4M13 2v4"/><path d="M7 12h2l1-2 1 4 1-2h2"/></svg>',
+  xi:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="10,2 12.4,7.5 18.5,7.5 13.6,11.3 15.4,17 10,13.5 4.6,17 6.4,11.3 1.5,7.5 7.6,7.5"/></svg>',
+  prematch:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="7,3 17,10 7,17" fill="currentColor" stroke="none" opacity=".2"/><polygon points="7,3 17,10 7,17"/><line x1="3" y1="3" x2="3" y2="17"/></svg>',
+  settings:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="2.5"/><path d="M10 2v2M10 16v2M2 10h2M16 10h2M4.2 4.2l1.4 1.4M14.4 14.4l1.4 1.4M4.2 15.8l1.4-1.4M14.4 5.6l1.4-1.4"/></svg>',
+  ai:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2c-1 0-2 .5-2.5 1.5L4 10l3.5 6.5c.5 1 1.5 1.5 2.5 1.5s2-.5 2.5-1.5L16 10l-3.5-6.5C12 2.5 11 2 10 2z"/><circle cx="10" cy="10" r="2" fill="currentColor" opacity=".3" stroke="none"/><line x1="10" y1="2" x2="10" y2="6"/><line x1="10" y1="14" x2="10" y2="18"/></svg>',
+  ball:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="8"/><path d="M10 2c0 0-2 3-2 8s2 8 2 8M10 2c0 0 2 3 2 8s-2 8-2 8M2 10h16"/></svg>',
+  drill:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="5,3 17,10 5,17" fill="currentColor" opacity=".15" stroke="none"/><polygon points="5,3 17,10 5,17"/></svg>',
+  radar:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="10,2 17,6.5 17,13.5 10,18 3,13.5 3,6.5"/><polygon points="10,5 14.5,7.8 14.5,12.2 10,15 5.5,12.2 5.5,7.8"/><circle cx="10" cy="10" r="1" fill="currentColor"/></svg>',
+  stats:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="17" x2="3" y2="3"/><line x1="3" y1="17" x2="17" y2="17"/><rect x="5" y="11" width="2.5" height="6" rx="1"/><rect x="9" y="7" width="2.5" height="10" rx="1"/><rect x="13" y="4" width="2.5" height="13" rx="1"/></svg>',
+  export:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3v10M6 9l4 4 4-4"/><path d="M4 15v1a2 2 0 002 2h8a2 2 0 002-2v-1"/></svg>',
+  edit:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 3.5L16.5 6.5L7 16H4v-3L13.5 3.5z"/><line x1="11" y1="6" x2="14" y2="9"/></svg>',
+  trash:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h12M8 6V4h4v2M6 6l1 11h6l1-11"/><line x1="9" y1="10" x2="9" y2="14"/><line x1="11" y1="10" x2="11" y2="14"/></svg>',
+  add:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="10" cy="10" r="8"/><line x1="10" y1="6" x2="10" y2="14"/><line x1="6" y1="10" x2="14" y2="10"/></svg>',
+  lock:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="12" height="9" rx="2"/><path d="M7 9V6a3 3 0 016 0v3"/><circle cx="10" cy="14" r="1.5" fill="currentColor" opacity=".4" stroke="none"/></svg>',
+  key:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="10" r="4"/><path d="M11 10h7M16 10v2.5M14 10v2"/></svg>',
+  card:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="16" height="12" rx="2"/><line x1="2" y1="9" x2="18" y2="9"/><line x1="5" y1="13" x2="9" y2="13"/></svg>',
+  warn:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2L2 17h16L10 2z"/><line x1="10" y1="9" x2="10" y2="12"/><circle cx="10" cy="14.5" r=".8" fill="currentColor" stroke="none"/></svg>',
+  check:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,10 8,14 16,6"/></svg>',
+  rocket:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2c3 0 6 3 6 8l-3 3H7L4 10c0-5 3-8 6-8z" fill="currentColor" opacity=".1"/><path d="M10 2c3 0 6 3 6 8l-3 3H7L4 10c0-5 3-8 6-8z"/><circle cx="10" cy="9" r="1.5"/><path d="M7 15l-2 3M13 15l2 3"/></svg>',
+  cloud:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 13a4 4 0 00-1-7.9A5 5 0 005 9a3 3 0 001 6h9z"/></svg>',
+  pitch:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="16" height="14" rx="1.5"/><line x1="10" y1="3" x2="10" y2="17"/><circle cx="10" cy="10" r="2.5"/><path d="M2 7h2M16 7h2M2 13h2M16 13h2"/></svg>',
+  goals:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="10" height="12" rx="1"/><path d="M3 8h10M3 12h10M8 4v12"/><path d="M13 10h4M15 8l2 2-2 2"/></svg>',
+  history:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="3,10 3,4 9,4"/><path d="M3 4a9 9 0 110 12"/><polyline points="10,7 10,11 13,13"/></svg>',
+  fatigue:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3v5l3 3"/><circle cx="10" cy="11" r="7"/><line x1="10" y1="2" x2="10" y2="1"/></svg>',
+  sign_out:'<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4H5a2 2 0 00-2 2v8a2 2 0 002 2h3"/><polyline points="13,8 17,12 13,16"/><line x1="17" y1="12" x2="7" y2="12"/></svg>',
+};
+function ico(name,size,color){
+  const s=ICONS[name]||ICONS.ball;
+  const sz=size||16;
+  return '<span class="ico" style="width:'+sz+'px;height:'+sz+'px;'+(color?'color:'+color:'')+'">'
+    +s.replace('<svg ','<svg width="'+sz+'" height="'+sz+'" ')+'</span>';
+}
+
 // ── NAV ──
 function go(v,pid){
   S.view=v;if(pid!==undefined)S.selectedId=pid;
@@ -939,7 +979,7 @@ function renderSB(){
     const tStr=t.days>0?t.days+'d '+t.hours+'h left':t.hours>0?t.hours+'h '+t.mins+'m left':t.mins+'m '+t.secs+'s left';
     bp.className='sb-plan by';pn.textContent='⏳ FREE TRIAL';ps.textContent=tStr+' — then $16/mo';
   } else {
-    bp.className='sb-plan br';pn.textContent='⚠️ TRIAL ENDED';ps.textContent='Upgrade to unlock AI features';
+    bp.className='sb-plan br';pn.textContent='⚠ TRIAL ENDED';ps.textContent='Upgrade to unlock AI features';
   }
   const el=document.getElementById('sbp');
   if(!S.players.length){el.innerHTML='<div style="padding:.5rem .6rem;font-size:.75rem;color:var(--muted)">No players yet</div>';return;}
@@ -958,31 +998,31 @@ function selP(id){S.selectedId=id;go('player',id);}
 function rTeam(c){
   document.getElementById('tbt').textContent=S.teamName;
   document.getElementById('tbb').textContent=S.season;
-  document.getElementById('aiBtn').textContent='🤖 Team Report';
+  document.getElementById('aiBtn').textContent='Team Report';
   if(!S.players.length){
     c.innerHTML=`<div class="page">
       <div style="max-width:600px;margin:3rem auto;text-align:center;padding:0 1rem">
-        <div style="font-size:3.5rem;margin-bottom:1rem">⚽</div>
+        <div style="margin-bottom:1rem"><span class="ico" style="width:52px;height:52px" data-ico="ball"></span></div>
         <div style="font-family:'Barlow Condensed',sans-serif;font-size:2rem;font-weight:700;margin-bottom:.5rem">Welcome to Squadwise</div>
         <div style="font-size:.95rem;color:var(--text2);line-height:1.75;margin-bottom:2rem">The AI-powered soccer coaching platform. Track your players, get deep coaching reports, and watch drill videos tailored to each player's weaknesses.</div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:2rem;text-align:left">
           <div style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:1.1rem">
-            <div style="font-size:1.5rem;margin-bottom:.4rem">📊</div>
+            <div style="font-size:1.5rem;margin-bottom:.4rem">${ico('stats',16)}</div>
             <div style="font-weight:600;font-size:.88rem;margin-bottom:.25rem">Track Every Match</div>
             <div style="font-size:.78rem;color:var(--muted);line-height:1.5">Goals, assists, passes, tackles, distance and ratings — all in one place.</div>
           </div>
           <div style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:1.1rem">
-            <div style="font-size:1.5rem;margin-bottom:.4rem">🤖</div>
+            <div style="font-size:1.5rem;margin-bottom:.4rem">${ico('ai',16)}</div>
             <div style="font-weight:600;font-size:.88rem;margin-bottom:.25rem">AI Coaching Reports</div>
             <div style="font-size:.78rem;color:var(--muted);line-height:1.5">Get Claude AI analysis on strengths, weaknesses and tactical recommendations.</div>
           </div>
           <div style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:1.1rem">
-            <div style="font-size:1.5rem;margin-bottom:.4rem">🎬</div>
+            <div style="font-size:1.5rem;margin-bottom:.4rem">${ico('drill',16)}</div>
             <div style="font-weight:600;font-size:.88rem;margin-bottom:.25rem">Drill Videos</div>
             <div style="font-size:.78rem;color:var(--muted);line-height:1.5">AI picks the best YouTube drill videos for each player's specific weaknesses.</div>
           </div>
         </div>
-        <button class="bpri" onclick="openAddP()" style="padding:.9rem 2rem;font-size:1rem">＋ Add Your First Player</button>
+        <button class="bpri" onclick="openAddP()" style="padding:.9rem 2rem;font-size:1rem"><span class="ico" style="width:14px;height:14px" data-ico="add"></span> Add Your First Player</button>
         <div style="font-size:.75rem;color:var(--muted);margin-top:.8rem">${isSubscribed()?'Trial active — all features unlocked':'7-day free trial · No credit card required to start'}</div>
       </div>
     </div>`;return;
@@ -1000,18 +1040,18 @@ function rTeam(c){
     ${onboardHTML}
     <div class="sgrid">
       <div class="scard"><div class="slbl">Squad Size</div><div class="sval" style="color:var(--blue)">${S.players.length}</div><div class="ssub">${all.length} performances logged</div><div class="sbdg bb">Active</div></div>
-      <div class="scard"><div class="slbl">Total Goals</div><div class="sval" style="color:var(--green)">${tg}</div><div class="ssub">${ta} assists · ${tg+ta} G+A</div><div class="sbdg bg">⚽</div></div>
+      <div class="scard"><div class="slbl"><span class="ico" style="width:13px;height:13px" data-ico="goals"></span> Total Goals</div><div class="sval" style="color:var(--green)">${tg}</div><div class="ssub">${ta} assists · ${tg+ta} G+A</div><div class="sbdg bg">Goals</div></div>
       <div class="scard"><div class="slbl">Avg Rating</div><div class="sval" style="color:${rc(tr)}">${tr}</div><div class="ssub">across all players</div><div class="sbdg ${parseFloat(tr)>=7.5?'bg':parseFloat(tr)>=6?'by':'br'}">${parseFloat(tr)>=7.5?'Strong':'Average'}</div></div>
       <div class="scard"><div class="slbl">Team Pass Acc.</div><div class="sval" style="color:var(--yellow)">${tp}%</div><div class="ssub">passing sharpness</div><div class="sbdg ${tp>=80?'bg':'by'}">${tp>=80?'Sharp':'Needs Work'}</div></div>
     </div>
     ${topS||topA||topR?`<div class="three-c">
-      ${topS?hcard(topS,'🏆 Top Scorer',`${ts(topS,'goals')} goals`):''}
-      ${topA?hcard(topA,'🎯 Top Assister',`${ts(topA,'assists')} assists`):''}
-      ${topR?hcard(topR,'⭐ Best Rated',`${ar(topR)} avg rating`):''}
+      ${topS?hcard(topS,ico('xi',16)+' Top Scorer',`${ts(topS,'goals')} goals`):''}
+      ${topA?hcard(topA,ico('goals',16)+' Top Assister',`${ts(topA,'assists')} assists`):''}
+      ${topR?hcard(topR,'Best Rated',`${ar(topR)} avg rating`):''}
     </div>`:''}
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
       <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:700">Full Squad</div>
-      <button class="tbtn" onclick="openAddP()">＋ Add Player</button>
+      <button class="tbtn" onclick="openAddP()"><span class="ico" style="width:15px;height:15px" data-ico="add"></span> Add Player</button>
     </div>
     <div class="tgrid">${S.players.map(p=>tcard(p)).join('')}</div>
     <div id="tais"></div>
@@ -1041,7 +1081,7 @@ function rPlayer(c){
   const p=S.players.find(x=>x.id===S.selectedId);if(!p){go('team');return;}
   document.getElementById('tbt').textContent=p.name;
   document.getElementById('tbb').textContent=`#${p.number} · ${p.pos}`;
-  document.getElementById('aiBtn').textContent='🤖 AI Analysis';
+  document.getElementById('aiBtn').textContent='AI Analysis';
   const m=p.matches,g=ts(p,'goals'),a=ts(p,'assists'),avg=ar(p),avgPA=Math.round(as2(p,'passAcc'));
   const avgT=as2(p,'tackles').toFixed(1),avgSh=as2(p,'shots').toFixed(1);
   const W=m.filter(x=>x.result==='W').length,D=m.filter(x=>x.result==='D').length,L=m.filter(x=>x.result==='L').length;
@@ -1056,16 +1096,16 @@ function rPlayer(c){
       <div>
         <div class="hn">${p.name}</div>
         <div class="hmeta">
-          <span class="mtag">👕 #${p.number}</span><span class="mtag">🎯 ${p.pos}</span><span class="mtag">🎂 ${p.age}y</span>
-          <span class="mtag">🦶 ${p.foot}</span>${p.nation?`<span class="mtag">🌍 ${p.nation}</span>`:''}
-          <span class="mtag">📅 ${m.length} match${m.length!==1?'es':''}</span>
+          <span class="mtag">${ico('player',14)} #${p.number}</span><span class="mtag">${ico('goals',14)} ${p.pos}</span><span class="mtag">${ico('player',14)} ${p.age}y</span>
+          <span class="mtag">${ico('ball',14)} ${p.foot}</span>${p.nation?`<span class="mtag">${ico('cloud',14)} ${p.nation}</span>`:''}
+          <span class="mtag">${m.length} match${m.length!==1?'es':''}</span>
         </div>
         ${p.notes?`<div style="margin-top:.5rem;font-size:.78rem;color:var(--muted);font-style:italic">"${p.notes}"</div>`:''}
         <div class="hact">
-          <button class="tbtn" onclick="openEditP(${p.id})">✏️ Edit</button>
-          <button class="tbtn" onclick="openLogM(${p.id})">＋ Log Match</button>
-          <button class="tbtn" onclick="go('compare')">⚖️ Compare</button>
-          <button class="tbtn" onclick="showReportCard(${p.id})">🪪 Report Card</button>
+          <button class="tbtn" onclick="openEditP(${p.id})">${ico('edit',14)} Edit</button>
+          <button class="tbtn" onclick="openLogM(${p.id})"><span class="ico" style="width:14px;height:14px" data-ico="log"></span> Log Match</button>
+          <button class="tbtn" onclick="go('compare')">${ico('compare',15)} Compare</button>
+          <button class="tbtn" onclick="showReportCard(${p.id})">${ico('player',16)} Report Card</button>
         </div>
       </div>
       <div class="hr">
@@ -1082,36 +1122,36 @@ function rPlayer(c){
     </div>
 
     <div class="sgrid">
-      <div class="scard"><div class="slbl">Goals</div><div class="sval" style="color:var(--green)">${g}</div><div class="ssub">${m.length?(g/m.length).toFixed(2):0}/game · ${avgSh} shots/g</div><div class="sbdg bg">⚽</div></div>
-      <div class="scard"><div class="slbl">Assists</div><div class="sval" style="color:var(--blue)">${a}</div><div class="ssub">${g+a} total G+A</div><div class="sbdg bb">🎯</div></div>
+      <div class="scard"><div class="slbl"><span class="ico" style="width:13px;height:13px" data-ico="goals"></span> Goals</div><div class="sval" style="color:var(--green)">${g}</div><div class="ssub">${m.length?(g/m.length).toFixed(2):0}/game · ${avgSh} shots/g</div><div class="sbdg bg">Goals</div></div>
+      <div class="scard"><div class="slbl">Assists</div><div class="sval" style="color:var(--blue)">${a}</div><div class="ssub">${g+a} total G+A</div><div class="sbdg bb">${ico('goals',16)}</div></div>
       <div class="scard"><div class="slbl">Avg Rating</div><div class="sval" style="color:${rc(avg)}">${avg}</div><div class="ssub">${W}W · ${D}D · ${L}L</div><div class="sbdg ${tCls}">${tTxt}</div></div>
       <div class="scard"><div class="slbl">Pass Accuracy</div><div class="sval" style="color:var(--yellow)">${avgPA}%</div><div class="ssub">${avgT} tackles/game</div><div class="sbdg ${avgPA>=80?'bg':'by'}">${avgPA>=80?'Sharp':'Improve'}</div></div>
     </div>
 
     <div class="two-c">
-      <div class="card cp"><div class="ctitle">📡 <span class="hl">Attribute Radar</span></div><div class="rw">${renderRadar(rd,p.color)}</div></div>
-      <div class="card cp"><div class="ctitle">📊 <span class="hl">Performance Breakdown</span></div>${renderBars(rd,p.color)}
-        ${m.length>=2?`<div style="margin-top:1.2rem"><div class="ctitle" style="margin-bottom:.6rem">📈 <span class="hl">Rating Trend</span></div>${renderSpk(m.slice(0,8).reverse())}</div>`:''}
+      <div class="card cp"><div class="ctitle">${ico('radar',16)} <span class="hl">Attribute Radar</span></div><div class="rw">${renderRadar(rd,p.color)}</div></div>
+      <div class="card cp"><div class="ctitle">${ico('stats',16)} <span class="hl">Performance Breakdown</span></div>${renderBars(rd,p.color)}
+        ${m.length>=2?`<div style="margin-top:1.2rem"><div class="ctitle" style="margin-bottom:.6rem">${ico('stats',16)} <span class="hl">Rating Trend</span></div>${renderSpk(m.slice(0,8).reverse())}</div>`:''}
       </div>
     </div>
 
     ${renderSeasonGoals(p)}
 
-    ${m.length>=3?`<div class="card cp" style="margin-bottom:1.2rem"><div class="ctitle">📦 <span class="hl">Goals Per Match</span></div>${renderGChart(p)}</div>`:''}
+    ${m.length>=3?`<div class="card cp" style="margin-bottom:1.2rem"><div class="ctitle">${ico('session',16)} <span class="hl">Goals Per Match</span></div>${renderGChart(p)}</div>`:''}
 
     <div class="aip" id="aipanel">
-      <div class="aih"><div class="aic">🤖</div><div><div class="ait">AI Coaching Analysis</div><div class="ais">Powered by Claude · For ${p.name}</div></div></div>
-      ${m.length?`<div class="aie"><div style="font-size:2rem">💡</div><div>Click <strong style="color:var(--green)">🤖 AI Analysis</strong> above for a full coaching report.</div></div>`
-      :`<div class="aie"><div style="font-size:2rem">📋</div><div>Log at least one match to unlock AI analysis.</div></div>`}
+      <div class="aih"><div class="aic">${ico('ai',16)}</div><div><div class="ait">AI Coaching Analysis</div><div class="ais">Powered by Claude · For ${p.name}</div></div></div>
+      ${m.length?`<div class="aie"><div style="color:var(--yellow)"><span class="ico" style="width:28px;height:28px" data-ico="warn"></span></div><div>Click <strong style="color:var(--green)">${ico('ai',15)} AI Analysis</strong> above for a full coaching report.</div></div>`
+      :`<div class="aie"><div style="font-size:2rem">${ico('session',16)}</div><div>Log at least one match to unlock AI analysis.</div></div>`}
     </div>
 
     <div class="card" id="mlcard">
       <div style="padding:1.1rem 1.4rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
-        <div class="ctitle" style="margin:0">📋 <span class="hl">Match Log</span> <span style="font-size:.75rem;color:var(--muted);text-transform:none;letter-spacing:normal;font-weight:400">(${m.length})</span></div>
-        <button class="tbtn" onclick="openLogM(${p.id})" style="font-size:.72rem;padding:.3rem .7rem">＋ Log</button>
+        <div class="ctitle" style="margin:0">${ico('session',16)} <span class="hl">Match Log</span> <span style="font-size:.75rem;color:var(--muted);text-transform:none;letter-spacing:normal;font-weight:400">(${m.length})</span></div>
+        <button class="tbtn" onclick="openLogM(${p.id})" style="font-size:.72rem;padding:.3rem .7rem"><span class="ico" style="width:14px;height:14px" data-ico="add"></span> Log</button>
       </div>
       ${m.length?`<div style="overflow-x:auto"><table class="mt">
-        <thead><tr><th>Date</th><th>Opponent</th><th>Res</th><th style="text-align:center">⚽</th><th style="text-align:center">🎯</th><th style="text-align:center">Shots</th><th style="text-align:center">Pass%</th><th style="text-align:center">Tackles</th><th style="text-align:center">Mins</th><th style="text-align:center">Rating</th><th></th></tr></thead>
+        <thead><tr><th>Date</th><th>Opponent</th><th>Res</th><th style="text-align:center"><span class="ico" style="width:13px;height:13px" data-ico="goals"></span></th><th style="text-align:center">${ico('goals',16)}</th><th style="text-align:center">Shots</th><th style="text-align:center">Pass%</th><th style="text-align:center">Tackles</th><th style="text-align:center">Mins</th><th style="text-align:center">Rating</th><th></th></tr></thead>
         <tbody>${m.map(x=>`<tr>
           <td class="tdm">${fd(x.date)}</td><td style="font-weight:500">${x.opp}</td>
           <td><span class="rp ${x.result==='W'?'rw2':x.result==='D'?'rd2':'rl'}">${x.result}</span></td>
@@ -1132,12 +1172,12 @@ function rCompare(c){
     document.getElementById('tbt').textContent='Compare Players';
     document.getElementById('tbb').textContent='Pro Feature';
     document.getElementById('aiBtn').style.display='none';
-    c.innerHTML=proGate('⚖️ Player Comparison','Compare any two players side-by-side across all stats, ratings and match history.');return;
+    c.innerHTML=proGate(ico('compare',16)+' Player Comparison','Compare any two players side-by-side across all stats, ratings and match history.');return;
   }
   document.getElementById('tbt').textContent='Compare Players';
   document.getElementById('tbb').textContent='Compare';
   document.getElementById('aiBtn').style.display='none';
-  if(S.players.length<2){c.innerHTML=`<div class="page"><div class="empty2"><div class="ei">⚖️</div><div class="et">Need 2+ Players</div><div class="es">Add at least two players to use the comparison tool.</div></div></div>`;return;}
+  if(S.players.length<2){c.innerHTML=`<div class="page"><div class="empty2"><div class="ei">${ico('compare',16)}</div><div class="et">Need 2+ Players</div><div class="es">Add at least two players to use the comparison tool.</div></div></div>`;return;}
   const opts=S.players.map(p=>`<option value="${p.id}">${p.name} (#${p.number})</option>`).join('');
   const p1=S.cp1||S.players[0].id,p2=S.cp2||(S.players[1]||S.players[0]).id;
   c.innerHTML=`<div class="page"><div class="two-c" style="margin-bottom:1.2rem">
@@ -1186,8 +1226,8 @@ function rCmpResult(id1,id2){
       <div style="margin-top:1rem;font-size:.72rem;color:var(--muted);text-align:center"><span style="color:var(--green)">■</span> Higher &nbsp; <span style="color:var(--red)">■</span> Lower</div>
     </div>
     <div class="two-c" style="margin-top:1.2rem">
-      <div class="card cp"><div class="ctitle">📡 <span class="hl">${p1.name}</span></div><div class="rw">${renderRadar(getRadar(p1),p1.color)}</div></div>
-      <div class="card cp"><div class="ctitle">📡 <span class="hl">${p2.name}</span></div><div class="rw">${renderRadar(getRadar(p2),p2.color)}</div></div>
+      <div class="card cp"><div class="ctitle">${ico('radar',16)} <span class="hl">${p1.name}</span></div><div class="rw">${renderRadar(getRadar(p1),p1.color)}</div></div>
+      <div class="card cp"><div class="ctitle">${ico('radar',16)} <span class="hl">${p2.name}</span></div><div class="rw">${renderRadar(getRadar(p2),p2.color)}</div></div>
     </div>`;
 }
 
@@ -1195,14 +1235,14 @@ function rCmpResult(id1,id2){
 function rLog(c){
   document.getElementById('tbt').textContent='Log Match';document.getElementById('tbb').textContent=S.season;document.getElementById('aiBtn').style.display='none';
   if(!S.players.length){
-    c.innerHTML='<div class="empty2"><div style="font-size:3rem">📝</div><div style="font-size:1.1rem;font-weight:600;margin:.5rem 0">No players yet</div><p style="color:var(--muted);font-size:.85rem">Add players first to log matches</p><button class="bpri" style="margin-top:1rem" onclick="openAddP()">＋ Add Player</button></div>';
+    c.innerHTML=`<div class="empty2"><div style="color:var(--text2);margin-bottom:.5rem">${ico('log',40)}</div><div style="font-size:1.1rem;font-weight:600;margin:.5rem 0">No players yet</div><p style="color:var(--muted);font-size:.85rem">Add players first to log matches</p><button class="bpri" style="margin-top:1rem" onclick="openAddP()">${ico('add',15)} Add Player</button></div>`;
     return;
   }
   const pid=S.selectedId||S.players[0].id;
   const p=S.players.find(x=>x.id===pid)||S.players[0];
   document.getElementById('tbt').textContent='Quick Log';
   c.innerHTML=`<div class="page" style="max-width:520px;margin:0 auto">
-    <div class="ptitle">📝 <span class="hl">Quick Log</span></div>
+    <div class="ptitle">${ico('log',16)} <span class="hl">Quick Log</span></div>
     <p style="font-size:.82rem;color:var(--text2);margin-bottom:1.2rem">Fast pitch-side stat entry. Tap + / − to adjust.</p>
     <div class="fg" style="margin-bottom:1rem">
       <label class="fl">Player</label>
@@ -1219,14 +1259,14 @@ function rLog(c){
       <div class="fg"><label class="fl">Result</label><select class="fs" id="ql-result"><option>W</option><option>D</option><option>L</option></select></div>
     </div>
     <div class="ql-grid">
-      <div class="ql-stat"><div class="ql-label">⚽ Goals</div><div class="ql-controls"><button class="ql-btn" onclick="qlAdj('ql-goals',-1)">−</button><div class="ql-val" id="ql-goals">0</div><button class="ql-btn" onclick="qlAdj('ql-goals',1)">+</button></div></div>
-      <div class="ql-stat"><div class="ql-label">🎯 Assists</div><div class="ql-controls"><button class="ql-btn" onclick="qlAdj('ql-assists',-1)">−</button><div class="ql-val" id="ql-assists">0</div><button class="ql-btn" onclick="qlAdj('ql-assists',1)">+</button></div></div>
-      <div class="ql-stat"><div class="ql-label">🥅 Shots</div><div class="ql-controls"><button class="ql-btn" onclick="qlAdj('ql-shots',-1)">−</button><div class="ql-val" id="ql-shots">0</div><button class="ql-btn" onclick="qlAdj('ql-shots',1)">+</button></div></div>
-      <div class="ql-stat"><div class="ql-label">💪 Tackles</div><div class="ql-controls"><button class="ql-btn" onclick="qlAdj('ql-tackles',-1)">−</button><div class="ql-val" id="ql-tackles">0</div><button class="ql-btn" onclick="qlAdj('ql-tackles',1)">+</button></div></div>
+      <div class="ql-stat"><div class="ql-label"><span class="ico" style="width:14px;height:14px" data-ico="goals"></span> Goals</div><div class="ql-controls"><button class="ql-btn" onclick="qlAdj('ql-goals',-1)">−</button><div class="ql-val" id="ql-goals">0</div><button class="ql-btn" onclick="qlAdj('ql-goals',1)">+</button></div></div>
+      <div class="ql-stat"><div class="ql-label">${ico('goals',16)} Assists</div><div class="ql-controls"><button class="ql-btn" onclick="qlAdj('ql-assists',-1)">−</button><div class="ql-val" id="ql-assists">0</div><button class="ql-btn" onclick="qlAdj('ql-assists',1)">+</button></div></div>
+      <div class="ql-stat"><div class="ql-label">${ico('goals',16)} Shots</div><div class="ql-controls"><button class="ql-btn" onclick="qlAdj('ql-shots',-1)">−</button><div class="ql-val" id="ql-shots">0</div><button class="ql-btn" onclick="qlAdj('ql-shots',1)">+</button></div></div>
+      <div class="ql-stat"><div class="ql-label">${ico('check',16)} Tackles</div><div class="ql-controls"><button class="ql-btn" onclick="qlAdj('ql-tackles',-1)">−</button><div class="ql-val" id="ql-tackles">0</div><button class="ql-btn" onclick="qlAdj('ql-tackles',1)">+</button></div></div>
     </div>
     <div class="card cp" style="margin-bottom:1rem">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
-        <label class="fl" style="margin:0">⭐ Rating</label>
+        <label class="fl" style="margin:0"><span class="ico" style="width:14px;height:14px" data-ico="xi"></span> Rating</label>
         <div class="ql-slider-val" id="ql-rating-val">7.0</div>
       </div>
       <div class="ql-slider-wrap">
@@ -1237,7 +1277,7 @@ function rLog(c){
     </div>
     <div class="card cp" style="margin-bottom:1rem">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
-        <label class="fl" style="margin:0">🎯 Pass Acc %</label>
+        <label class="fl" style="margin:0">${ico('goals',16)} Pass Acc %</label>
         <div class="ql-slider-val" id="ql-pass-val">75%</div>
       </div>
       <div class="ql-slider-wrap">
@@ -1285,10 +1325,10 @@ function rSession(c){
   document.getElementById('aiBtn').style.display='none';
   c.innerHTML=`
   <div class="page">
-    <div class="ptitle">📋 <span class="hl">AI Training Planner</span></div>
+    <div class="ptitle">${ico('session',16)} <span class="hl">AI Training Planner</span></div>
     <div style="display:flex;gap:.5rem;margin-bottom:1.2rem">
       <button class="tbtn" id="sp-tab-gen" onclick="spTab('gen')" style="background:var(--green);color:#060e1c;font-weight:700">Generate Plan</button>
-      <button class="tbtn" id="sp-tab-hist" onclick="spTab('hist')">📚 History</button>
+      <button class="tbtn" id="sp-tab-hist" onclick="spTab('hist')">${ico('history',16)} History</button>
     </div>
     <div id="sp-gen-panel"><p style="font-size:.84rem;color:var(--text2);margin-bottom:1.5rem;line-height:1.6">Tell the AI what you want to work on and it'll generate a complete training session plan for your squad.</p>
     <div class="session-form">
@@ -1334,7 +1374,7 @@ function rSession(c){
       <div class="fg" style="margin-bottom:1.2rem"><label class="fl">Specific Focus (optional)</label>
         <input class="fi" id="sp-notes" placeholder="e.g. we've been struggling with pressing triggers, players drop too deep..." maxlength="200"/>
       </div>
-      <button class="bpri" onclick="genSession()" id="sp-btn">📋 Generate Session Plan</button>
+      <button class="bpri" onclick="genSession()" id="sp-btn">${ico('session',16)} Generate Session Plan</button>
     </div>
     <div id="sp-result" style="display:none" class="session-result">
       <div id="sp-content"></div>
@@ -1370,7 +1410,7 @@ function renderSessionHistory(){
 async function genSession(){
   if(!isSubscribed()){om('pwm');return;}
   const btn=document.getElementById('sp-btn');
-  btn.disabled=true;btn.textContent='⏳ Generating...';
+  btn.disabled=true;btn.textContent='Generating...';
   const focus=document.getElementById('sp-focus').value;
   const dur=document.getElementById('sp-dur').value;
   const count=document.getElementById('sp-count').value;
@@ -1430,42 +1470,42 @@ Return ONLY valid JSON in this exact format:
             <div style="font-size:.7rem;color:var(--text2);flex-shrink:0;margin-left:.5rem">${a.duration||''}</div>
           </div>
           ${a.description&&a.name?`<div style="font-size:.78rem;color:var(--text2);line-height:1.5;margin-bottom:.4rem">${a.description}</div>`:''}
-          ${a.coaching_points?`<div style="font-size:.72rem;color:var(--blue);line-height:1.5">💬 ${a.coaching_points}</div>`:''}
+          ${a.coaching_points?`<div style="font-size:.72rem;color:var(--blue);line-height:1.5">${ico('ai',16)} ${a.coaching_points}</div>`:''}
         </div>`).join('')}
       </div>`;
     };
 
-    html2+=renderBlock('Warm-Up','🔥',plan.warmup?.activities,plan.warmup?.duration);
-    html2+=renderBlock('Main Activities','⚽',plan.main?.activities,plan.main?.duration);
+    html2+=renderBlock('Warm-Up',ico('rocket',14),plan.warmup?.activities,plan.warmup?.duration);
+    html2+=renderBlock('Main Activities',ico('ball',16),plan.main?.activities,plan.main?.duration);
     if(plan.game){
       html2+=`<div style="margin-bottom:1.2rem">
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:.95rem;font-weight:800;color:var(--green);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.7rem">🎮 Game / SSG <span style="font-size:.7rem;color:var(--text2);font-family:'Inter',sans-serif;font-weight:400;letter-spacing:0">${plan.game.duration||''}</span></div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:.95rem;font-weight:800;color:var(--green);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.7rem"><span class="ico" style="width:16px;height:16px" data-ico="xi"></span> Game / SSG <span style="font-size:.7rem;color:var(--text2);font-family:'Inter',sans-serif;font-weight:400;letter-spacing:0">${plan.game.duration||''}</span></div>
         <div style="background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:.9rem">
           <div style="font-weight:600;font-size:.85rem;margin-bottom:.4rem">${plan.game.name||'Small-Sided Game'}</div>
           <div style="font-size:.78rem;color:var(--text2);line-height:1.5;margin-bottom:.4rem">${plan.game.description||''}</div>
-          ${plan.game.constraints?`<div style="font-size:.72rem;color:var(--yellow);margin-bottom:.3rem">🎯 Constraints: ${plan.game.constraints}</div>`:''}
-          ${plan.game.coaching_points?`<div style="font-size:.72rem;color:var(--blue)">💬 ${plan.game.coaching_points}</div>`:''}
+          ${plan.game.constraints?`<div style="font-size:.72rem;color:var(--yellow);margin-bottom:.3rem">${ico('goals',16)} Constraints: ${plan.game.constraints}</div>`:''}
+          ${plan.game.coaching_points?`<div style="font-size:.72rem;color:var(--blue)">${ico('ai',16)} ${plan.game.coaching_points}</div>`:''}
         </div>
       </div>`;
     }
     if(plan.cooldown){
       html2+=`<div style="background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:8px;padding:.9rem">
-        <div style="font-size:.75rem;font-weight:600;color:var(--text2);margin-bottom:.3rem">❄️ COOL DOWN ${plan.cooldown.duration||''}</div>
+        <div style="font-size:.75rem;font-weight:600;color:var(--text2);margin-bottom:.3rem">️ COOL DOWN ${plan.cooldown.duration||''}</div>
         <div style="font-size:.78rem;color:var(--text2)">${plan.cooldown.description||''}</div>
       </div>`;
     }
 
     content.innerHTML=html2;
-    btn.disabled=false;btn.textContent='📋 Generate New Plan';
+    btn.disabled=false;btn.textContent='Generate New Plan';
     // Add save button to result
     const saveRow=document.createElement('div');
     saveRow.style.cssText='text-align:right;margin-top:.8rem';
-    saveRow.innerHTML='<button class="tbtn" onclick="saveSession(null,\''+focus+' Session\')">💾 Save to History</button>';
+    saveRow.innerHTML=`<button class="tbtn" onclick="saveSession(null,'${focus} Session')">${ico('check',14)} Save to History</button>`;
     document.getElementById('sp-result').appendChild(saveRow);
     localStorage.setItem('squadwise_first_session','1');
   }catch(e){
     toast('Error: '+e.message,'e');
-    btn.disabled=false;btn.textContent='📋 Generate Session Plan';
+    btn.disabled=false;btn.textContent='Generate Session Plan';
   }
 }
 
@@ -1475,7 +1515,7 @@ function rXI(c){
   document.getElementById('aiBtn').style.display='none';
 
   if(!S.players.length){
-    c.innerHTML=`<div class="empty2"><div style="font-size:3rem">🏆</div><div style="font-size:1.1rem;font-weight:600;margin:.5rem 0">No players yet</div><p style="color:var(--muted);font-size:.85rem">Add players and log matches to generate your Best XI</p></div>`;
+    c.innerHTML=`<div class="empty2"><div style="font-size:3rem">${ico('xi',16)}</div><div style="font-size:1.1rem;font-weight:600;margin:.5rem 0">No players yet</div><p style="color:var(--muted);font-size:.85rem">Add players and log matches to generate your Best XI</p></div>`;
     return;
   }
 
@@ -1530,14 +1570,14 @@ function rXI(c){
   const risks=scored.filter(p=>p.riskFlag);
 
   let html2=`<div class="page">
-    <div class="ptitle">🏆 <span class="hl">Best XI</span></div>
-    <p style="font-size:.84rem;color:var(--text2);margin-bottom:1.5rem">Based on recent form, average rating and contribution. ${isSubscribed()?'<button class="tbtn" style="font-size:.72rem;padding:.25rem .6rem" onclick="genXIReport()">🤖 AI Analysis</button>':''}</p>`;
+    <div class="ptitle">${ico('xi',18,'var(--green)')} <span class="hl">Best XI</span></div>
+    <p style="font-size:.84rem;color:var(--text2);margin-bottom:1.5rem">Based on recent form, average rating and contribution. ${isSubscribed()?`<button class="tbtn" style="font-size:.72rem;padding:.25rem .6rem" onclick="genXIReport()">${ico('ai',15)} AI Analysis</button>`:''}</p>`;
 
   // Injury risk warnings
   if(risks.length){
     html2+=`<div style="margin-bottom:1.2rem">`;
     risks.slice(0,3).forEach(p=>{
-      html2+=`<div class="injury-flag"><div class="injury-flag-icon">⚠️</div><div class="injury-flag-text"><strong>${p.name}</strong> — showing signs of fatigue or form drop. Consider managing minutes.</div></div>`;
+      html2+=`<div class="injury-flag"><div class="injury-flag-icon">${ico('warn',16)}</div><div class="injury-flag-text"><strong>${p.name}</strong> — showing signs of fatigue or form drop. Consider managing minutes.</div></div>`;
     });
     html2+=`</div>`;
   }
@@ -1548,8 +1588,8 @@ function rXI(c){
   starters.forEach((p,i)=>{
     const isHot=parseFloat(p.recentRating)>=8;
     html2+=`<div class="xi-card starter">
-      ${isHot?`<div class="xi-badge fire">🔥 Hot</div>`:''}
-      ${p.riskFlag?`<div class="xi-badge warn">⚠️ Rest</div>`:''}
+      ${isHot?`<div class="xi-badge fire">${ico('rocket',14)} Hot</div>`:''}
+      ${p.riskFlag?`<div class="xi-badge warn">${ico('warn',16)} Rest</div>`:''}
       <div class="xi-num" style="color:${p.color||'var(--green)'}">${p.number||i+1}</div>
       <div class="xi-name">${p.name}</div>
       <div class="xi-pos">${p.pos||'—'}</div>
@@ -1581,7 +1621,7 @@ async function genXIReport(){
   if(!isSubscribed()){om('pwm');return;}
   const res=document.getElementById('xi-report-result');
   if(!res)return;
-  res.innerHTML='<div style="text-align:center;padding:2rem;color:var(--text2)">🤖 Generating AI analysis...</div>';
+  res.innerHTML=`<div style="text-align:center;padding:2rem;color:var(--text2)">${ico('ai',16)} Generating AI analysis...</div>`;
   const scored=S.players.map(p=>{
     const m=(p.matches||[]).slice(-5);
     const avgR=m.length?m.reduce((s,x)=>s+(parseFloat(x.rating)||0),0)/m.length:0;
@@ -1593,7 +1633,7 @@ async function genXIReport(){
   try{
     const text=await callClaude(prompt,800);
     res.innerHTML=`<div style="background:var(--card2);border:1px solid rgba(0,230,118,.2);border-radius:12px;padding:1.3rem;margin-top:1rem">
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:800;color:var(--green);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.8rem">🤖 AI Tactical Analysis</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:800;color:var(--green);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.8rem">${ico('ai',16)} AI Tactical Analysis</div>
       <div style="font-size:.83rem;color:var(--text2);line-height:1.75;white-space:pre-line">${text}</div>
     </div>`;
   }catch(e){
@@ -1611,11 +1651,11 @@ function rPrematch(c){
   document.getElementById('tbt').textContent='Pre-Match Brief';
   document.getElementById('aiBtn').style.display='none';
   if(!S.players.length){
-    c.innerHTML='<div class="empty2"><div style="font-size:3rem">⚡</div><div style="font-size:1.1rem;font-weight:600;margin:.5rem 0">No players yet</div><p style="color:var(--muted);font-size:.85rem">Add players and log some matches first</p></div>';
+  c.innerHTML=`<div class="empty2"><div style="color:var(--text2);margin-bottom:.5rem">${ico('rocket',40)}</div><div style="font-size:1.1rem;font-weight:600;margin:.5rem 0">No team selected</div></div>`;
     return;
   }
   c.innerHTML=`<div class="page">
-    <div class="ptitle">⚡ <span class="hl">Pre-Match Brief</span></div>
+    <div class="ptitle">${ico('rocket',16)} <span class="hl">Pre-Match Brief</span></div>
     <p style="font-size:.84rem;color:var(--text2);margin-bottom:1.5rem">AI writes a tactical brief for your next game based on current squad form.</p>
     <div class="session-form">
       <div class="session-field">
@@ -1634,7 +1674,7 @@ function rPrematch(c){
       <div class="fg" style="margin-bottom:1.2rem"><label class="fl">Any intel on opponent? (optional)</label>
         <input class="fi" id="pm-intel" placeholder="e.g. strong physical team, play high press, weak in transition..." maxlength="200"/>
       </div>
-      <button class="bpri" onclick="genPrematch()" id="pm-btn">⚡ Generate Brief</button>
+      <button class="bpri" onclick="genPrematch()" id="pm-btn">${ico('rocket',16)} Generate Brief</button>
     </div>
     <div id="pm-result" style="display:none" class="session-result"></div>
   </div>`;
@@ -1645,7 +1685,7 @@ async function genPrematch(){
   const opp=document.getElementById('pm-opp').value.trim();
   if(!opp){toast('Enter opponent name','e');return;}
   const btn=document.getElementById('pm-btn');
-  btn.disabled=true;btn.textContent='⏳ Generating...';
+  btn.disabled=true;btn.textContent='Generating...';
 
   const topPlayers=S.players.map(p=>{
     const m=(p.matches||[]).slice(-4);
@@ -1661,7 +1701,7 @@ async function genPrematch(){
   }).filter(Boolean).sort((a,b)=>b.avgR-a.avgR);
 
   const squadSummary=topPlayers.slice(0,12).map(function(p){
-    return p.name+' ('+p.pos+') R:'+p.avgR+(p.riskFlag?' ⚠️ FATIGUE':'');
+    return p.name+' ('+p.pos+') R:'+p.avgR+(p.riskFlag?' ⚠ FATIGUE':'');
   }).join(', ');
 
   const matchType=document.getElementById('pm-type').value;
@@ -1698,13 +1738,13 @@ async function genPrematch(){
     res.innerHTML='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem">'
       +'<div><div style="font-family:Barlow Condensed,sans-serif;font-size:1.3rem;font-weight:800">'+S.teamName+' vs '+opp+'</div>'
       +'<div style="font-size:.72rem;color:var(--text2);margin-top:.2rem">'+matchType+' · '+priority+'</div></div>'
-      +'<div style="background:rgba(0,230,118,.1);border:1px solid rgba(0,230,118,.25);color:var(--green);font-size:.65rem;padding:.3rem .7rem;border-radius:6px;font-weight:700">⚡ AI BRIEF</div>'
+      +`<div style="background:rgba(0,230,118,.1);border:1px solid rgba(0,230,118,.25);color:var(--green);font-size:.65rem;padding:.3rem .7rem;border-radius:6px;font-weight:700">${ico('rocket',16)} AI BRIEF</div>`
       +'</div>'
       +'<div style="font-size:.83rem;color:var(--text2);line-height:1.8;white-space:pre-line">'+text+'</div>';
-    btn.disabled=false;btn.textContent='⚡ Generate New Brief';
+    btn.disabled=false;btn.textContent='Generate New Brief';
   }catch(e){
     toast('Error: '+e.message,'e');
-    btn.disabled=false;btn.textContent='⚡ Generate Brief';
+    btn.disabled=false;btn.textContent='Generate Brief';
   }
 }
 
@@ -1749,7 +1789,7 @@ function showReportCard(pid){
       <div class="card-rating"><div class="card-rating-val">${avgRating}</div><div class="card-rating-lbl">Avg Rating</div></div>
       ${p.notes?`<div style="margin-top:.8rem;font-size:.72rem;color:var(--text2);font-style:italic;text-align:center;padding-top:.6rem;border-top:1px solid rgba(255,255,255,.06)">"${p.notes}"</div>`:''}
       <div style="margin-top:1rem;text-align:center">
-        <button class="tbtn" style="font-size:.72rem" onclick="printCard()">🖨️ Print / Save PDF</button>
+        <button class="tbtn" style="font-size:.72rem" onclick="printCard()">${ico('stats',14)} Print / Save PDF</button>
       </div>
     </div>
   </div>`;
@@ -1784,7 +1824,7 @@ function delSession(id){
   localStorage.setItem('squadwise_sessions',JSON.stringify(sessions));
   toast('Session deleted','i');
   go('session');
-  },'🗑️');
+  },'trash');
 }
 
 // ── ONBOARDING CHECK ──
@@ -1801,16 +1841,16 @@ function getOnboardingStatus(){
 function showOnboarding(){
   const status=getOnboardingStatus();
   const steps=[
-    {key:'addPlayer',icon:'👤',title:'Add your first player',desc:'Start building your squad roster',action:"openAddP()",btn:'Add Player'},
-    {key:'logMatch',icon:'📝',title:'Log your first match',desc:'Record stats after a game',action:"go('log')",btn:'Log Match'},
-    {key:'setGoals',icon:'🎯',title:'Set season goals',desc:'Add goals/assists targets for players',action:"openEditP(S.players[0]?.id)",btn:'Set Goals'},
-    {key:'aiReport',icon:'🤖',title:'Run your first AI report',desc:'Get an AI coaching analysis',action:"runAI()",btn:'Try AI'},
-    {key:'session',icon:'📋',title:'Generate a training plan',desc:'Use the AI Training Planner',action:"go('session')",btn:'Plan Session'}
+    {key:'addPlayer',icon:ico('player',16),title:'Add your first player',desc:'Start building your squad roster',action:"openAddP()",btn:'Add Player'},
+    {key:'logMatch',icon:ico('log',16),title:'Log your first match',desc:'Record stats after a game',action:"go('log')",btn:'Log Match'},
+    {key:'setGoals',icon:ico('goals',16),title:'Set season goals',desc:'Add goals/assists targets for players',action:"openEditP(S.players[0]?.id)",btn:'Set Goals'},
+    {key:'aiReport',icon:ico('ai',16),title:'Run your first AI report',desc:'Get an AI coaching analysis',action:"runAI()",btn:'Try AI'},
+    {key:'session',icon:ico('session',16),title:'Generate a training plan',desc:'Use the AI Training Planner',action:"go('session')",btn:'Plan Session'}
   ];
   const allDone=steps.every(s=>status[s.key]);
   if(allDone)return'';
   const doneCount=steps.filter(s=>status[s.key]).length;
-  let h='<div class="card cp" style="margin-bottom:1.2rem"><div class="ctitle">🚀 <span class="hl">Getting Started</span> <span style="font-size:.72rem;color:var(--text2);font-weight:400;font-family:Inter,sans-serif">'+doneCount+'/'+steps.length+' complete</span></div>';
+  let h=`<div class="card cp" style="margin-bottom:1.2rem"><div class="ctitle">${ico('rocket',16)} <span class="hl">Getting Started</span> <span style="font-size:.72rem;color:var(--text2);font-weight:400;font-family:Inter,sans-serif">`+doneCount+'/'+steps.length+' complete</span></div>';
   h+='<div style="height:4px;border-radius:2px;background:var(--border2);margin-bottom:1.2rem;overflow:hidden"><div style="height:100%;background:var(--green);border-radius:2px;width:'+(doneCount/steps.length*100)+'%"></div></div>';
   steps.forEach(s=>{
     const done=status[s.key];
@@ -1830,7 +1870,7 @@ function renderSeasonGoals(p){
   const m=p.matches||[];
   const totalGoals=m.reduce((s,x)=>s+(x.goals||0),0);
   const totalAssists=m.reduce((s,x)=>s+(x.assists||0),0);
-  let h='<div class="card cp" style="margin-bottom:1rem"><div class="ctitle">🎯 <span class="hl">Season Goals</span></div>';
+  let h=`<div class="card cp" style="margin-bottom:1rem"><div class="ctitle">${ico('goals',16)} <span class="hl">Season Goals</span></div>`;
   if(p.targetGoals){
     const pct=Math.min(100,Math.round((totalGoals/p.targetGoals)*100));
     const color=pct>=100?'var(--green)':pct>=50?'var(--yellow)':'var(--text2)';
@@ -1850,43 +1890,43 @@ function renderSeasonGoals(p){
 function rSettings(c){
   document.getElementById('tbt').textContent='Settings';document.getElementById('tbb').textContent='Config';document.getElementById('aiBtn').style.display='none';
   c.innerHTML=`<div class="page">
-    <div class="ptitle">⚙️ <span class="hl">Settings</span></div>
+    <div class="ptitle">${ico('settings',20,'var(--green)')} <span class="hl">Settings</span></div>
     <div class="two-c">
       <div class="card cp">
-        <div class="ctitle">🏟️ <span class="hl">Team Settings</span></div>
+        <div class="ctitle">${ico('pitch',16,'var(--green)')} <span class="hl">Team Settings</span></div>
         <div class="fg" style="margin-bottom:1rem"><label class="fl">Team Name</label><input class="fi" id="st" value="${S.teamName}" maxlength="40"/></div>
         <div class="fg" style="margin-bottom:1.2rem"><label class="fl">Season</label><input class="fi" id="ss" value="${S.season}" maxlength="20"/></div>
         <button class="bpri" onclick="saveSt()">Save Settings</button>
       </div>
       <div class="card cp">
-        <div class="ctitle">🔑 <span class="hl">AI API Key</span></div>
+        <div class="ctitle">${ico('key',16)} <span class="hl">AI API Key</span></div>
         <p style="font-size:.82rem;color:var(--muted);margin-bottom:.9rem;line-height:1.6">Your key is stored only in your browser. Get one free at <strong style="color:var(--blue)">console.anthropic.com</strong></p>
         <div id="apikey-status"></div>
         <div id="apikey-btns"></div>
       </div>
     </div>
     <div class="card cp" style="margin-bottom:1.2rem">
-      <div class="ctitle">💳 <span class="hl">Subscription</span></div>
+      <div class="ctitle">${ico('card',16,'var(--green)')} <span class="hl">Subscription</span></div>
       <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap" id="sub-status-row">
       </div>
     </div>
     <div class="card cp">
-      <div class="ctitle">💾 <span class="hl">Data</span></div>
+      <div class="ctitle">${ico('check',16)} <span class="hl">Data</span></div>
       <p style="font-size:.83rem;color:var(--muted);margin-bottom:1rem;line-height:1.6">All data saved locally and synced to your account.</p>
       <div style="display:flex;gap:.7rem;flex-wrap:wrap">
         <button class="tbtn" onclick="exportCSV()">⬇ Export CSV</button>
-        <button class="bdng" onclick="clrAll()">🗑 Clear All Data</button>
+        <button class="bdng" onclick="clrAll()">${ico('trash',14)} Clear All Data</button>
       </div>
     </div>
     <div class="card cp">
-      <div class="ctitle">👤 <span class="hl">Account</span></div>
+      <div class="ctitle">${ico('player',16)} <span class="hl">Account</span></div>
       <div id="account-info" style="font-size:.83rem;color:var(--muted);margin-bottom:1rem"></div>
       <div style="display:flex;gap:.7rem;flex-wrap:wrap">
         <button class="bdng" onclick="signOut()">Sign Out</button>
       </div>
     </div>
     <div class="card cp">
-      <div class="ctitle">📄 <span class="hl">Legal</span></div>
+      <div class="ctitle"><span class="ico" style="width:16px;height:16px" data-ico="log"></span> <span class="hl">Legal</span></div>
       <div style="display:flex;gap:.7rem;flex-wrap:wrap">
         <a href="/terms.html" target="_blank" class="tbtn" style="text-decoration:none">Terms of Service</a>
         <a href="/privacy.html" target="_blank" class="tbtn" style="text-decoration:none">Privacy Policy</a>
@@ -1926,7 +1966,7 @@ function fillSettingsDynamic(){
   }
   if(kb){
     kb.innerHTML='<div style="display:flex;gap:.6rem;flex-wrap:wrap">'
-      +'<button class="tbtn" onclick="promptApiKey()">'+(S.userApiKey?'🔑 Update Key':'🔑 Add API Key')+'</button>'
+      +'<button class="tbtn" onclick="promptApiKey()">'+(S.userApiKey?ico('key',16)+' Update Key':ico('key',16)+' Add API Key')+'</button>'
       +(S.userApiKey?'<button class="bdng" onclick="clearApiKey()">Remove</button>':'')
       +'</div>';
   }
@@ -1941,16 +1981,16 @@ function fillSettingsDynamic(){
     } else if(days>0){
       statusHTML='<div style="flex:1"><div style="font-size:.95rem;font-weight:600;margin-bottom:.2rem;color:var(--yellow)">⏳ Free Trial</div>'
         +'<div style="font-size:.78rem;color:var(--muted)">'+days+' day'+(days!==1?'s':'')+' remaining — then $16/month</div></div>'
-        +'<button class="bpri" onclick="om(\'pwm\')">🚀 Upgrade $16/mo</button>';
+        +`<button class="bpri" onclick="om(\'pwm\')">${ico('rocket',16)} Upgrade $16/mo</button>`;
     } else {
-      statusHTML='<div style="flex:1"><div style="font-size:.95rem;font-weight:600;margin-bottom:.2rem;color:var(--red)">⚠️ Trial Expired</div>'
+      statusHTML=`<div style="flex:1"><div style="font-size:.95rem;font-weight:600;margin-bottom:.2rem;color:var(--red)">${ico('warn',16)} Trial Expired</div>`
         +'<div style="font-size:.78rem;color:var(--muted)">Subscribe to continue using AI features</div></div>'
-        +'<button class="bpri" onclick="om(\'pwm\')">🚀 Upgrade $16/mo</button>';
+        +`<button class="bpri" onclick="om(\'pwm\')">${ico('rocket',16)} Upgrade $16/mo</button>`;
     }
     sr.innerHTML=statusHTML;
   }
 }
-function clrAll(){showConfirm('Clear All Data?','This will permanently delete all players, matches and settings. This cannot be undone.',function(){localStorage.removeItem(SK);S.players=[];S.selectedId=null;S.view='team';toast('All data cleared','i');render();},'🗑️');}
+function clrAll(){showConfirm('Clear All Data?','This will permanently delete all players, matches and settings. This cannot be undone.',function(){localStorage.removeItem(SK);S.players=[];S.selectedId=null;S.view='team';toast('All data cleared','i');render();},'trash');}
 
 // ── VISUALIZATIONS ──
 function getRadar(p){
@@ -2024,14 +2064,14 @@ function openAddP(){
     setTimeout(()=>om('pwm'),800);
     return;
   }
-  S.editPid=null;document.getElementById('pmt').textContent='➕ Add Player';
+  S.editPid=null;document.getElementById('pmt').textContent='Add Player';
   ['pm-n','pm-nb','pm-a','pm-na','pm-no'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('pm-p').value='Central Mid';document.getElementById('pm-f').value='Right';
   document.getElementById('pm-del').style.display='none';om('pmov');
 }
 function openEditP(id){
   const p=S.players.find(x=>x.id===id);if(!p)return;
-  S.editPid=id;document.getElementById('pmt').textContent=`✏️ Edit ${p.name}`;
+  S.editPid=id;document.getElementById('pmt').textContent=`${ico('edit',14)} Edit ${p.name}`;
   document.getElementById('pm-n').value=p.name;document.getElementById('pm-nb').value=p.number;
   document.getElementById('pm-a').value=p.age;document.getElementById('pm-na').value=p.nation||'';
   document.getElementById('pm-no').value=p.notes||'';
@@ -2059,7 +2099,7 @@ function delP(){
   S.players=S.players.filter(x=>x.id!==S.editPid);
   if(S.selectedId===S.editPid)S.selectedId=S.players[0]?.id||null;
   save();toast(`${p.name} removed`,'i');cm('pmov');go('team');
-  },'👤');
+  },'player');
 }
 function openLogM(pid){
   const sel=document.getElementById('mm-pl');
@@ -2090,14 +2130,14 @@ function delM(pid,mid){
   showConfirm('Delete Match','This match will be permanently deleted.',function(){
     const p=S.players.find(x=>x.id===pid);if(!p)return;
     p.matches=p.matches.filter(x=>x.id!==mid);save();toast('Match deleted','i');render();
-  },'🗑️');
+  },'trash');
 }
 
 // ── CUSTOM CONFIRM ──
 function showConfirm(title, desc, onOk, icon){
   document.getElementById('cfm-title').textContent=title||'Are you sure?';
   document.getElementById('cfm-desc').textContent=desc||'';
-  document.getElementById('cfm-icon').textContent=icon||'⚠️';
+  document.getElementById('cfm-icon').innerHTML=icon||ico('warn',20);
   const btn=document.getElementById('cfm-ok');
   btn.textContent=title&&title.toLowerCase().includes('delete')?'Delete':'Confirm';
   btn.onclick=function(){cm('cfmov');if(onOk)onOk();};
@@ -2201,48 +2241,48 @@ function formatReport(text){
 // ── DRILL LIBRARY — keyed search queries that always find the right video ──
 // Each entry has a verified YouTube search URL that returns the correct drill content
 const DRILL_VIDEOS = {
-  'shooting_finishing':   {q:'soccer finishing drill tutorial coerver',    title:'Shooting & Finishing Drill',        cat:'⚽ Shooting'},
-  'shooting_1v1':         {q:'1v1 finishing drill soccer goalkeeper',       title:'1v1 Finishing',                     cat:'⚽ Shooting'},
-  'shooting_volleys':     {q:'volley technique soccer drill tutorial',      title:'Volley Technique',                  cat:'⚽ Shooting'},
-  'shooting_weak_foot':   {q:'weak foot shooting soccer training drill',    title:'Weak Foot Shooting',                cat:'⚽ Shooting'},
-  'shooting_long_range':  {q:'long range shooting soccer drill practice',   title:'Long Range Shooting',               cat:'⚽ Shooting'},
-  'shooting_movement':    {q:'shooting off the run soccer movement drill',  title:'Shooting Off the Run',              cat:'⚽ Shooting'},
-  'passing_rondo':        {q:'rondo passing drill soccer possession',       title:'Rondo Possession Drill',            cat:'🎯 Passing'},
-  'passing_combination':  {q:'combination passing drill soccer tutorial',   title:'Combination Passing',               cat:'🎯 Passing'},
-  'passing_first_touch':  {q:'first touch passing drill soccer control',    title:'First Touch & Passing',             cat:'🎯 Passing'},
-  'passing_long_ball':    {q:'long passing accuracy drill soccer training', title:'Long Pass Accuracy',                cat:'🎯 Passing'},
-  'passing_wall_pass':    {q:'wall pass one two combination soccer drill',  title:'Wall Pass Combination',             cat:'🎯 Passing'},
-  'passing_switching':    {q:'switching play wide passing drill soccer',    title:'Switching Play Drill',              cat:'🎯 Passing'},
-  'defending_1v1':        {q:'1v1 defending technique soccer tutorial',     title:'1v1 Defending',                     cat:'🛡 Defending'},
-  'defending_pressing':   {q:'high press pressing drill soccer training',   title:'Pressing Drill',                    cat:'🛡 Defending'},
-  'defending_shape':      {q:'defensive shape organization soccer drill',   title:'Defensive Shape',                   cat:'🛡 Defending'},
-  'defending_headers':    {q:'defensive heading drill soccer tutorial',     title:'Defensive Heading',                 cat:'🛡 Defending'},
-  'defending_tackling':   {q:'tackling technique timing soccer drill',      title:'Tackling Technique',                cat:'🛡 Defending'},
-  'defending_recovery':   {q:'recovery run tracking back soccer defender',  title:'Recovery Runs',                     cat:'🛡 Defending'},
-  'dribbling_close':      {q:'close control dribbling soccer ball mastery', title:'Close Control Dribbling',           cat:'🌀 Dribbling'},
-  'dribbling_speed':      {q:'speed dribbling drill soccer sprint control', title:'Speed Dribbling',                   cat:'🌀 Dribbling'},
-  'dribbling_1v1_attack': {q:'1v1 attacking dribbling beat defender soccer',title:'1v1 Attacking Dribbling',           cat:'🌀 Dribbling'},
-  'dribbling_cone_weave': {q:'cone weave dribbling drill soccer agility',   title:'Cone Weave Drill',                  cat:'🌀 Dribbling'},
-  'dribbling_turns':      {q:'cruyff turn step over soccer dribbling move', title:'Turns & Skill Moves',               cat:'🌀 Dribbling'},
+  'shooting_finishing':   {q:'soccer finishing drill tutorial coerver',    title:'Shooting & Finishing Drill',        cat:'Shooting'},
+  'shooting_1v1':         {q:'1v1 finishing drill soccer goalkeeper',       title:'1v1 Finishing',                     cat:'Shooting'},
+  'shooting_volleys':     {q:'volley technique soccer drill tutorial',      title:'Volley Technique',                  cat:'Shooting'},
+  'shooting_weak_foot':   {q:'weak foot shooting soccer training drill',    title:'Weak Foot Shooting',                cat:'Shooting'},
+  'shooting_long_range':  {q:'long range shooting soccer drill practice',   title:'Long Range Shooting',               cat:'Shooting'},
+  'shooting_movement':    {q:'shooting off the run soccer movement drill',  title:'Shooting Off the Run',              cat:'Shooting'},
+  'passing_rondo':        {q:'rondo passing drill soccer possession',       title:'Rondo Possession Drill',            cat:'Passing'},
+  'passing_combination':  {q:'combination passing drill soccer tutorial',   title:'Combination Passing',               cat:'Passing'},
+  'passing_first_touch':  {q:'first touch passing drill soccer control',    title:'First Touch & Passing',             cat:'Passing'},
+  'passing_long_ball':    {q:'long passing accuracy drill soccer training', title:'Long Pass Accuracy',                cat:'Passing'},
+  'passing_wall_pass':    {q:'wall pass one two combination soccer drill',  title:'Wall Pass Combination',             cat:'Passing'},
+  'passing_switching':    {q:'switching play wide passing drill soccer',    title:'Switching Play Drill',              cat:'Passing'},
+  'defending_1v1':        {q:'1v1 defending technique soccer tutorial',     title:'1v1 Defending',                     cat:'Defending'},
+  'defending_pressing':   {q:'high press pressing drill soccer training',   title:'Pressing Drill',                    cat:'Defending'},
+  'defending_shape':      {q:'defensive shape organization soccer drill',   title:'Defensive Shape',                   cat:'Defending'},
+  'defending_headers':    {q:'defensive heading drill soccer tutorial',     title:'Defensive Heading',                 cat:'Defending'},
+  'defending_tackling':   {q:'tackling technique timing soccer drill',      title:'Tackling Technique',                cat:'Defending'},
+  'defending_recovery':   {q:'recovery run tracking back soccer defender',  title:'Recovery Runs',                     cat:'Defending'},
+  'dribbling_close':      {q:'close control dribbling soccer ball mastery', title:'Close Control Dribbling',           cat:'Dribbling'},
+  'dribbling_speed':      {q:'speed dribbling drill soccer sprint control', title:'Speed Dribbling',                   cat:'Dribbling'},
+  'dribbling_1v1_attack': {q:'1v1 attacking dribbling beat defender soccer',title:'1v1 Attacking Dribbling',           cat:'Dribbling'},
+  'dribbling_cone_weave': {q:'cone weave dribbling drill soccer agility',   title:'Cone Weave Drill',                  cat:'Dribbling'},
+  'dribbling_turns':      {q:'cruyff turn step over soccer dribbling move', title:'Turns & Skill Moves',               cat:'Dribbling'},
   'crossing_delivery':    {q:'crossing delivery drill soccer winger',       title:'Crossing & Delivery',               cat:'↗ Crossing'},
   'crossing_movement':    {q:'winger crossing movement soccer training',    title:'Winger Movement',                   cat:'↗ Crossing'},
-  'fitness_agility':      {q:'soccer agility ladder footwork drill speed',  title:'Agility & Footwork',                cat:'💪 Fitness'},
-  'fitness_sprint':       {q:'sprint speed training soccer acceleration',   title:'Sprint Training',                   cat:'💪 Fitness'},
-  'fitness_endurance':    {q:'soccer endurance stamina conditioning drill', title:'Endurance Training',                cat:'💪 Fitness'},
-  'fitness_plyometric':   {q:'plyometric power training soccer jumps',      title:'Plyometric Power',                  cat:'💪 Fitness'},
-  'position_striker':     {q:'striker movement positioning runs soccer',    title:'Striker Positioning',               cat:'📍 Positioning'},
-  'position_midfielder':  {q:'midfielder movement press resistance soccer', title:'Midfielder Movement',               cat:'📍 Positioning'},
-  'position_winger':      {q:'winger runs off ball movement soccer',        title:'Winger Positioning',                cat:'📍 Positioning'},
-  'position_defender':    {q:'defender positioning cover shadow soccer',    title:'Defender Positioning',              cat:'📍 Positioning'},
-  'gk_shot_stopping':     {q:'goalkeeper shot stopping drill tutorial',     title:'Shot Stopping Drills',              cat:'🧤 Goalkeeper'},
-  'gk_distribution':      {q:'goalkeeper distribution kicking technique',   title:'GK Distribution',                   cat:'🧤 Goalkeeper'},
-  'gk_footwork':          {q:'goalkeeper footwork drill agility training',  title:'GK Footwork Drills',                cat:'🧤 Goalkeeper'},
-  'setpiece_freekick':    {q:'free kick technique bending shooting soccer', title:'Free Kick Technique',               cat:'🎯 Set Pieces'},
-  'setpiece_corners':     {q:'corner kick delivery runs attacking soccer',  title:'Corner Kick Delivery',              cat:'🎯 Set Pieces'},
-  'team_possession':      {q:'team possession rondo keep ball soccer drill',title:'Team Possession Rondo',             cat:'👥 Team'},
-  'team_transition':      {q:'transition attack defence soccer drill fast', title:'Transition Drill',                  cat:'👥 Team'},
-  'team_pressing':        {q:'team pressing compactness high press soccer', title:'Team Pressing',                     cat:'👥 Team'},
-  'team_build_up':        {q:'build up play from back soccer passing drill',title:'Build-Up Play',                     cat:'👥 Team'},
+  'fitness_agility':      {q:'soccer agility ladder footwork drill speed',  title:'Agility & Footwork',                cat:'Fitness'},
+  'fitness_sprint':       {q:'sprint speed training soccer acceleration',   title:'Sprint Training',                   cat:'Fitness'},
+  'fitness_endurance':    {q:'soccer endurance stamina conditioning drill', title:'Endurance Training',                cat:'Fitness'},
+  'fitness_plyometric':   {q:'plyometric power training soccer jumps',      title:'Plyometric Power',                  cat:'Fitness'},
+  'position_striker':     {q:'striker movement positioning runs soccer',    title:'Striker Positioning',               cat:'Positioning'},
+  'position_midfielder':  {q:'midfielder movement press resistance soccer', title:'Midfielder Movement',               cat:'Positioning'},
+  'position_winger':      {q:'winger runs off ball movement soccer',        title:'Winger Positioning',                cat:'Positioning'},
+  'position_defender':    {q:'defender positioning cover shadow soccer',    title:'Defender Positioning',              cat:'Positioning'},
+  'gk_shot_stopping':     {q:'goalkeeper shot stopping drill tutorial',     title:'Shot Stopping Drills',              cat:'<span class="ico" style="width:14px;height:14px" data-ico="check"></span> Goalkeeper'},
+  'gk_distribution':      {q:'goalkeeper distribution kicking technique',   title:'GK Distribution',                   cat:'<span class="ico" style="width:14px;height:14px" data-ico="check"></span> Goalkeeper'},
+  'gk_footwork':          {q:'goalkeeper footwork drill agility training',  title:'GK Footwork Drills',                cat:'<span class="ico" style="width:14px;height:14px" data-ico="check"></span> Goalkeeper'},
+  'setpiece_freekick':    {q:'free kick technique bending shooting soccer', title:'Free Kick Technique',               cat:'Set Pieces'},
+  'setpiece_corners':     {q:'corner kick delivery runs attacking soccer',  title:'Corner Kick Delivery',              cat:'Set Pieces'},
+  'team_possession':      {q:'team possession rondo keep ball soccer drill',title:'Team Possession Rondo',             cat:'Team'},
+  'team_transition':      {q:'transition attack defence soccer drill fast', title:'Transition Drill',                  cat:'Team'},
+  'team_pressing':        {q:'team pressing compactness high press soccer', title:'Team Pressing',                     cat:'Team'},
+  'team_build_up':        {q:'build up play from back soccer passing drill',title:'Build-Up Play',                     cat:'Team'},
 };
 
 function drillMenu(){
@@ -2255,7 +2295,7 @@ function renderDrillCards(drills, prefix='drill'){
   const cards = drills.map((d,i)=>{
     const vid  = DRILL_VIDEOS[d.drill_id] || null;
     const name = d.name || (vid ? vid.title : 'Soccer Drill');
-    const cat  = vid ? vid.cat : '⚽ Drill';
+    const cat  = vid ? vid.cat : 'Drill';
     const why  = d.why || '';
     // YouTube search URL — always works, no fake IDs
     const ytUrl = vid
@@ -2286,7 +2326,7 @@ function renderDrillCards(drills, prefix='drill'){
     </div>`;
   }).join('');
   return `<div class="drill-section">
-    <div class="drill-section-title">🎬 Recommended Drill Videos</div>
+    <div class="drill-section-title">${ico('drill',16)} Recommended Drill Videos</div>
     <div class="drill-grid">${cards}</div>
   </div>`;
 }
@@ -2294,7 +2334,7 @@ function renderDrillCards(drills, prefix='drill'){
 // ── MAIN AI ANALYSIS ──
 async function runAI(){
   const btn=document.getElementById('aiBtn');
-  if(btn){btn.disabled=true;btn.textContent='⏳ Thinking...';}
+  if(btn){btn.disabled=true;btn.textContent='Thinking...';}
   document.getElementById('aiBtn').style.display='';
   if(S.view==='team'){await runTeamAI();return;}
   if(S.view!=='player')return;
@@ -2304,10 +2344,10 @@ async function runAI(){
   const p=S.players.find(x=>x.id===S.selectedId);
   if(!p||!p.matches.length){toast('Log at least one match first','e');return;}
 
-  if(btn){btn.disabled=true;btn.textContent='⏳ Analysing...';}
+  if(btn){btn.disabled=true;btn.textContent='Analysing...';}
 
   const panel=document.getElementById('aipanel');
-  if(!panel){btn.disabled=false;btn.textContent='🤖 AI Analysis';return;}
+  if(!panel){btn.disabled=false;btn.textContent='AI Analysis';return;}
   panel.querySelectorAll('.aie,.aib,.drill-section').forEach(el=>el.remove());
   const loader=document.createElement('div');
   loader.className='aib ld';
@@ -2363,7 +2403,7 @@ Pick drill_ids that directly target weak stats. Return ONLY valid JSON, nothing 
     catch(e){
       // Fallback: show raw text if JSON parse fails
       loader.className='aib';loader.textContent=raw;
-      btn.disabled=false;btn.textContent='🤖 AI Analysis';
+      btn.disabled=false;btn.textContent='AI Analysis';
       return;
     }
     const r=parsed.report||{};
@@ -2392,16 +2432,16 @@ Pick drill_ids that directly target weak stats. Return ONLY valid JSON, nothing 
     loader.className='aib';loader.style.color='var(--red)';
     loader.textContent=`Error: ${e.message}`;
   }
-  btn.disabled=false;btn.textContent='🤖 AI Analysis';
+  btn.disabled=false;btn.textContent='AI Analysis';
 }
 
 async function runTeamAI(){
   if(!isSubscribed()){om('pwm');return;}
   if(!S.userApiKey){promptApiKey();return;}
   if(!S.players.length){toast('Add players first','e');return;}
-  const btn=document.getElementById('aiBtn');btn.disabled=true;btn.textContent='⏳ Generating...';
+  const btn=document.getElementById('aiBtn');btn.disabled=true;btn.textContent='Generating...';
   const sec=document.getElementById('tais');
-  sec.innerHTML=`<div class="aip" style="margin-top:1.2rem"><div class="aih"><div class="aic">🤖</div><div><div class="ait">AI Team Report</div><div class="ais">Powered by Claude</div></div></div><div class="aib ld">Generating squad analysis + drill videos…</div></div>`;
+  sec.innerHTML=`<div class="aip" style="margin-top:1.2rem"><div class="aih"><div class="aic">${ico('ai',16)}</div><div><div class="ait">AI Team Report</div><div class="ais">Powered by Claude</div></div></div><div class="aib ld">Generating squad analysis + drill videos…</div></div>`;
 
   const sums=S.players.map(p=>{
     if(!p.matches.length)return`${p.name} (${p.pos}): No matches logged`;
@@ -2446,7 +2486,7 @@ Return ONLY valid JSON, nothing else.`;
     catch(e){ 
       const ld=sec.querySelector('.aib');
       if(ld){ld.className='aib';ld.textContent=raw;}
-      btn.disabled=false;btn.textContent='🤖 Team Report';
+      btn.disabled=false;btn.textContent='Team Report';
       return;
     }
     const r=parsed.report||{};
@@ -2472,7 +2512,7 @@ Return ONLY valid JSON, nothing else.`;
     const ld=sec.querySelector('.aib');
     if(ld){ld.className='aib';ld.style.color='var(--red)';ld.textContent=`Error: ${e.message}`;}
   }
-  btn.disabled=false;btn.textContent='🤖 Team Report';
+  btn.disabled=false;btn.textContent='Team Report';
 }
 
 // ── EXPORT ──
@@ -2502,11 +2542,11 @@ function toast(msg,type='i'){
 // ── PRO GATE UI ──
 function proGate(title, desc){
   return `<div class="page"><div class="empty2">
-    <div style="font-size:2.5rem;margin-bottom:.5rem">🔒</div>
+    <div style="font-size:2.5rem;margin-bottom:.5rem">${ico('lock',40)}</div>
     <div class="et">${title}</div>
     <div class="es" style="max-width:320px;margin:0 auto .3rem">${desc}</div>
     <div class="es" style="color:var(--yellow);margin-bottom:1.2rem">Pro feature — 7-day free trial included</div>
-    <button class="bpri" onclick="om(&quot;pwm&quot;)">🚀 Unlock with Pro Trial</button>
+    <button class="bpri" onclick="om(&quot;pwm&quot;)">${ico('rocket',15)} Unlock with Pro Trial</button>
     <div style="font-size:.72rem;color:var(--muted);margin-top:.6rem">$16/month after trial · Cancel anytime</div>
   </div></div>`;
 }
@@ -2542,7 +2582,7 @@ async function cancelSub(){
   } catch(e) {
     toast('Error: ' + e.message, 'e');
   }
-  },'💳');
+  },'card');
 }
 
 
@@ -2572,7 +2612,7 @@ async function startCheckout(){
   } catch(e) {
     errEl.textContent = 'Error: ' + e.message;
     errEl.style.display='block';
-    btn.disabled=false; btn.textContent='🚀 Start Free Trial — $0 today';
+    btn.disabled=false; btn.textContent='Start Free Trial — $0 today';
   }
 }
 
@@ -2589,7 +2629,7 @@ async function verifySession(sessionId){
       if(SUPA_USER) await saveCloudData();
       window.history.replaceState({},'',window.location.pathname);
       render();
-      toast('🎉 Subscription active! Welcome to Squadwise Pro.','s');
+      toast(ico('check',16)+' Subscription active! Welcome to Squadwise Pro.','s');
       // Prompt for API key if not set
       if(!S.userApiKey){
         setTimeout(()=>{
