@@ -610,7 +610,7 @@ a.drill-watch-btn:hover{background:rgba(255,0,0,.22);border-color:rgba(255,0,0,.
   <div class="modal" style="max-width:520px;text-align:center;padding:2rem 2rem 1.5rem">
     <div style="display:inline-flex;align-items:center;justify-content:center;width:4rem;height:4rem;border-radius:50%;background:linear-gradient(135deg,rgba(0,230,118,.15),rgba(41,182,246,.1));border:1px solid rgba(0,230,118,.3);font-size:1.8rem;margin-bottom:1rem">⚽</div>
     <div style="font-size:1.35rem;font-weight:700;margin-bottom:.4rem;font-family:'Barlow Condensed',sans-serif;letter-spacing:.02em">Unlock Squadwise Pro</div>
-    <p style="font-size:.85rem;color:var(--text2);line-height:1.75;margin-bottom:1.4rem">Start free for 7 days. Then just <strong style="color:var(--green)">$12/month</strong>.<br/>Cancel anytime — no questions asked.</p>
+    <p style="font-size:.85rem;color:var(--text2);line-height:1.75;margin-bottom:1.4rem">Start free for 7 days. Then just <strong style="color:var(--green)">$16/month</strong>.<br/>Cancel anytime — no questions asked.</p>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin-bottom:1.4rem;text-align:left">
       <div style="background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.15);border-radius:8px;padding:.8rem .9rem;font-size:.8rem;color:var(--text2);display:flex;gap:.6rem;align-items:flex-start"><span style="font-size:1rem;margin-top:.05rem">🤖</span><div><div style="font-weight:600;color:var(--text);margin-bottom:.15rem">AI Coaching Reports</div>Deep analysis on every player & your full squad</div></div>
       <div style="background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.15);border-radius:8px;padding:.8rem .9rem;font-size:.8rem;color:var(--text2);display:flex;gap:.6rem;align-items:flex-start"><span style="font-size:1rem;margin-top:.05rem">🎬</span><div><div style="font-weight:600;color:var(--text);margin-bottom:.15rem">Drill Videos</div>AI-picked training drills for each player's weaknesses</div></div>
@@ -618,7 +618,7 @@ a.drill-watch-btn:hover{background:rgba(255,0,0,.22);border-color:rgba(255,0,0,.
       <div style="background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.15);border-radius:8px;padding:.8rem .9rem;font-size:.8rem;color:var(--text2);display:flex;gap:.6rem;align-items:flex-start"><span style="font-size:1rem;margin-top:.05rem">📤</span><div><div style="font-weight:600;color:var(--text);margin-bottom:.15rem">CSV Export</div>Download all stats for your own records</div></div>
     </div>
     <button class="bpri" style="width:100%;padding:1rem;font-size:1rem;margin-bottom:.7rem;border-radius:10px;letter-spacing:.02em" onclick="startCheckout()">🚀 Start 7-Day Free Trial</button>
-    <div style="font-size:.71rem;color:var(--muted)">No charge today · $12/month after trial · Cancel anytime</div>
+    <div style="font-size:.71rem;color:var(--muted)">No charge today · $16/month after trial · Cancel anytime</div>
     <div id="pwm-err" style="color:var(--red);font-size:.8rem;margin-top:.8rem;display:none"></div>
     <button onclick="cm('pwm')" style="background:none;border:none;color:var(--muted);font-size:.75rem;cursor:pointer;margin-top:.8rem;padding:.3rem">Not now</button>
   </div>
@@ -648,7 +648,7 @@ a.drill-watch-btn:hover{background:rgba(255,0,0,.22);border-color:rgba(255,0,0,.
       <div class="pcard feat">
         <div class="pbadge">⭐ Recommended</div>
         <div class="pplan">Pro Coach</div>
-        <div class="pamt"><sup>$</sup>12</div>
+        <div class="pamt"><sup>$</sup>16</div>
         <div class="pper">per month · 7-day free trial</div>
         <ul class="pfeat">
           <li>Unlimited players</li>
@@ -875,7 +875,7 @@ function renderSB(){
   } else if(days>0){
     const t=trialTimeLeft();
     const tStr=t.days>0?t.days+'d '+t.hours+'h left':t.hours>0?t.hours+'h '+t.mins+'m left':t.mins+'m '+t.secs+'s left';
-    bp.className='sb-plan by';pn.textContent='⏳ FREE TRIAL';ps.textContent=tStr+' — then $12/mo';
+    bp.className='sb-plan by';pn.textContent='⏳ FREE TRIAL';ps.textContent=tStr+' — then $16/mo';
   } else {
     bp.className='sb-plan br';pn.textContent='⚠️ TRIAL ENDED';ps.textContent='Upgrade to unlock AI features';
   }
@@ -1849,16 +1849,16 @@ function fillSettingsDynamic(){
     const days=trialDaysLeft();
     let statusHTML='';
     if(S.subStatus==='active'){
-      statusHTML='<div style="flex:1"><div style="font-size:.95rem;font-weight:600;margin-bottom:.2rem;color:var(--green)">✅ Pro — $12/month</div>'
+      statusHTML='<div style="flex:1"><div style="font-size:.95rem;font-weight:600;margin-bottom:.2rem;color:var(--green)">✅ Pro — $16/month</div>'
         +'<div style="font-size:.78rem;color:var(--muted)">'+(S.email?'Subscribed as '+S.email:'Active subscription')+'</div></div>';
     } else if(days>0){
       statusHTML='<div style="flex:1"><div style="font-size:.95rem;font-weight:600;margin-bottom:.2rem;color:var(--yellow)">⏳ Free Trial</div>'
-        +'<div style="font-size:.78rem;color:var(--muted)">'+days+' day'+(days!==1?'s':'')+' remaining — then $12/month</div></div>'
-        +'<button class="bpri" onclick="om(\'pwm\')">🚀 Upgrade $12/mo</button>';
+        +'<div style="font-size:.78rem;color:var(--muted)">'+days+' day'+(days!==1?'s':'')+' remaining — then $16/month</div></div>'
+        +'<button class="bpri" onclick="om(\'pwm\')">🚀 Upgrade $16/mo</button>';
     } else {
       statusHTML='<div style="flex:1"><div style="font-size:.95rem;font-weight:600;margin-bottom:.2rem;color:var(--red)">⚠️ Trial Expired</div>'
         +'<div style="font-size:.78rem;color:var(--muted)">Subscribe to continue using AI features</div></div>'
-        +'<button class="bpri" onclick="om(\'pwm\')">🚀 Upgrade $12/mo</button>';
+        +'<button class="bpri" onclick="om(\'pwm\')">🚀 Upgrade $16/mo</button>';
     }
     sr.innerHTML=statusHTML;
   }
@@ -1988,7 +1988,7 @@ function setPlan(plan){
   cm('subm');renderSB();render();
 }
 function updatePlanButtons(){
-  const labels={free:'Select Free',pro:'Select Pro — $12/mo',club:'Select Club — $29/mo'};
+  const labels={free:'Select Free',pro:'Select Pro — $16/mo',club:'Select Club — $29/mo'};
   ['free','pro','club'].forEach(p=>{
     const btn=document.getElementById('btn-'+p);
     if(!btn)return;
@@ -2365,7 +2365,7 @@ function proGate(title, desc){
     <div class="es" style="max-width:320px;margin:0 auto .3rem">${desc}</div>
     <div class="es" style="color:var(--yellow);margin-bottom:1.2rem">Pro feature — 7-day free trial included</div>
     <button class="bpri" onclick="om(&quot;pwm&quot;)">🚀 Unlock with Pro Trial</button>
-    <div style="font-size:.72rem;color:var(--muted);margin-top:.6rem">$12/month after trial · Cancel anytime</div>
+    <div style="font-size:.72rem;color:var(--muted);margin-top:.6rem">$16/month after trial · Cancel anytime</div>
   </div></div>`;
 }
 
@@ -2497,7 +2497,7 @@ function showTrialBanner(){
   else if(t.hours>0) timeStr = `<strong style="color:${urgentColor}">${t.hours}h ${t.mins}m ${t.secs}s</strong>`;
   else timeStr = `<strong style="color:var(--red)">${t.mins}m ${t.secs}s</strong>`;
 
-  banner.innerHTML=`<div><div style="font-size:.65rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.15rem">Free Trial</div><div>⏳ ${timeStr} remaining</div></div><button class="tbtn" style="font-size:.7rem;padding:.3rem .7rem;white-space:nowrap;flex-shrink:0" onclick="om('pwm')">Upgrade $12/mo</button>`;
+  banner.innerHTML=`<div><div style="font-size:.65rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.15rem">Free Trial</div><div>⏳ ${timeStr} remaining</div></div><button class="tbtn" style="font-size:.7rem;padding:.3rem .7rem;white-space:nowrap;flex-shrink:0" onclick="om('pwm')">Upgrade $16/mo</button>`;
 
   // Tick every second
   if(!window._trialTick){
