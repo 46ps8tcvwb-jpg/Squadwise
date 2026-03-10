@@ -1428,18 +1428,20 @@ function rXI(c){
     const passAcc=recent.reduce((s,x)=>s+(x.passAcc||0),0)/recent.length;
     const score=avgRating*10+(avgGoals*5)+(avgAssists*3)+(passAcc*.1);
 
-    // Injury/fatigue risk: rating drop in last 2 games
+    // Injury/fatigue risk: m[0]=most recent, m[2]=3 games ago (newest-first storage)
+    // Flag if: rating dropped 1.5+ pts in last 3 games OR distance dropped 20%+ in last 3 games
     const riskFlag=m.length>=3&&(
-      (parseFloat(m[m.length-1].rating)||0)<(parseFloat(m[m.length-3].rating)||0)-1.5 ||
-      (m[m.length-1].distance||0)<(m[m.length-3].distance||0)*0.8
+      (parseFloat(m[0].rating)||0)<(parseFloat(m[2].rating)||0)-1.5 ||
+      ((m[0].distance||0)>0&&(m[2].distance||0)>0&&(m[0].distance||0)<(m[2].distance||0)*0.8)
     );
 
-    // Form trend
-    const first=m.slice(0,Math.ceil(m.length/2));
-    const last=m.slice(Math.ceil(m.length/2));
-    const firstAvg=first.reduce((s,x)=>s+(parseFloat(x.rating)||0),0)/first.length;
-    const lastAvg=last.reduce((s,x)=>s+(parseFloat(x.rating)||0),0)/last.length;
-    const trend=lastAvg>firstAvg+0.3?'↑':lastAvg<firstAvg-0.3?'↓':'→';
+    // Form trend: compare last 3 games (m[0..2]) vs previous 3 (m[3..5])
+    // m is newest-first, so recent = m.slice(0,3), older = m.slice(3,6)
+    const recentGames=m.slice(0,Math.min(3,m.length));
+    const olderGames=m.slice(Math.min(3,m.length),Math.min(6,m.length));
+    const recentAvg=recentGames.reduce((s,x)=>s+(parseFloat(x.rating)||0),0)/recentGames.length;
+    const olderAvg=olderGames.length?olderGames.reduce((s,x)=>s+(parseFloat(x.rating)||0),0)/olderGames.length:recentAvg;
+    const trend=recentAvg>olderAvg+0.3?'↑':recentAvg<olderAvg-0.3?'↓':'→';
 
     return{...p,score,recentRating:avgRating.toFixed(1),trend,riskFlag};
   }).sort((a,b)=>b.score-a.score);
@@ -1572,7 +1574,10 @@ async function genPrematch(){
     const avgR=m.reduce((s,x)=>s+(parseFloat(x.rating)||0),0)/m.length;
     const goals=m.reduce((s,x)=>s+(x.goals||0),0);
     const assists=m.reduce((s,x)=>s+(x.assists||0),0);
-    const riskFlag=(p.matches||[]).length>=3&&((parseFloat(p.matches[0].rating)||0)<(parseFloat(p.matches[2].rating)||0)-1.5);
+    const riskFlag=m.length>=3&&(
+      (parseFloat(m[0].rating)||0)<(parseFloat(m[2].rating)||0)-1.5 ||
+      ((m[0].distance||0)>0&&(m[2].distance||0)>0&&(m[0].distance||0)<(m[2].distance||0)*0.8)
+    );
     return{name:p.name,pos:p.pos,avgR:avgR.toFixed(1),goals,assists,riskFlag};
   }).filter(Boolean).sort((a,b)=>b.avgR-a.avgR);
 
