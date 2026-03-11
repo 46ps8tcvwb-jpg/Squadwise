@@ -2464,12 +2464,12 @@ async function runAI(){
   const aiBtnEl=document.getElementById('aiBtn');
   if(aiBtnEl)aiBtnEl.style.display='';
   if(S.view==='team'){await runTeamAI();return;}
-  if(S.view!=='player')return;
+  if(S.view!=='player'){if(btn){btn.disabled=false;btn.textContent='AI Analysis';}return;}
 
-  if(!isSubscribed()){om('pwm');return;}
-  if(!S.userApiKey){promptApiKey();return;}
+  if(!isSubscribed()){if(btn){btn.disabled=false;btn.textContent='AI Analysis';}om('pwm');return;}
+  if(!S.userApiKey){if(btn){btn.disabled=false;btn.textContent='AI Analysis';}promptApiKey();return;}
   const p=S.players.find(x=>x.id===S.selectedId);
-  if(!p||!p.matches.length){toast('Log at least one match first','e');return;}
+  if(!p||!p.matches.length){if(btn){btn.disabled=false;btn.textContent='AI Analysis';}toast('Log at least one match first','e');return;}
 
   if(btn){btn.disabled=true;btn.textContent='Analysing...';}
 
@@ -2684,7 +2684,11 @@ function saveApiKey(){
   try{localStorage.setItem('squadwise_apikey',key);}catch(e){}
   S.userApiKey=key;
   toast('API key saved! AI is now active ✓','s');
-  cm('akim');render();
+  cm('akim');
+  // Re-enable AI button if it was disabled
+  const btn=document.getElementById('aiBtn');
+  if(btn){btn.disabled=false;btn.textContent='AI Analysis';}
+  render();
 }
 function clearApiKey(){
   // confirmed via custom modal below
