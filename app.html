@@ -490,7 +490,14 @@ a.drill-watch-btn:hover{background:rgba(255,0,0,.22);border-color:rgba(255,0,0,.
       <div class="sb-pn" id="sbpn"><span class="ico" style="width:16px;height:16px" data-ico="rocket"></span> FREE PLAN</div>
       <div class="sb-ps" id="sbps">Upgrade for AI features</div>
     </div>
-    <div class="sb-foot">Squadwise v3.0 · Data saved locally<br/>AI powered by Claude · Anthropic</div>
+    <div class="sb-foot">
+  <div style="display:flex;align-items:center;gap:.4rem;justify-content:center;margin-bottom:.4rem;flex-wrap:wrap">
+    <span style="display:inline-flex;align-items:center;gap:.25rem;background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.15);border-radius:4px;padding:.15rem .4rem;font-size:.6rem;color:var(--green)">🔒 SSL Secured</span>
+    <span style="display:inline-flex;align-items:center;gap:.25rem;background:rgba(41,182,246,.08);border:1px solid rgba(41,182,246,.15);border-radius:4px;padding:.15rem .4rem;font-size:.6rem;color:var(--blue)">☁ Cloud Sync</span>
+  </div>
+  Squadwise v3.0 · AI powered by Claude · Anthropic<br/>
+  <span style="color:rgba(255,255,255,.25)">Your data is encrypted and private</span>
+</div>
   </aside>
 
   <header class="topbar">
@@ -659,6 +666,11 @@ a.drill-watch-btn:hover{background:rgba(255,0,0,.22);border-color:rgba(255,0,0,.
       <div class="fg" style="margin-bottom:1.1rem"><label class="fl">Team Name</label><input class="fi" id="auth-team" type="text" placeholder="e.g. FC Northgate U16" maxlength="40" onkeydown="if(event.key==='Enter')signUp()"/></div>
       <button class="bpri" style="width:100%;margin-bottom:.7rem" onclick="signUp()">Create Account →</button>
       <div id="auth-err2" style="color:var(--red);font-size:.78rem;text-align:center;display:none;margin-bottom:.5rem"></div>
+      <div style="display:flex;justify-content:center;gap:1rem;margin-bottom:.7rem;flex-wrap:wrap">
+        <span style="font-size:.67rem;color:var(--muted);display:flex;align-items:center;gap:.25rem">🔒 Encrypted</span>
+        <span style="font-size:.67rem;color:var(--muted);display:flex;align-items:center;gap:.25rem">✓ No credit card</span>
+        <span style="font-size:.67rem;color:var(--muted);display:flex;align-items:center;gap:.25rem">✓ Cancel anytime</span>
+      </div>
       <div style="text-align:center;font-size:.75rem;color:var(--muted)">Already have an account? <button onclick="switchAuthTab('login')" style="background:none;border:none;color:var(--green);cursor:pointer;font-size:.75rem">Sign in</button></div>
     </div>
 
@@ -685,6 +697,11 @@ a.drill-watch-btn:hover{background:rgba(255,0,0,.22);border-color:rgba(255,0,0,.
     <button class="bpri" style="width:100%;padding:1rem;font-size:1rem;margin-bottom:.7rem;border-radius:10px;letter-spacing:.02em" onclick="startCheckout()"><span class="ico" style="width:16px;height:16px" data-ico="rocket"></span> Start 7-Day Free Trial</button>
     <div style="font-size:.71rem;color:var(--muted)">No charge today · $16/month after trial · Cancel anytime</div>
     <div id="pwm-err" style="color:var(--red);font-size:.8rem;margin-top:.8rem;display:none"></div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:1.2rem;margin-top:1rem;padding-top:.9rem;border-top:1px solid var(--border2);flex-wrap:wrap">
+      <span style="font-size:.68rem;color:var(--muted);display:flex;align-items:center;gap:.3rem">🔒 Secured by Stripe</span>
+      <span style="font-size:.68rem;color:var(--muted);display:flex;align-items:center;gap:.3rem">✓ 256-bit SSL encryption</span>
+      <span style="font-size:.68rem;color:var(--muted);display:flex;align-items:center;gap:.3rem">✓ Cancel from settings anytime</span>
+    </div>
     <button onclick="cm('pwm')" style="background:none;border:none;color:var(--muted);font-size:.75rem;cursor:pointer;margin-top:.8rem;padding:.3rem">Not now</button>
   </div>
 </div>
@@ -1062,7 +1079,7 @@ function rTeam(c){
           </div>
         </div>
         <button class="bpri" onclick="openAddP()" style="padding:.9rem 2rem;font-size:1rem"><span class="ico" style="width:14px;height:14px" data-ico="add"></span> Add Your First Player</button>
-        <div style="font-size:.75rem;color:var(--muted);margin-top:.8rem">${isSubscribed()?'Trial active — all features unlocked':'7-day free trial · No credit card required to start'}</div>
+        <div style="font-size:.75rem;color:var(--muted);margin-top:.8rem">${isSubscribed()?'<span style="color:var(--green)">✓ Trial active — all features unlocked</span>':'<span>7-day free trial &nbsp;·&nbsp; No credit card &nbsp;·&nbsp; Cancel anytime</span>'}</div>
       </div>
     </div>`;return;
   }
@@ -1094,6 +1111,17 @@ function rTeam(c){
     </div>
     <div class="tgrid">${S.players.map(p=>tcard(p)).join('')}</div>
     <div id="tais"></div>
+    <div style="text-align:center;margin-top:1.5rem;padding:1rem;border-top:1px solid var(--border)">
+      <div style="font-size:.72rem;color:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap">
+        <span>🔒 Your squad data is private and encrypted</span>
+        <span>·</span>
+        <span>AI powered by Claude · Anthropic</span>
+        <span>·</span>
+        <a href="/terms.html" target="_blank" style="color:rgba(255,255,255,.2);text-decoration:none">Terms</a>
+        <span>·</span>
+        <a href="/privacy.html" target="_blank" style="color:rgba(255,255,255,.2);text-decoration:none">Privacy</a>
+      </div>
+    </div>
   </div>`;
   setTimeout(fillTeamBanner,10);
 }
@@ -1939,7 +1967,11 @@ function rSettings(c){
       </div>
       <div class="card cp">
         <div class="ctitle">${ico('key',16)} <span class="hl">AI API Key</span></div>
-        <p style="font-size:.82rem;color:var(--muted);margin-bottom:.9rem;line-height:1.6">Your key is stored only in your browser. Get one free at <strong style="color:var(--blue)">console.anthropic.com</strong></p>
+        <p style="font-size:.82rem;color:var(--muted);margin-bottom:.9rem;line-height:1.6">Your key is stored <strong style="color:var(--text)">only in your browser</strong> — never sent to our servers. Anthropic new accounts get free credits to start.</p>
+        <div style="background:rgba(0,230,118,.05);border:1px solid rgba(0,230,118,.12);border-radius:8px;padding:.6rem .8rem;font-size:.75rem;color:var(--muted);margin-bottom:.9rem;display:flex;gap:.5rem;align-items:flex-start">
+          <span style="color:var(--green);flex-shrink:0">🔒</span>
+          <span>We never see or store your API key. It lives in your browser only.</span>
+        </div>
         <div id="apikey-status"></div>
         <div id="apikey-btns"></div>
       </div>
@@ -1951,7 +1983,12 @@ function rSettings(c){
     </div>
     <div class="card cp">
       <div class="ctitle">${ico('check',16)} <span class="hl">Data</span></div>
-      <p style="font-size:.83rem;color:var(--muted);margin-bottom:1rem;line-height:1.6">All data saved locally and synced to your account.</p>
+      <p style="font-size:.83rem;color:var(--muted);margin-bottom:.8rem;line-height:1.6">All data is encrypted and synced securely to your account. We never sell or share your data.</p>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem">
+        <span style="background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.15);border-radius:6px;padding:.25rem .6rem;font-size:.72rem;color:var(--green)">🔒 Encrypted</span>
+        <span style="background:rgba(41,182,246,.06);border:1px solid rgba(41,182,246,.15);border-radius:6px;padding:.25rem .6rem;font-size:.72rem;color:var(--blue)">☁ Cloud Backed</span>
+        <span style="background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:6px;padding:.25rem .6rem;font-size:.72rem;color:var(--muted)">🚫 Never Sold</span>
+      </div>
       <div style="display:flex;gap:.7rem;flex-wrap:wrap">
         <button class="tbtn" onclick="exportCSV()">⬇ Export CSV</button>
         <button class="bdng" onclick="clrAll()">${ico('trash',14)} Clear All Data</button>
