@@ -2984,10 +2984,19 @@ load();
 // Show loading spinner immediately so user never sees blank screen
 document.getElementById('ca').innerHTML='<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:60vh;gap:1rem"><div style="width:40px;height:40px;border:3px solid rgba(0,230,118,.15);border-top-color:var(--green);border-radius:50%;animation:spin .8s linear infinite"></div><div style="font-size:.85rem;color:var(--muted)">Loading your squad...</div></div>';
 initSupabase();
+
+// Fallback: if auth takes too long, render anyway
+const authTimeout=setTimeout(()=>{
+  if(document.getElementById('ca').innerHTML.includes('Loading your squad')){
+    render();checkPaywall();showTrialBanner();
+  }
+},2000);
+
 // Check for existing session
 setTimeout(async()=>{
   if(SUPA_CLIENT){
     const{data:{session}}=await SUPA_CLIENT.auth.getSession();
+    clearTimeout(authTimeout);
     if(session){
       SUPA_USER=session.user;
       await loadCloudData();
@@ -3001,6 +3010,7 @@ setTimeout(async()=>{
       setTimeout(()=>om('authm'),300);
     }
   } else {
+    clearTimeout(authTimeout);
     render();
     setTimeout(()=>{ checkPaywall(); showTrialBanner(); },600);
   }
