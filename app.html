@@ -783,12 +783,32 @@ function initSupabase(){
 }
 
 function save(){
-  try{localStorage.setItem(SK,JSON.stringify(S));}catch(e){}
+  try{
+    localStorage.setItem(SK,JSON.stringify(S));
+  }catch(e){
+    if(e.name==='QuotaExceededError')toast('Storage full — old match data may not be saved','e');
+    console.warn('save error',e);
+  }
   // Sync to cloud if logged in (debounced)
   if(SUPA_USER){ clearTimeout(save._t); save._t=setTimeout(saveCloudData,1500); }
 }
 function load(){
-  try{const d=localStorage.getItem(SK);if(d){const p=JSON.parse(d);S={...S,...p};}}catch(e){}
+  try{
+    const d=localStorage.getItem(SK);
+    if(d){
+      const p=JSON.parse(d);
+      // Validate critical fields before merging
+      if(p&&typeof p==='object'){
+        if(!Array.isArray(p.players))p.players=[];
+        p.players=p.players.filter(x=>x&&x.id&&x.name); // strip corrupt players
+        p.players.forEach(pl=>{if(!Array.isArray(pl.matches))pl.matches=[];});
+        S={...S,...p};
+      }
+    }
+  }catch(e){
+    console.warn('load error — resetting state',e);
+    localStorage.removeItem(SK);
+  }
   // Don't seed demo data — real users get a clean slate
   // seed() only called for local-only mode (no account)
   S.players.forEach(p=>p.matches.forEach(m=>{if(!m.id)m.id=Date.now()+Math.random();}));
@@ -799,6 +819,7 @@ function load(){
 }
 // ── CLOUD DATA SYNC ──
 async function saveCloudData(){
+  if(!SUPA_CLIENT||!SUPA_USER){return;}
   if(!SUPA_CLIENT||!SUPA_USER)return;
   try{
     const data={
@@ -815,6 +836,7 @@ async function saveCloudData(){
   }catch(e){console.warn('Cloud save failed',e);}
 }
 async function loadCloudData(){
+  if(!SUPA_CLIENT||!SUPA_USER){return;}
   if(!SUPA_CLIENT||!SUPA_USER)return;
   try{
     const{data,error}=await SUPA_CLIENT.from('coach_data').select('*').eq('user_id',SUPA_USER.id).single();
@@ -1939,7 +1961,7 @@ function rSettings(c){
       <div class="ctitle">${ico('player',16)} <span class="hl">Account</span></div>
       <div id="account-info" style="font-size:.83rem;color:var(--muted);margin-bottom:1rem"></div>
       <div style="display:flex;gap:.7rem;flex-wrap:wrap">
-        <button class="bdng" onclick="signOut()">Sign Out</button>
+        <button class="bdng" id="signout-btn">Sign Out</button>
       </div>
     </div>
     <div class="card cp">
@@ -2006,6 +2028,8 @@ function fillSettingsDynamic(){
     }
     sr.innerHTML=statusHTML;
   }
+  const soBtn=document.getElementById('signout-btn');
+  if(soBtn){soBtn.addEventListener('click',function(){signOut();});}
 }
 function clrAll(){showConfirm('Clear All Data?','This will permanently delete all players, matches and settings. This cannot be undone.',function(){localStorage.removeItem(SK);S.players=[];S.selectedId=null;S.view='team';toast('All data cleared','i');render();},'trash');}
 
@@ -2192,16 +2216,27 @@ async function callClaude(prompt, maxTokens=1800){
     max_tokens: maxTokens,
     messages: [{ role: 'user', content: prompt }]
   });
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': S.userApiKey,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true'
-    },
-    body: payload
-  });
+  const controller = new AbortController();
+  const timeout = setTimeout(()=>controller.abort(), 30000);
+  let res;
+  try{
+    res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': S.userApiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: payload,
+      signal: controller.signal
+    });
+  }catch(fetchErr){
+    clearTimeout(timeout);
+    if(fetchErr.name==='AbortError')throw new Error('Request timed out — check your connection and try again.');
+    throw new Error('Network error — check your internet connection.');
+  }
+  clearTimeout(timeout);
   if (!res.ok) {
     const err = await res.json().catch(()=>({}));
     const msg = err.error?.message || 'HTTP ' + res.status;
@@ -2426,7 +2461,8 @@ function renderDrillCards(drills, prefix='drill'){
 async function runAI(){
   const btn=document.getElementById('aiBtn');
   if(btn){btn.disabled=true;btn.textContent='Thinking...';}
-  document.getElementById('aiBtn').style.display='';
+  const aiBtnEl=document.getElementById('aiBtn');
+  if(aiBtnEl)aiBtnEl.style.display='';
   if(S.view==='team'){await runTeamAI();return;}
   if(S.view!=='player')return;
 
@@ -2609,8 +2645,7 @@ Return ONLY valid JSON, nothing else.`;
 // ── EXPORT ──
 function exportCSV(){
   if(!isSubscribed()){om('pwm');return;}
-  if(!S.userApiKey){promptApiKey();return;}
-  if(!S.players.length){toast('No data to export','e');return;}
+  if(!S.players.length){toast('No players to export','e');return;}
   let csv='Player,Jersey,Position,Age,Foot,Nationality,Date,Opponent,Result,Goals,Assists,Shots,Passes,PassAcc%,Tackles,Distance(km),Minutes,Rating,Notes\n';
   S.players.forEach(p=>{
     if(!p.matches.length){csv+=`"${p.name}",${p.number},"${p.pos}",${p.age},${p.foot},"${p.nation||''}",,,,,,,,,,,,,\n`;}
@@ -2883,6 +2918,19 @@ function signOut(){
   setTimeout(function(){window.location.reload();},300);
 }
 function openAuth(){om('authm');switchAuthTab('login');}
+
+// ── GLOBAL ERROR HANDLERS ──
+window.addEventListener('unhandledrejection',function(e){
+  console.warn('Unhandled promise rejection:',e.reason);
+  // Don't show toast for AbortError (user navigated away etc)
+  if(e.reason&&e.reason.name==='AbortError')return;
+  // Suppress supabase realtime errors silently
+  const msg=(e.reason?.message||'').toLowerCase();
+  if(msg.includes('realtime')||msg.includes('websocket')||msg.includes('channel'))return;
+});
+window.addEventListener('error',function(e){
+  console.error('Global error:',e.message,e.filename,e.lineno);
+});
 
 // ── INIT ──
 load();
