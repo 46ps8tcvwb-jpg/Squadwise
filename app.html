@@ -2016,11 +2016,13 @@ function fillSettingsDynamic(){
     let statusHTML='';
     if(S.subStatus==='active'){
       statusHTML='<div style="flex:1"><div style="font-size:.95rem;font-weight:600;margin-bottom:.2rem;color:var(--green)">✅ Pro — $16/month</div>'
-        +'<div style="font-size:.78rem;color:var(--muted)">'+(S.email?'Subscribed as '+S.email:'Active subscription')+'</div></div>';
+        +'<div style="font-size:.78rem;color:var(--muted)">'+(S.email?'Subscribed as '+S.email:'Active subscription')+'</div></div>'
+        +'<button class="tbtn" onclick="cancelSub()">Manage / Cancel</button>';
     } else if(days>0){
       statusHTML='<div style="flex:1"><div style="font-size:.95rem;font-weight:600;margin-bottom:.2rem;color:var(--yellow)">⏳ Free Trial</div>'
         +'<div style="font-size:.78rem;color:var(--muted)">'+days+' day'+(days!==1?'s':'')+' remaining — then $16/month</div></div>'
-        +`<button class="bpri" onclick="om(\'pwm\')">${ico('rocket',16)} Upgrade $16/mo</button>`;
+        +`<button class="bpri" onclick="om(\'pwm\')">${ico('rocket',16)} Upgrade $16/mo</button>`
+        +'<button class="tbtn" onclick="cancelSub()" style="font-size:.75rem">Cancel Trial</button>';
     } else {
       statusHTML=`<div style="flex:1"><div style="font-size:.95rem;font-weight:600;margin-bottom:.2rem;color:var(--red)">${ico('warn',16)} Trial Expired</div>`
         +'<div style="font-size:.78rem;color:var(--muted)">Subscribe to continue using AI features</div></div>'
@@ -2698,7 +2700,11 @@ function clearApiKey(){
 }
 function promptApiKey(){om('akim');setTimeout(()=>{const el=document.getElementById('aki');if(el&&S.userApiKey)el.value=S.userApiKey;},50);}
 async function cancelSub(){
-  if(!S.customerId){ toast('No subscription found to cancel','e'); return; }
+  if(!S.customerId){
+    // Trial user — no Stripe customer yet, just explain how to cancel
+    showConfirm('Cancel Trial','Your trial will expire automatically — you will never be charged unless you upgrade. No action needed to cancel.',function(){},'warn');
+    return;
+  }
   showConfirm('Manage Subscription','You can cancel or update your billing details in the Stripe portal.',async function(){
   try {
     const res = await fetch('/api/cancel-subscription', {
