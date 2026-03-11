@@ -202,6 +202,7 @@ button,input,select,textarea{font-family:'Barlow',sans-serif}
 .aib{font-size:.85rem;line-height:1.8;color:var(--text2);white-space:pre-wrap;word-break:break-word}
 .aib.ld{color:var(--muted);font-style:italic;animation:pulse 1.5s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
 .aie{display:flex;flex-direction:column;align-items:center;gap:.7rem;padding:1.5rem 0;text-align:center;color:var(--muted);font-size:.83rem}
 
 /* team cards */
@@ -2980,6 +2981,8 @@ window.addEventListener('error',function(e){
 
 // ── INIT ──
 load();
+// Show loading spinner immediately so user never sees blank screen
+document.getElementById('ca').innerHTML='<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:60vh;gap:1rem"><div style="width:40px;height:40px;border:3px solid rgba(0,230,118,.15);border-top-color:var(--green);border-radius:50%;animation:spin .8s linear infinite"></div><div style="font-size:.85rem;color:var(--muted)">Loading your squad...</div></div>';
 initSupabase();
 // Check for existing session
 setTimeout(async()=>{
@@ -2991,10 +2994,11 @@ setTimeout(async()=>{
       render();
       checkPaywall();
       showTrialBanner();
+      setTimeout(startOnboard, 700);
     } else {
       render();
       // Show auth on first visit
-      setTimeout(()=>om('authm'),700);
+      setTimeout(()=>om('authm'),300);
     }
   } else {
     render();
