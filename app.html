@@ -2184,7 +2184,7 @@ function showConfirm(title, desc, onOk, icon){
   const iconName=icon||'warn';
   document.getElementById('cfm-icon').innerHTML=ico(iconName,28);
   const btn=document.getElementById('cfm-ok');
-  btn.textContent=title&&title.toLowerCase().includes('delete')?'Delete':'Confirm';
+  btn.textContent=title&&title.toLowerCase().includes('delete')?'Delete':title&&(title.toLowerCase().includes('cancel trial')||title.toLowerCase().includes('manage'))?'Got it':'Confirm';
   btn.onclick=function(){cm('cfmov');if(onOk)onOk();};
   om('cfmov');
 }
@@ -2701,8 +2701,7 @@ function clearApiKey(){
 function promptApiKey(){om('akim');setTimeout(()=>{const el=document.getElementById('aki');if(el&&S.userApiKey)el.value=S.userApiKey;},50);}
 async function cancelSub(){
   if(!S.customerId){
-    // Trial user — no Stripe customer yet, just explain how to cancel
-    showConfirm('Cancel Trial','Your trial will expire automatically — you will never be charged unless you upgrade. No action needed to cancel.',function(){},'warn');
+    showConfirm('Cancel Trial','Your free trial will expire automatically and you will never be charged. You can keep using the app on the free plan after your trial ends — no action needed.',function(){},'check');
     return;
   }
   showConfirm('Manage Subscription','You can cancel or update your billing details in the Stripe portal.',async function(){
